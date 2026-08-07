@@ -1,0 +1,55 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Toaster } from 'sonner'
+import MineHelperApp from './apps/mine-helper/MineHelperApp'
+import MinesweeperApp from './apps/minesweeper/MinesweeperApp'
+import { mineHelperTheme, minesweeperTheme } from './shared/theme'
+import { ComingSoonPage } from './pages/ComingSoonPage'
+import { HomePage } from './pages/HomePage'
+import { AppLayout } from './shell/AppLayout'
+import { ThemeScope } from './shell/ThemeScope'
+
+function MineHelperRoute() {
+  return (
+    <ThemeScope theme={mineHelperTheme} className="flex h-full min-h-0 flex-col">
+      <MineHelperApp />
+    </ThemeScope>
+  )
+}
+
+function MinesweeperRoute() {
+  return (
+    <ThemeScope theme={minesweeperTheme} className="flex h-full min-h-0 flex-col">
+      <MinesweeperApp />
+    </ThemeScope>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Toaster
+        theme="dark"
+        position="top-center"
+        richColors
+        closeButton
+        gap={8}
+        offset={16}
+        toastOptions={{
+          classNames: {
+            toast: 'border border-line shadow-lg'
+          }
+        }}
+      />
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/games/minesweeper" element={<MinesweeperRoute />} />
+          <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
+          <Route path="/games/:slug" element={<ComingSoonPage />} />
+          <Route path="/solvers/:slug" element={<ComingSoonPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
+}

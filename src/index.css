@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,500&family=JetBrains+Mono:wght@500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-bg: #14191f;
+  --color-elevated: #1c232b;
+  --color-panel: #222a33;
+  --color-cell: #2a333e;
+  --color-cell-hover: #364150;
+  --color-ink: #eef3f8;
+  --color-muted: #8b9aab;
+  --color-accent: #7a8fa8;
+  --color-accent-hover: #8fa3ba;
+  --color-on-accent: #e8eef5;
+  --color-flag: #ff5c7a;
+  --color-target: #b91c1c;
+  --color-mine: #6b8fff;
+  --color-info: #2ec8c0;
+  --color-best: #ffe14a;
+  --color-safest: #ff6a00;
+  --color-why-clue: #ff00b4;
+  --color-why-peer: #00ffbc;
+  --color-line: #374554;
+  --color-danger: #e07070;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply m-0 h-full;
+  }
+
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+    color-scheme: dark;
+  }
+
+  /* Hub scrolls; full-screen apps (e.g. Mine Helper) lock their own root.
+     Use clip (not hidden) so overflow-y stays visible - hidden forces
+     overflow-y:auto and creates a nested scrollport / paint seam. */
+  .hub-page {
+    overflow-x: clip;
+  }
+
+  button,
+  input {
+    font: inherit;
+    color: inherit;
+    border: none;
+    background: transparent;
+  }
+}
+
+/* Board grid: container-query sizing (hard in pure utility classes) */
+.board-frame {
+  container-type: size;
+  @apply relative flex min-h-0 min-w-0 flex-1 items-center justify-center;
+}
+
+.mine-grid {
+  --cols: 6;
+  --rows: 6;
+  --cell-ar: 1;
+  display: grid;
+  grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
+  gap: clamp(1px, 0.35cqmin, 3px);
+  width: min(100cqw, calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows)));
+  aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
+  max-height: 100%;
+}
+
+.mine-grid > .cell {
+  font-size: clamp(0.55rem, 4.2cqmin, 1.05rem);
+  border-radius: clamp(2px, 0.8cqmin, 6px);
+}
+
+/* Single digit / ? - kill line-box metrics so the glyph sits optically centered */
+.mine-grid > .cell .cell-glyph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.mine-grid > .cell .cell-glyph > span {
+  display: block;
+  line-height: 1;
+  /* Font glyphs sit slightly low in the em box */
+  transform: translateY(-0.08em);
+}
+
+.mine-grid .mark-chance,
+.mine-grid .mark-sure {
+  font-size: clamp(0.4rem, 2.8cqmin, 0.75rem);
+}
+
+.mine-grid > .cell.cell-best .mark-chance,
+.mine-grid > .cell.cell-safest .mark-chance {
+  font-size: clamp(0.48rem, 3.35cqmin, 0.9rem);
+}
+
+.board-stage {
+  @apply flex h-full min-h-0 min-w-0 w-full items-stretch justify-center gap-2.5;
+}
+
+.board-stage.with-why {
+  @apply justify-start gap-2;
+}
+
+.board-stage.with-why > aside {
+  margin-left: auto;
+  align-self: stretch;
+}
+
+.board-stage.with-why .mine-grid {
+  width: min(
+    calc(100cqw - 15.5rem),
+    calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows))
+  );
+  max-height: 100%;
+  align-self: center;
+}
+
+.coord-board {
+  /* Must match grid-template + gap below so fit math includes axis labels */
+  --coord-label-x: 1.35rem;
+  --coord-label-y: 1.15rem;
+  --coord-gap-x: 0.2rem;
+  --coord-gap-y: 0.15rem;
+  --coord-gutter-x: calc(var(--coord-label-x) + var(--coord-gap-x));
+  --coord-gutter-y: calc(var(--coord-label-y) + var(--coord-gap-y));
+  display: grid;
+  grid-template-columns: var(--coord-label-x) minmax(0, 1fr);
+  grid-template-rows: var(--coord-label-y) minmax(0, 1fr);
+  gap: var(--coord-gap-y) var(--coord-gap-x);
+  /* Fit cells+labels into the frame: gutters eat cqh/cqw, so shrink width */
+  width: min(
+    100cqw,
+    calc(
+      (100cqh - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
+        var(--rows) + var(--coord-gutter-x)
+    )
+  );
+  max-height: 100%;
+  align-self: center;
+  min-height: 0;
+}
+
+.coord-board .mine-grid {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100% !important;
+  height: auto;
+  max-height: none;
+  aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
+}
+
+.board-stage.with-why .coord-board {
+  width: min(
+    calc(100cqw - 15.5rem),
+    calc(
+      (100cqh - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
+        var(--rows) + var(--coord-gutter-x)
+    )
+  );
+  align-self: center;
+}
+
+.board-frame.why-mode {
+  @apply border-best/40;
+}
+
+.board-frame.why-mode .mine-grid {
+  /* Room for thicker highlight rings between cells */
+  gap: clamp(5px, 1.4cqmin, 10px);
+}
+
+.board-frame.why-mode .cell {
+  overflow: visible;
+}
+
+/* Best / Safest: inset rings so neighbors don’t clip/overlap each other */
+.mine-grid > .cell.cell-best,
+.mine-grid > .cell.cell-safest {
+  z-index: 2;
+}
+
+.mine-grid > .cell.cell-best:not(.cell-safest) {
+  border-color: var(--color-best) !important;
+  border-width: 2px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-best) 70%, #000),
+    0 0 8px color-mix(in srgb, var(--color-best) 35%, transparent);
+}
+
+.mine-grid > .cell.cell-safest:not(.cell-best) {
+  border-color: var(--color-safest) !important;
+  border-width: 2px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-safest) 70%, #000),
+    0 0 8px color-mix(in srgb, var(--color-safest) 35%, transparent);
+}
+
+.mine-grid > .cell.cell-best.cell-safest {
+  border-color: var(--color-best) !important;
+  border-width: 2px;
+  box-shadow:
+    inset 0 0 0 1px var(--color-best),
+    inset 0 0 0 3px var(--color-safest),
+    0 0 8px color-mix(in srgb, var(--color-safest) 35%, transparent);
+}
+
+.mine-grid > .cell.cell-conflict {
+  z-index: 3;
+  border-color: var(--color-danger) !important;
+  border-width: 2px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-danger) 55%, #000),
+    0 0 0 3px color-mix(in srgb, var(--color-danger) 85%, white),
+    0 0 14px color-mix(in srgb, var(--color-danger) 55%, transparent);
+}
+
+/* Hover + arrow: same slightly thicker white border (Best/Safest drop glow rings while active) */
+@media (hover: hover) and (pointer: fine) {
+  .board-frame:not(.why-mode) .cell:hover {
+    border-width: 2px !important;
+    border-color: #fff !important;
+    box-shadow: none !important;
+  }
+}
+
+.why-hl {
+  position: relative;
+}
+
+.why-hl-focus {
+  z-index: 5;
+  box-shadow: 0 0 0 3px #fff !important;
+}
+
+.why-hl-clue {
+  z-index: 4;
+  box-shadow:
+    0 0 0 3px var(--color-why-clue),
+    0 0 12px color-mix(in srgb, var(--color-why-clue) 65%, transparent) !important;
+}
+
+.why-hl-step {
+  z-index: 3;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--color-why-clue) 85%, white),
+    0 0 10px color-mix(in srgb, var(--color-why-clue) 50%, transparent) !important;
+  filter: brightness(1.12);
+}
+
+.why-hl-peer {
+  z-index: 2;
+  box-shadow:
+    0 0 0 3px var(--color-why-peer),
+    0 0 12px color-mix(in srgb, var(--color-why-peer) 65%, transparent) !important;
+}
+
+.why-hl-cursor {
+  z-index: 1;
+  border-width: 2px !important;
+  border-color: #fff !important;
+  box-shadow: none !important;
+}
+
+/* Arrow cursor on Best/Safest: match hover */
+.mine-grid > .cell.cell-best.why-hl-cursor,
+.mine-grid > .cell.cell-safest.why-hl-cursor {
+  border-width: 2px !important;
+  border-color: #fff !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 720px) {
+  .board-stage.with-why {
+    @apply flex-col items-stretch;
+  }
+
+  .board-stage.with-why > aside {
+    margin-left: 0;
+  }
+
+  .board-stage.with-why .mine-grid {
+    width: min(
+      100cqw,
+      calc(100cqh * 0.62 * var(--cols) * var(--cell-ar) / var(--rows))
+    );
+    max-height: 62%;
+  }
+
+  .board-stage.with-why .coord-board {
+    width: min(
+      100cqw,
+      calc(
+        (100cqh * 0.62 - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
+          var(--rows) + var(--coord-gutter-x)
+      )
+    );
+    max-height: 62%;
+  }
+}
