@@ -27,15 +27,14 @@ export function NumberPad({
   goalMode = 'safe'
 }: NumberPadProps) {
   const { t } = useI18n()
+  const hunt = goalMode === 'hunt'
   const numberModeActive = mode === 'number' || mode === 'info'
-  const mineLabel = (n: number) =>
-    goalMode === 'hunt'
-      ? t('tools.numberNHunt', { n })
+  const digitLabel = (n: number) =>
+    hunt
+      ? mode === 'info'
+        ? t('tools.infoN', { n })
+        : t('tools.numberNHunt', { n })
       : t('tools.numberNSafe', { n })
-  const unknownTitle =
-    goalMode === 'hunt'
-      ? t('tools.numberUnknownHunt')
-      : t('tools.numberUnknownSafe')
 
   return (
     <section className="flex h-full min-w-0 flex-1 flex-row items-center gap-2 overflow-hidden rounded-md border border-line bg-panel px-2.5 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:w-full max-[720px]:flex-none max-[720px]:px-2 max-[720px]:py-[0.45rem]">
@@ -52,36 +51,33 @@ export function NumberPad({
               'min-w-0 flex-1 basis-0 px-1 py-[0.28rem] text-[0.72rem] max-[720px]:text-[0.9rem]',
               numberValue === n && numberModeActive && btnActive
             )}
-            title={
-              mode === 'erase'
-                ? t('tools.eraseAgain')
-                : mode === 'info'
-                  ? t('tools.infoN', { n })
-                  : mineLabel(n)
-            }
+            title={mode === 'erase' ? t('tools.eraseAgain') : digitLabel(n)}
             onClick={() => {
               onNumberValueChange(n)
-              onModeChange(mode === 'info' ? 'info' : 'number')
+              // Avoid has only Safe #; Hunt keeps Info vs Moje.
+              onModeChange(!hunt || mode !== 'info' ? 'number' : 'info')
             }}
           >
             {n}
           </button>
         ))}
-        <button
-          type="button"
-          className={cn(
-            btn,
-            'min-w-0 flex-1 basis-0 px-1 py-[0.28rem] text-[0.72rem] max-[720px]:text-[0.9rem]',
-            numberValue == null && mode === 'number' && btnActive
-          )}
-          title={unknownTitle}
-          onClick={() => {
-            onNumberValueChange(null)
-            onModeChange('number')
-          }}
-        >
-          ?
-        </button>
+        {hunt ? (
+          <button
+            type="button"
+            className={cn(
+              btn,
+              'min-w-0 flex-1 basis-0 px-1 py-[0.28rem] text-[0.72rem] max-[720px]:text-[0.9rem]',
+              numberValue == null && mode === 'number' && btnActive
+            )}
+            title={t('tools.numberUnknownHunt')}
+            onClick={() => {
+              onNumberValueChange(null)
+              onModeChange('number')
+            }}
+          >
+            ?
+          </button>
+        ) : null}
       </div>
     </section>
   )

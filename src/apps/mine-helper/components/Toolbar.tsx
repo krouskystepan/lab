@@ -3,6 +3,7 @@ import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { HelpTip } from './HelpTip'
 import {
+  Flag,
   HelpCircle,
   Redo2,
   RotateCcw,
@@ -56,16 +57,24 @@ export function Toolbar({
   goalMode = 'safe'
 }: ToolbarProps) {
   const { t } = useI18n()
+  const hunt = goalMode === 'hunt'
+  const numberTitle = hunt
+    ? t('tools.numberTitleHunt')
+    : t('tools.numberTitleSafe')
+  const numberLabel = hunt ? t('tools.numberHunt') : t('tools.numberSafe')
+  const flagTitle =
+    mode === 'flag' ? t('tools.flagErase') : t('tools.flagTitle')
+  /** Avoid: Safe # + Flag + Safe (blank). Hunt: Moje # + Info # + Vyřazené. */
+  const showFlagTool = !hunt
+  const showInfoTool = hunt
+  const showSafeTool = true
   const safeTitle =
-    goalMode === 'hunt' ? t('tools.safeTitleHunt') : t('tools.safeTitle')
-  const safeLabel =
-    goalMode === 'hunt' ? t('tools.safeHunt') : t('tools.safe')
-  const infoTitle =
-    goalMode === 'hunt' ? t('tools.infoTitleHunt') : t('tools.infoTitle')
-  const numberTitle =
-    goalMode === 'hunt' ? t('tools.numberTitleHunt') : t('tools.numberTitleSafe')
-  const numberLabel =
-    goalMode === 'hunt' ? t('tools.numberHunt') : t('tools.numberSafe')
+    mode === 'blank'
+      ? t('tools.safeErase')
+      : hunt
+        ? t('tools.safeTitleHunt')
+        : t('tools.safeTitle')
+  const safeLabel = hunt ? t('tools.safeHunt') : t('tools.safe')
 
   return (
     <section className="flex min-w-0 flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-[0.45rem]">
@@ -99,57 +108,81 @@ export function Toolbar({
             {numberLabel}
           </button>
 
-          <button
-            type="button"
-            className={cn(
-              btn,
-              'inline-flex items-center gap-1.5',
-              mode === 'info' &&
-                'border-info bg-[color-mix(in_srgb,var(--color-info)_28%,var(--color-cell))] text-[#bffaf5]'
-            )}
-            onClick={() => onModeChange(mode === 'info' ? 'erase' : 'info')}
-            title={infoTitle}
-          >
-            <span
+          {showInfoTool ? (
+            <button
+              type="button"
               className={cn(
-                iconCls,
-                'inline-flex items-center justify-center font-mono text-[0.85em] font-bold leading-none'
+                btn,
+                'inline-flex items-center gap-1.5',
+                mode === 'info' &&
+                  'border-info bg-[color-mix(in_srgb,var(--color-info)_28%,var(--color-cell))] text-[#bffaf5]'
               )}
-              aria-hidden
+              onClick={() => onModeChange(mode === 'info' ? 'erase' : 'info')}
+              title={t('tools.infoTitleHunt')}
             >
-              #
-            </span>
-            {t('tools.info')}
-          </button>
-
-          <button
-            type="button"
-            className={cn(
-              btn,
-              'inline-flex items-center gap-1.5',
-              mode === 'blank' &&
-                'border-[#6a7585] bg-[color-mix(in_srgb,#4a5360_55%,var(--color-cell))] text-[#c5ced8]'
-            )}
-            onClick={() => onModeChange(mode === 'blank' ? 'erase' : 'blank')}
-            title={
-              mode === 'blank' ? t('tools.safeErase') : safeTitle
-            }
-          >
-            {goalMode === 'hunt' ? (
               <span
                 className={cn(
                   iconCls,
-                  'inline-flex items-center justify-center text-[1.05em] font-bold leading-none'
+                  'inline-flex items-center justify-center font-mono text-[0.85em] font-bold leading-none'
                 )}
                 aria-hidden
               >
-                ?
+                #
               </span>
-            ) : (
-              <Shield className={iconCls} aria-hidden />
-            )}
-            {safeLabel}
-          </button>
+              {t('tools.info')}
+            </button>
+          ) : null}
+
+          {showFlagTool ? (
+            <button
+              type="button"
+              className={cn(
+                btn,
+                'inline-flex items-center gap-1.5',
+                mode === 'flag' &&
+                  'border-[color-mix(in_srgb,var(--color-flag)_65%,var(--color-line))] bg-[color-mix(in_srgb,var(--color-flag)_22%,var(--color-cell))] text-flag'
+              )}
+              onClick={() => onModeChange(mode === 'flag' ? 'erase' : 'flag')}
+              title={flagTitle}
+            >
+              <Flag
+                className={iconCls}
+                fill="currentColor"
+                strokeWidth={1.5}
+                aria-hidden
+              />
+              {t('tools.flag')}
+            </button>
+          ) : null}
+
+          {showSafeTool ? (
+            <button
+              type="button"
+              className={cn(
+                btn,
+                'inline-flex items-center gap-1.5',
+                mode === 'blank' &&
+                  'border-[#6a7585] bg-[color-mix(in_srgb,#4a5360_55%,var(--color-cell))] text-[#c5ced8]'
+              )}
+              onClick={() => onModeChange(mode === 'blank' ? 'erase' : 'blank')}
+              title={safeTitle}
+            >
+              {hunt ? (
+                <span
+                  className={cn(
+                    iconCls,
+                    'inline-flex items-center justify-center text-[1.05em] font-bold leading-none'
+                  )}
+                  aria-hidden
+                >
+                  ?
+                </span>
+              ) : (
+                <Shield className={iconCls} aria-hidden />
+              )}
+              {safeLabel}
+            </button>
+          ) : null}
         </div>
 
         <div className="flex shrink-0 flex-nowrap items-center gap-[0.45rem]">

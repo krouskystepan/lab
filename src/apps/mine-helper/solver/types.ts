@@ -2,14 +2,24 @@ export type EditMode = 'number' | 'info' | 'flag' | 'blank' | 'erase'
 
 /**
  * What the solver highlights for the player:
- * - safe: classic Minesweeper - find safe cells to click; flag = mine.
+ * - safe (Avoid): classic Minesweeper — find safe cells to click.
+ *   Safe # / Bezpečné # = revealed safe with digit; Flag/Vlajka = mine;
+ *   Safe / Bezpečné = revealed safe with no digit. No Info tool.
  * - hunt: find your cards - Moje # = your card; Info # = clue only (not yours);
- *   Označené = not your card.
+ *   Označené = not your card (opposite of Avoid’s flag!).
  */
 export type GoalMode = 'safe' | 'hunt'
 
-/** Mine = mine/my card with a clue (counts as target). Info = clue only (not a target). */
+/**
+ * Mine = counts as a target (Hunt: your card). Info = clue only, not a target.
+ * In Avoid, the primary Safe # tool places `info` (classic revealed number).
+ */
 export type NumberRole = 'mine' | 'info'
+
+/** Primary # tool role: Avoid = classic revealed (info); Hunt = your card (mine). */
+export function primaryNumberRole(goalMode: GoalMode): NumberRole {
+  return goalMode === 'safe' ? 'info' : 'mine'
+}
 
 /** User-editable cell content */
 export type UserCell =

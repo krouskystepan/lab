@@ -59,9 +59,9 @@ function numberRoleLabel(goalMode: GoalMode): string {
   return goalMode === 'hunt' ? t('ex.numberHunt') : t('ex.numberSafe')
 }
 
-/** Certain target label: Mina in safe mode, 100% in hunt (matches board). */
+/** Certain target label: Vlajka/Flag in avoid mode, 100% in hunt (matches board). */
 function certainTargetLabel(goalMode: GoalMode): string {
-  return goalMode === 'hunt' ? t('ex.sure') : numberRoleLabel(goalMode)
+  return goalMode === 'hunt' ? t('ex.sure') : t('ex.flag')
 }
 
 /** Certain non-target label: 100% in safe mode, Flag in hunt (matches board). */
@@ -76,8 +76,13 @@ function clueName(
   goalMode: GoalMode = 'safe'
 ): string {
   if (cell.type !== 'number') return cellLabel(index, width)
+  // Avoid: Safe # is the only number mark (info role). Hunt: Moje vs Info.
   const kind =
-    cell.role === 'info' ? t('ex.info') : numberRoleLabel(goalMode)
+    goalMode === 'safe'
+      ? numberRoleLabel(goalMode)
+      : cell.role === 'info'
+        ? t('ex.info')
+        : numberRoleLabel(goalMode)
   const value = cell.value == null ? '?' : cell.value
   return t('ex.clueAt', {
     kind,
@@ -766,8 +771,14 @@ function explainPlacedNumber(
   }
 
   const label = cellLabel(cellIndex, width)
-  const isMineNum = cell.role === 'mine'
-  const kind = isMineNum ? numberRoleLabel(goalMode) : t('ex.info')
+  // Avoid: Safe # (info) = classic revealed safe. Hunt: Moje vs Info.
+  const isTargetNum = cell.role === 'mine'
+  const kind =
+    goalMode === 'safe'
+      ? numberRoleLabel(goalMode)
+      : isTargetNum
+        ? numberRoleLabel(goalMode)
+        : t('ex.info')
 
   if (cell.value == null) {
     return {
@@ -815,15 +826,24 @@ function explainPlacedNumber(
   const steps: WhyStep[] = []
 
   steps.push({
-    text: isMineNum
-      ? t(
-          goalMode === 'hunt' ? 'ex.placedNumberHunt' : 'ex.placedMine',
-          { kind, value: cell.value, cell: label }
-        )
-      : t(
-          goalMode === 'hunt' ? 'ex.placedInfoHunt' : 'ex.placedInfo',
-          { kind, value: cell.value, cell: label }
-        ),
+    text:
+      goalMode === 'safe'
+        ? t('ex.placedNumberSafe', {
+            kind,
+            value: cell.value,
+            cell: label
+          })
+        : isTargetNum
+          ? t('ex.placedNumberHunt', {
+              kind,
+              value: cell.value,
+              cell: label
+            })
+          : t('ex.placedInfoHunt', {
+              kind,
+              value: cell.value,
+              cell: label
+            }),
     cells: [cellIndex]
   })
 
@@ -894,9 +914,12 @@ function explainPlacedNumber(
   return {
     cellIndex,
     resultLabel: `${kind} ${cell.value}`,
-    meta: isMineNum
-      ? t(goalMode === 'hunt' ? 'ex.meta.placedHunt' : 'ex.meta.placed')
-      : t('ex.meta.clueOnly'),
+    meta:
+      goalMode === 'safe'
+        ? t('ex.meta.placedSafe')
+        : isTargetNum
+          ? t('ex.meta.placedHunt')
+          : t('ex.meta.clueOnly'),
     percent: 0,
     hits: 0,
     total: 0,

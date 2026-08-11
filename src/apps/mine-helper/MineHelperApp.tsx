@@ -23,6 +23,7 @@ import type {
   GoalMode,
   NumberRole
 } from './solver/types'
+import { primaryNumberRole } from './solver/types'
 import { BoardHistory, type BoardSnapshot } from './storage/boardHistory'
 import {
   emptyBoard,
@@ -99,10 +100,17 @@ export default function MineHelperApp() {
     saved.cellAspect ?? 'card'
   )
   const [cells, setCells] = useState<BoardCell[]>(saved.cells)
-  const [mode, setMode] = useState<EditMode>(saved.mode)
-  const [numberValue, setNumberValue] = useState<number | null>(
-    saved.numberValue
-  )
+  const [mode, setMode] = useState<EditMode>(() => {
+    const m = saved.mode
+    const goal = loadGoalMode()
+    if (goal === 'safe' && m === 'info') return 'number'
+    if (goal === 'hunt' && m === 'flag') return 'number'
+    return m
+  })
+  const [numberValue, setNumberValue] = useState<number | null>(() => {
+    if (loadGoalMode() === 'safe' && saved.numberValue == null) return 1
+    return saved.numberValue
+  })
   const [useTotal, setUseTotal] = useState(saved.useTotal)
   const [totalTargets, setTotalTargets] = useState(saved.totalTargets)
   const [autoSolve, setAutoSolve] = useState(false)
@@ -365,6 +373,7 @@ export default function MineHelperApp() {
     (index: number) => {
       const m = modeRef.current
       const n = numberValueRef.current
+      const goal = goalModeRef.current
       if (m === 'erase') {
         applyUserEdit(index, { type: 'empty' })
         return
@@ -377,7 +386,15 @@ export default function MineHelperApp() {
         applyUserEdit(index, { type: 'blank' }, { toggleOff: true })
         return
       }
-      const role: NumberRole = m === 'info' ? 'info' : 'mine'
+      // Avoid: Safe # = classic revealed safe (info). Hunt: Moje # / Info #.
+      const role: NumberRole =
+        goal === 'safe'
+          ? primaryNumberRole('safe')
+          : m === 'info'
+            ? 'info'
+            : 'mine'
+      // Classic MS numbers always need a digit (no ?)
+      if (goal === 'safe' && n == null) return
       applyUserEdit(
         index,
         { type: 'number', value: n, role },
@@ -470,6 +487,8 @@ export default function MineHelperApp() {
 
       if (key === 'f') {
         e.preventDefault()
+        // Avoid: Vlajka = mine. Hunt: Označené is solver-only.
+        if (goalModeRef.current === 'hunt') return
         const i = ensureCursor()
         setMode('flag')
         applyUserEdit(i, { type: 'flagged' }, { toggleOff: true })
@@ -485,6 +504,8 @@ export default function MineHelperApp() {
       }
 
       if (key === 'i') {
+        // Avoid: no Info tool (Safe # is the only number).
+        if (goalModeRef.current === 'safe') return
         e.preventDefault()
         setMode((m) => (m === 'info' ? 'number' : 'info'))
         return
@@ -522,10 +543,15 @@ export default function MineHelperApp() {
         e.preventDefault()
         const value = Number(e.key)
         const i = ensureCursor()
+        const goal = goalModeRef.current
         const role: NumberRole =
-          modeRef.current === 'info' || e.shiftKey ? 'info' : 'mine'
+          goal === 'safe'
+            ? primaryNumberRole('safe')
+            : modeRef.current === 'info' || e.shiftKey
+              ? 'info'
+              : 'mine'
         setNumberValue(value)
-        setMode(role === 'info' ? 'info' : 'number')
+        setMode(role === 'info' && goal === 'hunt' ? 'info' : 'number')
         applyUserEdit(i, { type: 'number', value, role }, { toggleOff: true })
       }
     }
@@ -922,7 +948,24 @@ export default function MineHelperApp() {
                 {t('lang.cs')}
               </button>
             </div>
-            <GoalModeToggle value={goalMode} onChange={setGoalMode} />
+            <GoalModeToggle
+              value={goalMode}
+              onChange={(next) => {
+                setGoalMode(next)
+                const m = modeRef.current
+                // Avoid tools: Safe # + Flag + Safe. Hunt: Moje # + Info + Vyřazené.
+                if (next === 'safe' && m === 'info') {
+                  setMode('number')
+                }
+                if (next === 'hunt' && m === 'flag') {
+                  setMode('number')
+                }
+                // Avoid has no ? number
+                if (next === 'safe' && numberValueRef.current == null) {
+                  setNumberValue(1)
+                }
+              }}
+            />
           </div>
         </div>
         <div className="flex w-full flex-wrap items-center justify-start gap-2.5 max-[720px]:hidden">
@@ -935,14 +978,16 @@ export default function MineHelperApp() {
             >
               {t(huntGoal ? 'legend.numberBodyHunt' : 'legend.numberBodySafe')}
             </LegendTip>
-            <LegendTip
-              label={t('legend.info')}
-              swatchClass="info"
-              swatchContent="3"
-              title={t(huntGoal ? 'legend.infoTitleHunt' : 'legend.infoTitle')}
-            >
-              {t(huntGoal ? 'legend.infoBodyHunt' : 'legend.infoBody')}
-            </LegendTip>
+            {huntGoal ? (
+              <LegendTip
+                label={t('legend.info')}
+                swatchClass="info"
+                swatchContent="3"
+                title={t('legend.infoTitleHunt')}
+              >
+                {t('legend.infoBodyHunt')}
+              </LegendTip>
+            ) : null}
             <LegendTip
               label={t(huntGoal ? 'legend.flagHunt' : 'legend.flag')}
               swatchClass="flag"
@@ -966,23 +1011,31 @@ export default function MineHelperApp() {
             >
               {legendRichText(t(huntGoal ? 'legend.flagBodyHunt' : 'legend.flagBodySafe'), legendMarks)}
             </LegendTip>
-            <LegendTip
-              label={t(huntGoal ? 'legend.safeTitleHunt' : 'legend.safe')}
-              swatchClass="blank"
-              swatchContent={
-                huntGoal ? (
+            {huntGoal ? (
+              <LegendTip
+                label={t('legend.safeTitleHunt')}
+                swatchClass="blank"
+                swatchContent={
                   <span
                     className="flex h-[0.7rem] w-[0.7rem] items-center justify-center text-[0.7rem] font-bold leading-none text-[#c5ced8]"
                     aria-hidden
                   >
                     ?
                   </span>
-                ) : undefined
-              }
-              title={t(huntGoal ? 'legend.safeTitleHunt' : 'legend.safeTitle')}
-            >
-              {legendRichText(t(huntGoal ? 'legend.safeBodyHunt' : 'legend.safeBody'), legendMarks)}
-            </LegendTip>
+                }
+                title={t('legend.safeTitleHunt')}
+              >
+                {legendRichText(t('legend.safeBodyHunt'), legendMarks)}
+              </LegendTip>
+            ) : (
+              <LegendTip
+                label={t('legend.safe')}
+                swatchClass="blank"
+                title={t('legend.safeTitle')}
+              >
+                {legendRichText(t('legend.safeBody'), legendMarks)}
+              </LegendTip>
+            )}
             <span
               className="mx-[0.15rem] min-h-[0.9rem] w-px shrink-0 self-stretch bg-line"
               aria-hidden

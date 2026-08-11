@@ -4,7 +4,7 @@ export const mineHelperEn = {
   'catalog.mineHelper.blurb': 'Minesweeper board solver.',
 
   // Legend labels
-  'legend.numberSafe': 'Mine #',
+  'legend.numberSafe': 'Safe #',
   'legend.numberHunt': 'My #',
   'legend.info': 'Info #',
   'legend.flag': 'Flag',
@@ -15,11 +15,11 @@ export const mineHelperEn = {
   'legend.best': 'Interesting',
   'legend.safest': 'Safest',
   'legend.surestTarget': 'Surest target',
-  'legend.numberTitleSafe': 'Mine number',
+  'legend.numberTitleSafe': 'Safe #',
   'legend.numberTitleHunt': 'My card #',
   'legend.infoTitle': 'Info number',
   'legend.infoTitleHunt': 'Info #',
-  'legend.flagTitle': 'Flag',
+  'legend.flagTitle': 'Flag (= mine)',
   'legend.flagTitleHunt': 'Marked',
   'legend.safeTitle': 'Safe',
   'legend.safeTitleHunt': 'Ruled out',
@@ -37,7 +37,7 @@ export const mineHelperEn = {
   'legend.safestTitleSafe': 'Safest click',
   'legend.safestTitleHunt': 'Surest target tip',
   'legend.numberBodySafe':
-    'A known mine. The number is how many other mines are among its neighbors. Use ? when you know it is a mine but not the count. Counts as a mine for the solver.',
+    'Revealed safe tile (not a mine — opposite of My # in Find targets). The digit is how many mines are among its neighbors. Copy the numbers you see on the board here.',
   'legend.numberBodyHunt':
     'Your revealed card. It counts as a target. The number is how many of your cards are among its neighbors (not counting itself). Use ? when the count is unknown.',
   'legend.infoBody':
@@ -45,11 +45,11 @@ export const mineHelperEn = {
   'legend.infoBodyHunt':
     'Neutral or opponent card with a clue. Not your card. The number still counts how many of your cards are among its neighbors.',
   'legend.flagBodySafe':
-    'Marked mine (no number). Same for the solver as a mine number. Deduced certain mines look like a flag too - do not click them.',
+    'Flag = mine (no number). Deduced certain mines also look like a flag — do not click them. (Opposite of Find targets, where the mark means “not yours”.)',
   'legend.flagBodyHunt':
     '× = your card is 100% not here (do not click). Only the solver marks these from numbers - you cannot place them. Your targets are green {sure}.',
   'legend.safeBody':
-    'Known safe field - not a mine. Ruled out for the solver; no number and no flag.',
+    'Revealed safe tile with no digit (classic empty open cell). Not a mine; no clue number. Use Safe # when the tile shows 1–8.',
   'legend.safeBodyHunt':
     'Ruled out: opponent or neutral with no useful clue. Not your card; ignored by the solver.',
   'legend.sureBodySafe':
@@ -57,9 +57,9 @@ export const mineHelperEn = {
   'legend.sureBodyHunt':
     'Solver is sure this empty cell is a target - take it. Shown as a full green cell with {sure}.',
   'legend.chanceBodySafe':
-    'Probability this empty cell is safe (not a mine), from all valid board solutions. Greener fill = higher safe chance. Press Why (W) then tap a {chance} cell to see A1 clues that drive it.',
+    'Probability this empty cell is safe (not a mine), from all valid board solutions. Greener fill = higher safe chance. Press Why (W) then tap a {chance} cell for A1 clues that drive it.',
   'legend.chanceBodyHunt':
-    'Probability this empty cell is a target, from all valid board solutions. Greener fill = higher target chance. Press Why (W) then tap a {chance} cell to see A1 clues that drive it.',
+    'Probability this empty cell is a target, from all valid board solutions. Greener fill = higher target chance. Press Why (W) then tap a {chance} cell for A1 clues that drive it.',
   'legend.bestBodySafe':
     'Yellow ring on the {chance} cell whose reveal teaches you the most about the board.',
   'legend.bestBodyHunt':
@@ -93,12 +93,12 @@ export const mineHelperEn = {
   'hotkeys.pointer': 'Mouse',
   'hotkeys.keyboard': 'Keys',
   'hotkeys.move': 'move',
-  'hotkeys.numberSafe': 'mine #',
+  'hotkeys.numberSafe': 'safe #',
   'hotkeys.numberHunt': 'my card #',
   'hotkeys.infoDigit': 'info',
-  'hotkeys.flag': 'flag',
+  'hotkeys.flag': 'flag (= mine)',
   'hotkeys.flagHunt': 'marked',
-  'hotkeys.safe': 'safe',
+  'hotkeys.safe': 'safe (no digit)',
   'hotkeys.safeHunt': 'ruled out',
   'hotkeys.infoMode': 'info mode',
   'hotkeys.clear': 'clear cell',
@@ -133,7 +133,7 @@ export const mineHelperEn = {
   'tools.safe': 'Safe',
   'tools.safeHunt': 'Ruled out',
   'tools.info': 'Info #',
-  'tools.numberSafe': 'Mine #',
+  'tools.numberSafe': 'Safe #',
   'tools.numberHunt': 'My #',
   'tools.total': 'Total',
   'tools.auto': 'Auto',
@@ -144,20 +144,22 @@ export const mineHelperEn = {
   'tools.exitWhy': 'Exit Why',
   'tools.reset': 'Reset',
   'tools.flagErase': 'Click again to erase (F)',
-  'tools.flagTitle': 'Flag = marked mine (F)',
+  'tools.flagTitle': 'Flag = mine (no number) (F)',
   'tools.flagTitleHunt': 'Marked = 100% not yours, do not click (F)',
   'tools.safeErase': 'Click again to erase (B)',
-  'tools.safeTitle': 'Safe = known safe field (not a mine) (B)',
+  'tools.safeTitle':
+    'Safe = revealed safe with no digit (classic empty) (B)',
   'tools.safeTitleHunt':
     'Ruled out = opponent/neutral with no clue, ignore (B)',
   'tools.infoTitle': 'Info number = clue only (this cell is not a mine)',
   'tools.infoTitleHunt': 'Info # = neutral/opponent clue about your cards',
-  'tools.numberTitleSafe': 'Mine number = known mine with a neighbor count',
+  'tools.numberTitleSafe':
+    'Safe # = revealed safe tile with a digit (mines around it)',
   'tools.numberTitleHunt':
     'My card # = your revealed card (counts as a target)',
   'tools.eraseAgain': 'Click again to erase',
   'tools.infoN': 'Info {n} (clue only)',
-  'tools.numberNSafe': 'Mine {n}',
+  'tools.numberNSafe': 'Safe {n}',
   'tools.numberNHunt': 'My card {n}',
   'tools.numberUnknownSafe': 'Mine ? - known mine, neighbor count unknown',
   'tools.numberUnknownHunt': 'My ? - your card, neighbor count unknown',
@@ -225,7 +227,7 @@ export const mineHelperEn = {
   'why.all': 'All',
   'why.relatedAria': 'Related clues',
   'why.clueDetail': 'Clue',
-  'why.numberNSafe': 'Mine {n}',
+  'why.numberNSafe': 'Safe {n}',
   'why.numberNHunt': 'My {n}',
   'why.infoN': 'Info {n}',
   'block.title': 'Can’t place that',
@@ -259,7 +261,7 @@ export const mineHelperEn = {
   'val.edge': 'Can’t place {value} here - edges only have {max} neighbors.',
   'val.max': 'Can’t place {value} here - max is {max}.',
   'val.infoNeedsNumber':
-    'Info always needs a number - use Mine/? for unknown count.',
+    'Info always needs a number - use My ? for unknown count.',
   'val.totalOver': 'Impossible - already {mines} mines but Total is {total}.',
   'val.totalUnder':
     'Impossible - at most {max} mines left but Total is {total}.',
@@ -271,7 +273,7 @@ export const mineHelperEn = {
   'val.neighborsFew': 'empty neighbors',
 
   // Explain shared
-  'ex.numberSafe': 'Mine',
+  'ex.numberSafe': 'Safe',
   'ex.numberHunt': 'My card',
   'ex.info': 'Info',
   'ex.flag': 'Flag',
@@ -292,6 +294,7 @@ export const mineHelperEn = {
   'ex.meta.layoutsSafe': 'safe in {hits}/{total} layouts → {percent}%',
   'ex.meta.layoutsHunt': 'your card in {hits}/{total} layouts → {percent}%',
   'ex.meta.placed': 'known mine + neighbor count',
+  'ex.meta.placedSafe': 'safe tile · mines among neighbors',
   'ex.meta.placedHunt': 'my card + neighbor count',
   'ex.meta.placedUnknown': 'known mine · count unknown',
   'ex.meta.placedUnknownHunt': 'my card · count unknown',
@@ -357,6 +360,8 @@ export const mineHelperEn = {
   'ex.nothing': 'Nothing to explain here.',
   'ex.placedMine':
     '{kind} {value} at {cell}: a known mine. The number is how many mines are among its neighbors.',
+  'ex.placedNumberSafe':
+    '{kind} {value} at {cell}: revealed safe tile (not a mine). The digit is how many mines are among its neighbors.',
   'ex.placedNumberHunt':
     '{kind} {value} at {cell}: your revealed card. The number is how many of your cards are among its neighbors.',
   'ex.placedUnknownMine':

@@ -224,15 +224,20 @@ const flagFill =
 function cellClass(cell: BoardCell, goalMode: GoalMode): string {
   const certainSafe = cell.solver?.kind === 'flagged'
   const certainMine = cell.solver?.kind === 'target'
+  const isNumber = cell.user.type === 'number'
+  // Avoid: Safe # (info role) uses primary blue. Hunt: Moje blue, Info teal.
+  const primaryNumber =
+    isNumber &&
+    (goalMode === 'safe' || cell.user.role !== 'info')
+  const infoNumber =
+    isNumber && goalMode === 'hunt' && cell.user.role === 'info'
 
   return cn(
     'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',
-    cell.user.type === 'number' && 'bg-[#364352] text-ink',
-    cell.user.type === 'number' &&
-      cell.user.role === 'info' &&
+    isNumber && 'bg-[#364352] text-ink',
+    infoNumber &&
       'border-info bg-[#0f4a48] font-bold text-[#e8fffc] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-info)_50%,transparent)]',
-    cell.user.type === 'number' &&
-      cell.user.role !== 'info' &&
+    primaryNumber &&
       'border-mine bg-[#2a4580] font-bold text-[#eef3ff] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-mine)_45%,transparent)]',
     cell.user.type === 'flagged' &&
       'border-[color-mix(in_srgb,var(--color-flag)_65%,var(--color-line))] bg-[color-mix(in_srgb,var(--color-flag)_22%,#2a1520)] text-flag shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-flag)_35%,transparent)]',

@@ -17,34 +17,43 @@ const POINTER: HintItem[] = [
 ]
 
 function keyboardHints(goalMode: GoalMode): HintItem[] {
-  return [
-    {
-      chips: [
-        'hotkeys.chip.up',
-        'hotkeys.chip.down',
-        'hotkeys.chip.left',
-        'hotkeys.chip.right'
-      ],
-      labelKey: 'hotkeys.move'
-    },
-    {
-      chips: ['hotkeys.chip.digits'],
-      labelKey:
-        goalMode === 'hunt' ? 'hotkeys.numberHunt' : 'hotkeys.numberSafe'
-    },
-    {
-      chips: ['hotkeys.chip.shift', 'hotkeys.chip.digits'],
-      labelKey: 'hotkeys.infoDigit'
-    },
-    {
-      chips: ['hotkeys.chip.b'],
-      labelKey: goalMode === 'hunt' ? 'hotkeys.safeHunt' : 'hotkeys.safe'
-    },
-    { chips: ['hotkeys.chip.i'], labelKey: 'hotkeys.infoMode' },
+  const move: HintItem = {
+    chips: [
+      'hotkeys.chip.up',
+      'hotkeys.chip.down',
+      'hotkeys.chip.left',
+      'hotkeys.chip.right'
+    ],
+    labelKey: 'hotkeys.move'
+  }
+  const sharedTail: HintItem[] = [
     { chips: ['hotkeys.chip.x'], labelKey: 'hotkeys.clear' },
     { chips: ['hotkeys.chip.enter'], labelKey: 'hotkeys.place' },
     { chips: ['hotkeys.chip.s'], labelKey: 'hotkeys.solve' },
     { chips: ['hotkeys.chip.w'], labelKey: 'hotkeys.why' }
+  ]
+
+  if (goalMode === 'safe') {
+    // Classic Minesweeper: Safe # + Flag + Safe (blank)
+    return [
+      move,
+      { chips: ['hotkeys.chip.digits'], labelKey: 'hotkeys.numberSafe' },
+      { chips: ['hotkeys.chip.f'], labelKey: 'hotkeys.flag' },
+      { chips: ['hotkeys.chip.b'], labelKey: 'hotkeys.safe' },
+      ...sharedTail
+    ]
+  }
+
+  return [
+    move,
+    { chips: ['hotkeys.chip.digits'], labelKey: 'hotkeys.numberHunt' },
+    {
+      chips: ['hotkeys.chip.shift', 'hotkeys.chip.digits'],
+      labelKey: 'hotkeys.infoDigit'
+    },
+    { chips: ['hotkeys.chip.b'], labelKey: 'hotkeys.safeHunt' },
+    { chips: ['hotkeys.chip.i'], labelKey: 'hotkeys.infoMode' },
+    ...sharedTail
   ]
 }
 

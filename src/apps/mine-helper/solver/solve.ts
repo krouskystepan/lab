@@ -23,7 +23,7 @@ function isUnknown(cell: UserCell): boolean {
 
 /**
  * Known targets for clue math (mode-dependent):
- * - Safe: flag = mine; Mina # = mine; Info # = not a mine.
+ * - Safe (Avoid): flag/Vlajka = mine; Safe # (info role) = revealed safe field.
  * - Hunt: Moje # = my card (target); Info # = clue only (not my card);
  *   Označené/flag = not my card. Number = how many of my cards among neighbors.
  */

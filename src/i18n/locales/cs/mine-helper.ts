@@ -5,7 +5,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   appName: 'Mine Helper',
   'catalog.mineHelper.title': 'Mine Helper',
   'catalog.mineHelper.blurb': 'Řešič Minesweeper desek.',
-  'legend.numberSafe': 'Mina #',
+  'legend.numberSafe': 'Bezpečné #',
   'legend.numberHunt': 'Moje #',
   'legend.info': 'Info #',
   'legend.flag': 'Vlajka',
@@ -16,11 +16,11 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.best': 'Nejzajímavější',
   'legend.safest': 'Nejbezpečnější',
   'legend.surestTarget': 'Nejjistější cíl',
-  'legend.numberTitleSafe': 'Číslo miny',
+  'legend.numberTitleSafe': 'Bezpečné #',
   'legend.numberTitleHunt': 'Moje karta #',
   'legend.infoTitle': 'Info číslo',
   'legend.infoTitleHunt': 'Info #',
-  'legend.flagTitle': 'Vlajka',
+  'legend.flagTitle': 'Vlajka (= mina)',
   'legend.flagTitleHunt': 'Označené',
   'legend.safeTitle': 'Bezpečné',
   'legend.safeTitleHunt': 'Vyřazené',
@@ -38,7 +38,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.safestTitleSafe': 'Nejbezpečnější klik',
   'legend.safestTitleHunt': 'Nejjistější tip na cíl',
   'legend.numberBodySafe':
-    'Známá mina. Číslo říká, kolik dalších min je mezi sousedy. ? = víš, že je to mina, ale počet neznáš. Pro řešič se pořád počítá jako mina.',
+    'Odhalené bezpečné pole (není mina — opak Moje # v Hledat cíle). Číslo říká, kolik min je mezi sousedy. Sem přepisuj čísla, která vidíš na desce.',
   'legend.numberBodyHunt':
     'Tvoje odhalená karta. Počítá se jako cíl. Číslo říká, kolik tvých karet je mezi sousedy (sama sebe nepočítá). ? = karta je tu, počet neznáš.',
   'legend.infoBody':
@@ -46,11 +46,11 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.infoBodyHunt':
     'Neutrální nebo soupeřova karta s nápovědou. Není tvoje. Číslo stejně počítá, kolik tvých karet je mezi sousedy.',
   'legend.flagBodySafe':
-    'Označená mina (bez čísla). Pro řešič stejné jako číslo miny. Odvozené jisté miny vypadají jako vlajka - neklikej na ně.',
+    'Vlajka = mina (bez čísla). Odvozené jisté miny vypadají taky jako vlajka — neklikej na ně. (Opak Hledat cíle, kde značka znamená „není tvoje“.)',
   'legend.flagBodyHunt':
     '× = tvoje karta tu 100% není (neklikej). Dává jen řešič z čísel - ručně to neoznačuješ. Tvoje cíle jsou zelené {sure}.',
   'legend.safeBody':
-    'Známé bezpečné pole - není mina. Pro řešič vyloučené; bez čísla a bez vlajky.',
+    'Odhalené bezpečné pole bez čísla (klasická prázdná otevřená buňka). Není mina; žádná nápověda. Když na políčku vidíš 1–8, použij Bezpečné #.',
   'legend.safeBodyHunt':
     'Vyřazené: soupeř nebo neutrál bez užitečné nápovědy. Není tvoje karta; řešič to nepočítá.',
   'legend.sureBodySafe':
@@ -94,12 +94,12 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'hotkeys.pointer': 'Myš',
   'hotkeys.keyboard': 'Klávesy',
   'hotkeys.move': 'pohyb',
-  'hotkeys.numberSafe': 'mina #',
+  'hotkeys.numberSafe': 'bezpečné #',
   'hotkeys.numberHunt': 'moje karta #',
   'hotkeys.infoDigit': 'info',
-  'hotkeys.flag': 'vlajka',
+  'hotkeys.flag': 'vlajka (= mina)',
   'hotkeys.flagHunt': 'označené',
-  'hotkeys.safe': 'bezpečné',
+  'hotkeys.safe': 'bezpečné (bez čísla)',
   'hotkeys.safeHunt': 'vyřazené',
   'hotkeys.infoMode': 'info režim',
   'hotkeys.clear': 'smazat buňku',
@@ -135,7 +135,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'tools.safe': 'Bezpečné',
   'tools.safeHunt': 'Vyřazené',
   'tools.info': 'Info #',
-  'tools.numberSafe': 'Mina #',
+  'tools.numberSafe': 'Bezpečné #',
   'tools.numberHunt': 'Moje #',
   'tools.total': 'Celkem',
   'tools.auto': 'Auto',
@@ -146,19 +146,21 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'tools.exitWhy': 'Ukončit Proč',
   'tools.reset': 'Reset',
   'tools.flagErase': 'Klikni znovu pro smazání (F)',
-  'tools.flagTitle': 'Vlajka = označená mina (F)',
+  'tools.flagTitle': 'Vlajka = mina (bez čísla) (F)',
   'tools.flagTitleHunt': 'Označené = 100% není tvoje, neklikej (F)',
   'tools.safeErase': 'Klikni znovu pro smazání (B)',
-  'tools.safeTitle': 'Bezpečné = známé bezpečné pole (není mina) (B)',
+  'tools.safeTitle':
+    'Bezpečné = odhalené bez čísla (klasická prázdná) (B)',
   'tools.safeTitleHunt':
     'Vyřazené = soupeř/neutrál bez nápovědy, ignorovat (B)',
   'tools.infoTitle': 'Info číslo = jen nápověda (tato buňka není mina)',
   'tools.infoTitleHunt': 'Info # = neutrál/soupeř, nápověda o tvých kartách',
-  'tools.numberTitleSafe': 'Mina # = známá mina s počtem sousedů',
+  'tools.numberTitleSafe':
+    'Bezpečné # = odhalené bezpečné s číslem (miny kolem)',
   'tools.numberTitleHunt': 'Moje # = tvoje odhalená karta (počítá se jako cíl)',
   'tools.eraseAgain': 'Klikni znovu pro smazání',
   'tools.infoN': 'Info {n} (jen nápověda)',
-  'tools.numberNSafe': 'Mina {n}',
+  'tools.numberNSafe': 'Bezpečné {n}',
   'tools.numberNHunt': 'Moje karta {n}',
   'tools.numberUnknownSafe': 'Mina ? - známá mina, počet sousedů neznámý',
   'tools.numberUnknownHunt': 'Moje ? - tvoje karta, počet sousedů neznámý',
@@ -227,7 +229,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'why.all': 'Vše',
   'why.relatedAria': 'Související nápovědy',
   'why.clueDetail': 'Nápověda',
-  'why.numberNSafe': 'Mina {n}',
+  'why.numberNSafe': 'Bezpečné {n}',
   'why.numberNHunt': 'Moje {n}',
   'why.infoN': 'Info {n}',
   'block.title': 'Nelze položit',
@@ -257,7 +259,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'val.edge': 'Nelze položit {value} sem - okraj má jen {max} sousedů.',
   'val.max': 'Nelze položit {value} sem - maximum je {max}.',
   'val.infoNeedsNumber':
-    'Info vždy potřebuje číslo - pro neznámý počet použij Mina/?',
+    'Info vždy potřebuje číslo - pro neznámý počet použij Moje ?',
   'val.totalOver': 'Nemožné - už je {mines} min, ale Celkem je {total}.',
   'val.totalUnder': 'Nemožné - zbývá nejvýš {max} min, ale Celkem je {total}.',
   'val.mine': 'minu',
@@ -266,7 +268,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'val.neighbor': 'prázdného souseda',
   'val.neighbors': 'prázdných sousedů',
   'val.neighborsFew': 'prázdné sousedy',
-  'ex.numberSafe': 'Mina',
+  'ex.numberSafe': 'Bezpečné',
   'ex.numberHunt': 'Moje karta',
   'ex.info': 'Info',
   'ex.flag': 'Vlajka',
@@ -288,6 +290,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'ex.meta.layoutsHunt':
     'tvoje karta v {hits}/{total} rozloženích → {percent} %',
   'ex.meta.placed': 'známá mina + počet sousedů',
+  'ex.meta.placedSafe': 'bezpečné pole · miny mezi sousedy',
   'ex.meta.placedHunt': 'moje karta + počet sousedů',
   'ex.meta.placedUnknown': 'známá mina · počet neznámý',
   'ex.meta.placedUnknownHunt': 'moje karta · počet neznámý',
@@ -355,6 +358,8 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'ex.nothing': 'Tady není co vysvětlit.',
   'ex.placedMine':
     '{kind} {value} na {cell}: známá mina. Číslo říká, kolik min je mezi sousedy.',
+  'ex.placedNumberSafe':
+    '{kind} {value} na {cell}: odhalené bezpečné pole (není mina). Číslo říká, kolik min je mezi sousedy.',
   'ex.placedNumberHunt':
     '{kind} {value} na {cell}: tvoje odhalená karta. Číslo říká, kolik tvých karet je mezi sousedy.',
   'ex.placedUnknownMine':
