@@ -2,7 +2,12 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import MineHelperApp from './apps/mine-helper/MineHelperApp'
 import MinesweeperApp from './apps/minesweeper/MinesweeperApp'
-import { mineHelperTheme, minesweeperTheme } from './shared/theme'
+import SudokuApp from './apps/sudoku/SudokuApp'
+import {
+  mineHelperTheme,
+  minesweeperTheme,
+  sudokuTheme
+} from './shared/theme'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
 import { AppLayout } from './shell/AppLayout'
@@ -20,6 +25,14 @@ function MinesweeperRoute() {
   return (
     <ThemeScope theme={minesweeperTheme} className="flex h-full min-h-0 flex-col">
       <MinesweeperApp />
+    </ThemeScope>
+  )
+}
+
+function SudokuRoute() {
+  return (
+    <ThemeScope theme={sudokuTheme} className="flex h-full min-h-0 flex-col">
+      <SudokuApp />
     </ThemeScope>
   )
 }
@@ -44,6 +57,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/games/minesweeper" element={<MinesweeperRoute />} />
+          <Route path="/games/sudoku" element={<SudokuRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
           <Route path="/games/:slug" element={<ComingSoonPage />} />
           <Route path="/solvers/:slug" element={<ComingSoonPage />} />

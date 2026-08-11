@@ -24,7 +24,8 @@ import {
   type AppTheme,
   hubTheme,
   mineHelperTheme,
-  minesweeperTheme
+  minesweeperTheme,
+  sudokuTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -60,12 +61,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.sudoku.title',
     blurbKey: 'catalog.sudoku.blurb',
     icon: Grid3x3,
-    theme: {
-      accent: '#c47a3a',
-      accentHover: '#d48c4e',
-      onAccent: '#fff0e0'
-    },
-    status: 'soon'
+    theme: sudokuTheme,
+    status: 'live'
   },
   {
     id: 'nonogram',
@@ -253,11 +250,7 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.sudokuHelper.title',
     blurbKey: 'catalog.sudokuHelper.blurb',
     icon: Grid3x3,
-    theme: {
-      accent: '#c47a3a',
-      accentHover: '#d48c4e',
-      onAccent: '#fff0e0'
-    },
+    theme: sudokuTheme,
     status: 'soon'
   },
   {

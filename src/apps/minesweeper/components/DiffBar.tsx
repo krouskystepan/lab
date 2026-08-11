@@ -43,7 +43,7 @@ export function DiffBar({
   const densityMatches = matchingDiff(width, height, mines) != null
 
   return (
-    <section className="flex h-full min-w-0 w-full flex-1 flex-row items-center gap-2 overflow-hidden rounded-md border border-line bg-panel px-2.5 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-[0.45rem]">
+    <section className="flex h-full min-w-0 w-full flex-1 flex-row items-center gap-2 overflow-visible rounded-md border border-line bg-panel px-2.5 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-[0.45rem]">
       <h2 className="m-0 shrink-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
         {t('minesweeper.diff.title')}
       </h2>

@@ -109,6 +109,30 @@
   font-size: clamp(0.48rem, 3.35cqmin, 0.9rem);
 }
 
+/* Sudoku: tighter cells, pencil-mark grid */
+.sudoku-grid {
+  gap: 0;
+}
+
+.sudoku-grid > .cell {
+  border-radius: 0;
+  font-size: clamp(0.7rem, 5.5cqmin, 1.35rem);
+}
+
+.sudoku-grid > .cell .sudoku-notes {
+  position: absolute;
+  inset: 8%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  font-size: clamp(0.28rem, 2.1cqmin, 0.55rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
 .board-stage {
   @apply flex h-full min-h-0 min-w-0 w-full items-stretch justify-center gap-2.5;
 }

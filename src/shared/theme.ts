@@ -32,6 +32,14 @@ export const minesweeperTheme: AppTheme = {
   glow: '#2db46e'
 }
 
+/** Warm amber — Sudoku playable board. */
+export const sudokuTheme: AppTheme = {
+  accent: '#c47a3a',
+  accentHover: '#d48c4e',
+  onAccent: '#fff0e0',
+  glow: '#c47a3a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }
