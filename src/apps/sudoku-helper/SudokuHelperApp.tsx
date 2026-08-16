@@ -11,6 +11,13 @@ import { BoardHistory, snapshotOf } from './storage/history'
 import { loadBoard, saveBoard } from './storage/store'
 import { useI18n } from '../../i18n'
 import { showToast } from '../../shared/toast'
+import {
+  ExportImportButtons,
+  exportSudokuHelperBoard,
+  importSudokuToHelper,
+  type BoardFile,
+  type BoardImportResult
+} from '../../shared/boardTransfer'
 
 export default function SudokuHelperApp() {
   const { t, locale, setLocale } = useI18n()
@@ -179,6 +186,30 @@ export default function SudokuHelperApp() {
     )
   }, [pushHistory])
 
+  const onExportBoard = useCallback(
+    () => exportSudokuHelperBoard(cellsRef.current),
+    []
+  )
+
+  const onImportBoard = useCallback(
+    (file: BoardFile): BoardImportResult => {
+      if (file.family !== 'sudoku') {
+        return { ok: false, reason: 'wrong_family' }
+      }
+      try {
+        const values = importSudokuToHelper(file)
+        pushHistory()
+        setNextMove(null)
+        const next = values.map((value) => ({ user: { value } }))
+        commit(next)
+        return { ok: true }
+      } catch {
+        return { ok: false, reason: 'invalid' }
+      }
+    },
+    [pushHistory, commit]
+  )
+
   const onDigitChange = useCallback((d: number) => {
     setEraseMode(false)
     setDigit((prev) => (prev === d ? null : d))
@@ -311,35 +342,43 @@ export default function SudokuHelperApp() {
               {t('sudokuHelper.appName')}
             </h1>
           </div>
-          <div
-            className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
-            role="group"
-            aria-label={t('lang.switch')}
-          >
-            <button
-              type="button"
-              className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                locale === 'en'
-                  ? 'bg-accent/30 text-on-accent'
-                  : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-              }`}
-              aria-pressed={locale === 'en'}
-              onClick={() => setLocale('en')}
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+            <ExportImportButtons
+              filename="sudoku-board.json"
+              family="sudoku"
+              onExport={onExportBoard}
+              onImport={onImportBoard}
+            />
+            <div
+              className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
+              role="group"
+              aria-label={t('lang.switch')}
             >
-              {t('lang.en')}
-            </button>
-            <button
-              type="button"
-              className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                locale === 'cs'
-                  ? 'bg-accent/30 text-on-accent'
-                  : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-              }`}
-              aria-pressed={locale === 'cs'}
-              onClick={() => setLocale('cs')}
-            >
-              {t('lang.cs')}
-            </button>
+              <button
+                type="button"
+                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
+                  locale === 'en'
+                    ? 'bg-accent/30 text-on-accent'
+                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
+                }`}
+                aria-pressed={locale === 'en'}
+                onClick={() => setLocale('en')}
+              >
+                {t('lang.en')}
+              </button>
+              <button
+                type="button"
+                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
+                  locale === 'cs'
+                    ? 'bg-accent/30 text-on-accent'
+                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
+                }`}
+                aria-pressed={locale === 'cs'}
+                onClick={() => setLocale('cs')}
+              >
+                {t('lang.cs')}
+              </button>
+            </div>
           </div>
         </div>
         <div className="flex w-full flex-wrap items-center justify-start gap-2.5 max-[720px]:hidden">

@@ -224,13 +224,12 @@ const flagFill =
 function cellClass(cell: BoardCell, goalMode: GoalMode): string {
   const certainSafe = cell.solver?.kind === 'flagged'
   const certainMine = cell.solver?.kind === 'target'
-  const isNumber = cell.user.type === 'number'
+  const user = cell.user
+  const isNumber = user.type === 'number'
   // Avoid: Safe # (info role) uses primary blue. Hunt: Moje blue, Info teal.
   const primaryNumber =
-    isNumber &&
-    (goalMode === 'safe' || cell.user.role !== 'info')
-  const infoNumber =
-    isNumber && goalMode === 'hunt' && cell.user.role === 'info'
+    isNumber && (goalMode === 'safe' || user.role !== 'info')
+  const infoNumber = isNumber && goalMode === 'hunt' && user.role === 'info'
 
   return cn(
     'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',

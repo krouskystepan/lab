@@ -141,6 +141,11 @@ export function reduce(state: BoardState, action: Action): BoardState {
         revealedSafe: action.revealedSafe,
         flagCount: action.flagCount
       }
+    case 'importBoard':
+      return {
+        ...action.board,
+        cells: action.board.cells.map((c) => ({ ...c }))
+      }
     case 'clearFlags': {
       if (state.status === 'won' || state.status === 'lost') return state
       let flags = 0

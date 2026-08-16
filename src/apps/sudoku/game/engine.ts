@@ -67,6 +67,12 @@ export function reduce(state: BoardState, action: Action): BoardState {
         status: action.status,
         filledCount: action.filledCount
       }
+    case 'importBoard':
+      return {
+        ...action.board,
+        cells: action.board.cells.map((c) => ({ ...c })),
+        solution: action.board.solution.slice()
+      }
     case 'clearNotes': {
       if (state.status === 'won') return state
       let changed = false

@@ -58,6 +58,7 @@ export type Restore = {
   revealedSafe: number
   flagCount: number
 }
+export type ImportBoard = { type: 'importBoard'; board: BoardState }
 
 export type Action =
   | SetDiff
@@ -70,3 +71,4 @@ export type Action =
   | Chord
   | ClearFlags
   | Restore
+  | ImportBoard

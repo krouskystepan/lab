@@ -41,6 +41,7 @@ export type Restore = {
   status: GameStatus
   filledCount: number
 }
+export type ImportBoard = { type: 'importBoard'; board: BoardState }
 
 export type Action =
   | SetDiff
@@ -49,3 +50,4 @@ export type Action =
   | Erase
   | ClearNotes
   | Restore
+  | ImportBoard

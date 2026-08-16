@@ -33,6 +33,13 @@ import {
 } from './storage/gameStore'
 import { showToast } from '../../shared/toast'
 import {
+  ExportImportButtons,
+  exportMineHelperBoard,
+  importMinesweeperToHelper,
+  type BoardFile,
+  type BoardImportResult
+} from '../../shared/boardTransfer'
+import {
   flipBoardHorizontal,
   flipBoardVertical,
   padBoard,
@@ -900,6 +907,46 @@ export default function MineHelperApp() {
     commitBoard(emptyBoard(width, height))
   }, [width, height, pushHistory, commitBoard])
 
+  const onExportBoard = useCallback(
+    () =>
+      exportMineHelperBoard({
+        width: widthRef.current,
+        height: heightRef.current,
+        cells: cellsRef.current.map((c) => c.user),
+        totalTargets: useTotalRef.current
+          ? totalTargetsRef.current
+          : undefined
+      }),
+    []
+  )
+
+  const onImportBoard = useCallback(
+    (file: BoardFile): BoardImportResult => {
+      if (file.family !== 'minesweeper') {
+        return { ok: false, reason: 'wrong_family' }
+      }
+      try {
+        const parsed = importMinesweeperToHelper(file)
+        pushHistory()
+        setWhyMode(false)
+        setExplainIndex(null)
+        if (parsed.totalTargets != null) {
+          setUseTotal(true)
+          setTotalTargets(parsed.totalTargets)
+        }
+        commitBoard(
+          parsed.users.map((user) => ({ user })),
+          { width: parsed.width, height: parsed.height },
+          { skipAuto: !autoSolve }
+        )
+        return { ok: true }
+      } catch {
+        return { ok: false, reason: 'invalid' }
+      }
+    },
+    [pushHistory, commitBoard, autoSolve]
+  )
+
   return (
     <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
@@ -917,7 +964,13 @@ export default function MineHelperApp() {
               {t('appName')}
             </h1>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.55rem]">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+            <ExportImportButtons
+              filename="minesweeper-board.json"
+              family="minesweeper"
+              onExport={onExportBoard}
+              onImport={onImportBoard}
+            />
             <div
               className="inline-flex overflow-hidden rounded-sm border border-line bg-cell"
               role="group"
