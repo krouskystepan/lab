@@ -1,11 +1,5 @@
 import { Eraser } from 'lucide-react'
-import {
-  Redo2,
-  RotateCcw,
-  Sparkles,
-  StepForward,
-  Undo2
-} from 'lucide-react'
+import { Redo2, RotateCcw, Sparkles, StepForward, Undo2 } from 'lucide-react'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { HelpTip } from './HelpTip'
@@ -109,7 +103,10 @@ export function ControlsBar({
           </button>
         </div>
 
-        <span className="hidden h-7 w-px shrink-0 bg-line sm:block" aria-hidden />
+        <span
+          className="hidden h-7 w-px shrink-0 bg-line sm:block"
+          aria-hidden
+        />
 
         <div className="flex shrink-0 flex-wrap items-center gap-[0.35rem]">
           <HelpTip title={t('sudokuHelper.help.title')}>
@@ -119,7 +116,7 @@ export function ControlsBar({
           <label className="inline-flex cursor-pointer items-center gap-1.5 px-1 text-[0.78rem] font-semibold text-ink">
             <input
               type="checkbox"
-              className="accent-[var(--color-accent)]"
+              className="accent-accent"
               checked={autoSolve}
               onChange={(e) => onAutoSolveChange(e.target.checked)}
             />
@@ -133,7 +130,9 @@ export function ControlsBar({
             title={t('sudokuHelper.tools.undoTitle')}
           >
             <Undo2 className={iconCls} aria-hidden />
-            <span className="max-[560px]:hidden">{t('sudokuHelper.tools.undo')}</span>
+            <span className="max-[560px]:hidden">
+              {t('sudokuHelper.tools.undo')}
+            </span>
           </button>
           <button
             type="button"
@@ -143,13 +142,15 @@ export function ControlsBar({
             title={t('sudokuHelper.tools.redoTitle')}
           >
             <Redo2 className={iconCls} aria-hidden />
-            <span className="max-[560px]:hidden">{t('sudokuHelper.tools.redo')}</span>
+            <span className="max-[560px]:hidden">
+              {t('sudokuHelper.tools.redo')}
+            </span>
           </button>
           <button
             type="button"
             className={cn(
               toolBtn,
-              'inline-flex items-center gap-1.5 border-accent bg-accent px-[0.75rem] font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
+              'inline-flex items-center gap-1.5 border-accent bg-accent px-3 font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
             )}
             onClick={onSolve}
             title={t('sudokuHelper.tools.solveTitle')}
@@ -165,7 +166,9 @@ export function ControlsBar({
             title={t('sudokuHelper.tools.nextTitle')}
           >
             <StepForward className={iconCls} aria-hidden />
-            <span className="max-[560px]:hidden">{t('sudokuHelper.tools.next')}</span>
+            <span className="max-[560px]:hidden">
+              {t('sudokuHelper.tools.next')}
+            </span>
           </button>
           <button
             type="button"
@@ -177,7 +180,9 @@ export function ControlsBar({
             title={t('sudokuHelper.tools.clearTitle')}
           >
             <RotateCcw className={iconCls} aria-hidden />
-            <span className="max-[560px]:hidden">{t('sudokuHelper.tools.clear')}</span>
+            <span className="max-[560px]:hidden">
+              {t('sudokuHelper.tools.clear')}
+            </span>
           </button>
         </div>
       </div>

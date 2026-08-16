@@ -86,7 +86,7 @@ export function ToolsBar({
         </div>
         <div className="flex shrink-0 items-center gap-3 font-mono text-[0.9rem] font-bold tabular-nums text-ink">
           <span
-            className="inline-block min-w-[5.5rem] text-right"
+            className="inline-block min-w-22 text-right"
             title={t('sudoku.emptyLeft')}
             aria-label={t('sudoku.emptyLeft')}
           >
@@ -94,7 +94,7 @@ export function ToolsBar({
             {String(emptyLeft).padStart(2, '0')}
           </span>
           <span
-            className="inline-block min-w-[5.5rem] text-right"
+            className="inline-block min-w-22 text-right"
             title={t('sudoku.timer')}
             aria-label={t('sudoku.timer')}
           >
