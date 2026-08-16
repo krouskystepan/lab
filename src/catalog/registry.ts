@@ -251,7 +251,7 @@ export const catalog: CatalogEntry[] = [
     blurbKey: 'catalog.sudokuHelper.blurb',
     icon: Grid3x3,
     theme: sudokuTheme,
-    status: 'soon'
+    status: 'live'
   },
   {
     id: 'nonogram-helper',

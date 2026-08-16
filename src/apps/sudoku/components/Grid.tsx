@@ -104,10 +104,9 @@ function CellButton({
       type="button"
       className={cn(
         'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',
-        r % 3 === 0 && 'border-t-[2.5px] border-t-[#6a7a8c]',
-        c % 3 === 0 && 'border-l-[2.5px] border-l-[#6a7a8c]',
-        r === 8 && 'border-b-[2.5px] border-b-[#6a7a8c]',
-        c === 8 && 'border-r-[2.5px] border-r-[#6a7a8c]',
+        // Internal 3×3 band lines only (outer edge is .sudoku-grid border)
+        r > 0 && r % 3 === 0 && 'border-t-2 border-t-[#5c6a7a]',
+        c > 0 && c % 3 === 0 && 'border-l-2 border-l-[#5c6a7a]',
         peerHighlight && !selected && 'bg-[#323c48]',
         sameDigit && !selected && cell.value !== 0 && 'bg-accent/20',
         sameDigit && !selected && cell.value === 0 && 'bg-accent/10',

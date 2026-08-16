@@ -3,6 +3,7 @@ import { hubEn } from './hub'
 import { mineHelperEn } from './mine-helper'
 import { minesweeperEn } from './minesweeper'
 import { sudokuEn } from './sudoku'
+import { sudokuHelperEn } from './sudoku-helper'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -10,5 +11,6 @@ export const en = {
   ...hubEn,
   ...mineHelperEn,
   ...minesweeperEn,
-  ...sudokuEn
+  ...sudokuEn,
+  ...sudokuHelperEn
 }

@@ -4,6 +4,7 @@ import { hubCs } from './hub'
 import { mineHelperCs } from './mine-helper'
 import { minesweeperCs } from './minesweeper'
 import { sudokuCs } from './sudoku'
+import { sudokuHelperCs } from './sudoku-helper'
 
 /** Czech - must cover every English key. */
 export const cs: Record<keyof typeof en, string> = {
@@ -11,5 +12,6 @@ export const cs: Record<keyof typeof en, string> = {
   ...hubCs,
   ...mineHelperCs,
   ...minesweeperCs,
-  ...sudokuCs
+  ...sudokuCs,
+  ...sudokuHelperCs
 }

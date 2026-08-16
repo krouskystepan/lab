@@ -380,7 +380,7 @@ export default function SudokuApp() {
         </div>
       </header>
 
-      <div className="board-frame order-3 rounded-md border border-line bg-elevated p-[0.15rem] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:order-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]">
+      <div className="board-frame order-3 rounded-md bg-elevated/40 p-1 max-[720px]:order-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]">
         <div className="board-stage">
           <Grid
             board={board}

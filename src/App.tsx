@@ -3,6 +3,7 @@ import { Toaster } from 'sonner'
 import MineHelperApp from './apps/mine-helper/MineHelperApp'
 import MinesweeperApp from './apps/minesweeper/MinesweeperApp'
 import SudokuApp from './apps/sudoku/SudokuApp'
+import SudokuHelperApp from './apps/sudoku-helper/SudokuHelperApp'
 import {
   mineHelperTheme,
   minesweeperTheme,
@@ -37,6 +38,14 @@ function SudokuRoute() {
   )
 }
 
+function SudokuHelperRoute() {
+  return (
+    <ThemeScope theme={sudokuTheme} className="flex h-full min-h-0 flex-col">
+      <SudokuHelperApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -59,6 +68,7 @@ export default function App() {
           <Route path="/games/minesweeper" element={<MinesweeperRoute />} />
           <Route path="/games/sudoku" element={<SudokuRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
+          <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/games/:slug" element={<ComingSoonPage />} />
           <Route path="/solvers/:slug" element={<ComingSoonPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />

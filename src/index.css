@@ -109,13 +109,19 @@
   font-size: clamp(0.48rem, 3.35cqmin, 0.9rem);
 }
 
-/* Sudoku: tighter cells, pencil-mark grid */
+/* Sudoku: single outer frame + thin cells; box lines via cell classes */
 .sudoku-grid {
   gap: 0;
+  border: 2px solid #5c6a7a;
+  border-radius: clamp(2px, 0.8cqmin, 6px);
+  overflow: hidden;
+  background: #5c6a7a;
 }
 
 .sudoku-grid > .cell {
   border-radius: 0;
+  /* hairline only — box bands set thicker edges in the component */
+  border-width: 0.5px;
   font-size: clamp(0.7rem, 5.5cqmin, 1.35rem);
 }
 
