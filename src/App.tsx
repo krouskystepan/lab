@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import MineHelperApp from './apps/mine-helper/MineHelperApp'
 import MinesweeperApp from './apps/minesweeper/MinesweeperApp'
@@ -71,7 +71,7 @@ export default function App() {
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/games/:slug" element={<ComingSoonPage />} />
           <Route path="/solvers/:slug" element={<ComingSoonPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<ComingSoonPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

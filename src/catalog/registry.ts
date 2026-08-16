@@ -11,7 +11,6 @@ import {
   FlaskConical,
   Globe2,
   Grid3x3,
-  Hash,
   Keyboard,
   Languages,
   Layers,
@@ -63,20 +62,6 @@ export const catalog: CatalogEntry[] = [
     icon: Grid3x3,
     theme: sudokuTheme,
     status: 'live'
-  },
-  {
-    id: 'nonogram',
-    kind: 'game',
-    path: '/games/nonogram',
-    titleKey: 'catalog.nonogram.title',
-    blurbKey: 'catalog.nonogram.blurb',
-    icon: Hash,
-    theme: {
-      accent: '#8b6bb8',
-      accentHover: '#9d7fc7',
-      onAccent: '#f0e8fa'
-    },
-    status: 'soon'
   },
   {
     id: 'wordle',
@@ -252,20 +237,6 @@ export const catalog: CatalogEntry[] = [
     icon: Grid3x3,
     theme: sudokuTheme,
     status: 'live'
-  },
-  {
-    id: 'nonogram-helper',
-    kind: 'solver',
-    path: '/solvers/nonogram-helper',
-    titleKey: 'catalog.nonogramHelper.title',
-    blurbKey: 'catalog.nonogramHelper.blurb',
-    icon: Hash,
-    theme: {
-      accent: '#8b6bb8',
-      accentHover: '#9d7fc7',
-      onAccent: '#f0e8fa'
-    },
-    status: 'soon'
   },
   {
     id: 'wordle-helper',
