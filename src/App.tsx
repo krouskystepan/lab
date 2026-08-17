@@ -4,10 +4,12 @@ import MineHelperApp from './apps/mine-helper/MineHelperApp'
 import MinesweeperApp from './apps/minesweeper/MinesweeperApp'
 import SudokuApp from './apps/sudoku/SudokuApp'
 import SudokuHelperApp from './apps/sudoku-helper/SudokuHelperApp'
+import WordleApp from './apps/wordle/WordleApp'
 import {
   mineHelperTheme,
   minesweeperTheme,
-  sudokuTheme
+  sudokuTheme,
+  wordleTheme
 } from './shared/theme'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
@@ -46,6 +48,14 @@ function SudokuHelperRoute() {
   )
 }
 
+function WordleRoute() {
+  return (
+    <ThemeScope theme={wordleTheme} className="flex h-full min-h-0 flex-col">
+      <WordleApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -67,6 +77,7 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/games/minesweeper" element={<MinesweeperRoute />} />
           <Route path="/games/sudoku" element={<SudokuRoute />} />
+          <Route path="/games/wordle" element={<WordleRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/games/:slug" element={<ComingSoonPage />} />

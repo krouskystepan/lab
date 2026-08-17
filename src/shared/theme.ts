@@ -40,6 +40,14 @@ export const sudokuTheme: AppTheme = {
   glow: '#c47a3a'
 }
 
+/** Wordle green. */
+export const wordleTheme: AppTheme = {
+  accent: '#4cbe6a',
+  accentHover: '#5ed07c',
+  onAccent: '#f4fff6',
+  glow: '#4cbe6a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }

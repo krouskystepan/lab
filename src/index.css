@@ -343,3 +343,104 @@
     max-height: 62%;
   }
 }
+
+.wordle-grid {
+  --layout-rows: 6;
+  gap: clamp(4px, 1.2cqmin, 8px);
+  /* Size tiles as if the board always has 6 rows — Expert's 5 guesses
+     must not blow up letter height. */
+  width: min(
+    100cqw,
+    calc(100cqh * var(--cols) * var(--cell-ar) / var(--layout-rows))
+  );
+  aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
+  max-height: min(100%, calc(100cqh * var(--rows) / var(--layout-rows)));
+}
+
+.mine-grid.wordle-grid > .cell {
+  container-type: size;
+  font-size: clamp(0.7rem, 52cqmin, 1.85rem);
+}
+
+.wordle-mark-correct {
+  background: #4cbe6a;
+  border-color: #6ad184;
+  color: #f4fff6;
+}
+
+.wordle-mark-present {
+  background: #e0b03a;
+  border-color: #f0c45a;
+  color: #fff8e4;
+}
+
+.wordle-mark-absent {
+  background: #3a4450;
+  border-color: #4a5562;
+  color: #d5dde6;
+}
+
+.wordle-mark-tbd {
+  background: var(--color-cell-hover);
+  border-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  color: var(--color-ink);
+}
+
+.wordle-mark-hint {
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-cell));
+  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  color: color-mix(in srgb, var(--color-accent) 85%, white);
+}
+
+.wordle-mark-empty {
+  background: var(--color-cell);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .board-frame:not(.why-mode) .wordle-grid > .cell:hover {
+    border-width: 2px !important;
+    border-color: inherit !important;
+    box-shadow: none !important;
+  }
+}
+
+@keyframes wordle-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.wordle-row-shake {
+  animation: wordle-shake 0.4s ease;
+}
+
+@keyframes wordle-key-press {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.88);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.wordle-key-press {
+  animation: wordle-key-press 0.16s ease-out;
+}

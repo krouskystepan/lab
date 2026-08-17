@@ -3,7 +3,7 @@
 export const BOARD_FORMAT = 'krouskylab.board' as const
 export const BOARD_VERSION = 1 as const
 
-export type BoardFamily = 'minesweeper' | 'sudoku'
+export type BoardFamily = 'minesweeper' | 'sudoku' | 'wordle'
 
 /** Visible minesweeper knowledge (no hidden mine map). */
 export type MineTransferCell =
@@ -52,7 +52,26 @@ export type SudokuBoardFile = {
   }
 }
 
-export type BoardFile = MinesweeperBoardFile | SudokuBoardFile
+export type WordleBoardFile = {
+  format: typeof BOARD_FORMAT
+  version: typeof BOARD_VERSION
+  family: 'wordle'
+  /** Secret answer (game export). Helper files may omit this later. */
+  answer?: string
+  guesses: string[]
+  current?: string
+  game?: {
+    status: 'ready' | 'playing' | 'won' | 'lost'
+    diffId: 'easy' | 'medium' | 'hard' | 'expert' | 'random'
+    wordLen?: number
+    maxGuesses?: number
+    hardMode?: boolean
+    hinted?: boolean[]
+    seconds?: number
+  }
+}
+
+export type BoardFile = MinesweeperBoardFile | SudokuBoardFile | WordleBoardFile
 
 export function isBoardFile(data: unknown): data is BoardFile {
   if (!data || typeof data !== 'object') return false
