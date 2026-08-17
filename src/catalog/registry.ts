@@ -24,7 +24,8 @@ import {
   hubTheme,
   mineHelperTheme,
   minesweeperTheme,
-  sudokuTheme
+  sudokuTheme,
+  wordleTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -70,12 +71,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.wordle.title',
     blurbKey: 'catalog.wordle.blurb',
     icon: Keyboard,
-    theme: {
-      accent: '#6ba34a',
-      accentHover: '#7db55c',
-      onAccent: '#e8f5e0'
-    },
-    status: 'soon'
+    theme: wordleTheme,
+    status: 'live'
   },
   {
     id: 'queens',
@@ -245,11 +242,7 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.wordleHelper.title',
     blurbKey: 'catalog.wordleHelper.blurb',
     icon: Type,
-    theme: {
-      accent: '#6ba34a',
-      accentHover: '#7db55c',
-      onAccent: '#e8f5e0'
-    },
+    theme: wordleTheme,
     status: 'soon'
   },
   {

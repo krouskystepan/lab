@@ -25,7 +25,7 @@ export const hubEn = {
   'catalog.sudoku.title': 'Sudoku',
   'catalog.sudoku.blurb': 'Fill the 9×9 with digits 1–9.',
   'catalog.wordle.title': 'Wordle',
-  'catalog.wordle.blurb': 'Guess the five-letter word.',
+  'catalog.wordle.blurb': 'Guess the English word.',
   'catalog.queens.title': 'Queens',
   'catalog.queens.blurb': 'One queen per row, column, and color.',
   'catalog.set.title': 'Set',

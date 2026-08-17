@@ -28,7 +28,7 @@ export const hubCs: Record<keyof typeof hubEn, string> = {
   'catalog.sudoku.title': 'Sudoku',
   'catalog.sudoku.blurb': 'Doplň 9×9 číslicemi 1–9.',
   'catalog.wordle.title': 'Wordle',
-  'catalog.wordle.blurb': 'Hádej pětipísmenné slovo.',
+  'catalog.wordle.blurb': 'Hádej anglické slovo.',
   'catalog.queens.title': 'Queens',
   'catalog.queens.blurb': 'Jedna královna na řádek, sloupec a barvu.',
   'catalog.set.title': 'Set',
