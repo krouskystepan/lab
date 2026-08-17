@@ -9,6 +9,7 @@ export {
   type BoardFamily,
   type MinesweeperBoardFile,
   type SudokuBoardFile,
+  type WordleBoardFile,
   type MineTransferCell
 } from './types'
 
@@ -25,6 +26,8 @@ export {
   importSudokuToHelper,
   importSudokuToGame
 } from './sudoku'
+
+export { exportWordleGame, importWordleToGame } from './wordle'
 
 export {
   ExportImportButtons,
