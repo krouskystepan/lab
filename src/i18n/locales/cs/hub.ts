@@ -51,8 +51,6 @@ export const hubCs: Record<keyof typeof hubEn, string> = {
   'catalog.flashcards.blurb': 'Opakování s odstupem pro jakýkoli balíček.',
   'catalog.sudokuHelper.title': 'Sudoku Helper',
   'catalog.sudokuHelper.blurb': 'Kandidáti, single a další tahy.',
-  'catalog.wordleHelper.title': 'Wordle Helper',
-  'catalog.wordleHelper.blurb': 'Zúžení tipů podle nápověd.',
   'catalog.chessMate.title': 'Chess Mate',
   'catalog.chessMate.blurb': 'Najdi mat v N z pozice.',
   'catalog.equationSteps.title': 'Kroky rovnice',

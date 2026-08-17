@@ -15,8 +15,7 @@ import {
   Languages,
   Layers,
   Lightbulb,
-  Puzzle,
-  Type
+  Puzzle
 } from 'lucide-react'
 import type { MessageKey } from '../i18n'
 import {
@@ -234,16 +233,6 @@ export const catalog: CatalogEntry[] = [
     icon: Grid3x3,
     theme: sudokuTheme,
     status: 'live'
-  },
-  {
-    id: 'wordle-helper',
-    kind: 'solver',
-    path: '/solvers/wordle-helper',
-    titleKey: 'catalog.wordleHelper.title',
-    blurbKey: 'catalog.wordleHelper.blurb',
-    icon: Type,
-    theme: wordleTheme,
-    status: 'soon'
   },
   {
     id: 'chess-mate',

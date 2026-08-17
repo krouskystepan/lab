@@ -48,8 +48,6 @@ export const hubEn = {
   'catalog.flashcards.blurb': 'Spaced repetition for any deck.',
   'catalog.sudokuHelper.title': 'Sudoku Helper',
   'catalog.sudokuHelper.blurb': 'Candidates, singles, and next moves.',
-  'catalog.wordleHelper.title': 'Wordle Helper',
-  'catalog.wordleHelper.blurb': 'Narrow guesses from your clues.',
   'catalog.chessMate.title': 'Chess Mate',
   'catalog.chessMate.blurb': 'Find mate in N from a position.',
   'catalog.equationSteps.title': 'Equation Steps',
