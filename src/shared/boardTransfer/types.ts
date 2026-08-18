@@ -1,9 +1,9 @@
-/** Shared board interchange — game ↔ solver (and round-trip). */
+/** Shared board interchange - game ↔ solver (and round-trip). */
 
 export const BOARD_FORMAT = 'krouskylab.board' as const
 export const BOARD_VERSION = 1 as const
 
-export type BoardFamily = 'minesweeper' | 'sudoku' | 'wordle'
+export type BoardFamily = 'minesweeper' | 'sudoku' | 'wordle' | 'chess'
 
 /** Visible minesweeper knowledge (no hidden mine map). */
 export type MineTransferCell =
@@ -71,7 +71,22 @@ export type WordleBoardFile = {
   }
 }
 
-export type BoardFile = MinesweeperBoardFile | SudokuBoardFile | WordleBoardFile
+export type ChessBoardFile = {
+  format: typeof BOARD_FORMAT
+  version: typeof BOARD_VERSION
+  family: 'chess'
+  fen: string
+  game?: {
+    mateN?: number
+    flipped?: boolean
+  }
+}
+
+export type BoardFile =
+  | MinesweeperBoardFile
+  | SudokuBoardFile
+  | WordleBoardFile
+  | ChessBoardFile
 
 export function isBoardFile(data: unknown): data is BoardFile {
   if (!data || typeof data !== 'object') return false

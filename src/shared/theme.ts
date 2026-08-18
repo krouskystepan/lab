@@ -32,7 +32,7 @@ export const minesweeperTheme: AppTheme = {
   glow: '#2db46e'
 }
 
-/** Warm amber — Sudoku playable board. */
+/** Warm amber - Sudoku playable board. */
 export const sudokuTheme: AppTheme = {
   accent: '#c47a3a',
   accentHover: '#d48c4e',
@@ -46,6 +46,14 @@ export const wordleTheme: AppTheme = {
   accentHover: '#5ed07c',
   onAccent: '#f4fff6',
   glow: '#4cbe6a'
+}
+
+/** Chess Mate - cool slate. */
+export const chessMateTheme: AppTheme = {
+  accent: '#4a5568',
+  accentHover: '#5a6678',
+  onAccent: '#e8ecf2',
+  glow: '#6b7c90'
 }
 
 export function themeGlow(theme: AppTheme): string {
