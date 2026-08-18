@@ -24,7 +24,8 @@ import {
   mineHelperTheme,
   minesweeperTheme,
   sudokuTheme,
-  wordleTheme
+  wordleTheme,
+  chessMateTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -241,12 +242,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.chessMate.title',
     blurbKey: 'catalog.chessMate.blurb',
     icon: Crown,
-    theme: {
-      accent: '#4a5568',
-      accentHover: '#5a6678',
-      onAccent: '#e8ecf2'
-    },
-    status: 'soon'
+    theme: chessMateTheme,
+    status: 'live'
   },
   {
     id: 'equation-steps',

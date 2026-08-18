@@ -120,7 +120,7 @@
 
 .sudoku-grid > .cell {
   border-radius: 0;
-  /* hairline only — box bands set thicker edges in the component */
+  /* hairline only - box bands set thicker edges in the component */
   border-width: 0.5px;
   font-size: clamp(0.7rem, 5.5cqmin, 1.35rem);
 }
@@ -347,7 +347,7 @@
 .wordle-grid {
   --layout-rows: 6;
   gap: clamp(4px, 1.2cqmin, 8px);
-  /* Size tiles as if the board always has 6 rows — Expert's 5 guesses
+  /* Size tiles as if the board always has 6 rows - Expert's 5 guesses
      must not blow up letter height. */
   width: min(
     100cqw,
@@ -443,4 +443,51 @@
 
 .wordle-key-press {
   animation: wordle-key-press 0.16s ease-out;
+}
+
+.chess-grid {
+  gap: 0;
+  border: 2px solid #5a6574;
+  border-radius: clamp(2px, 0.8cqmin, 6px);
+  overflow: hidden;
+}
+
+.chess-grid > .cell {
+  border-radius: 0;
+}
+
+.chess-sq-light {
+  background: #c5cdd8;
+}
+
+.chess-sq-dark {
+  background: #4a5568;
+}
+
+.chess-sq-from {
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--color-accent) 80%, white);
+}
+
+.chess-sq-to {
+  box-shadow: inset 0 0 0 3px var(--color-accent);
+}
+
+.chess-sq-check {
+  background: color-mix(in srgb, var(--color-danger) 45%, #4a5568);
+}
+
+.chess-glyph {
+  line-height: 1;
+}
+
+.chess-move-flyer {
+  pointer-events: none;
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12.5%;
+  height: 12.5%;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
