@@ -8,9 +8,7 @@ function emptyCell(): Cell {
 
 function cellsFromGivens(givens: number[]): Cell[] {
   return givens.map((v) =>
-    v === 0
-      ? emptyCell()
-      : { value: v, notes: 0, given: true }
+    v === 0 ? emptyCell() : { value: v, notes: 0, given: true }
   )
 }
 
@@ -123,7 +121,7 @@ export function reduce(state: BoardState, action: Action): BoardState {
         }
       }
 
-      // digit mode — paint only; never toggle-clear (use Erase tool for that)
+      // digit mode - paint only; never toggle-clear (use Erase tool for that)
       if (cell.value === digit) return state
 
       let cells = state.cells.slice()
@@ -174,6 +172,10 @@ export function boardHasNotes(state: BoardState): boolean {
   return state.cells.some((c) => c.notes !== 0)
 }
 
-export function noteVisible(state: BoardState, index: number, digit: number): boolean {
+export function noteVisible(
+  state: BoardState,
+  index: number,
+  digit: number
+): boolean {
   return hasNote(state.cells[index]?.notes ?? 0, digit)
 }

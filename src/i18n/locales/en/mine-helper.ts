@@ -37,7 +37,7 @@ export const mineHelperEn = {
   'legend.safestTitleSafe': 'Safest click',
   'legend.safestTitleHunt': 'Surest target tip',
   'legend.numberBodySafe':
-    'Revealed safe tile (not a mine — opposite of My # in Find targets). The digit is how many mines are among its neighbors. Copy the numbers you see on the board here.',
+    'Revealed safe tile (not a mine - opposite of My # in Find targets). The digit is how many mines are among its neighbors. Copy the numbers you see on the board here.',
   'legend.numberBodyHunt':
     'Your revealed card. It counts as a target. The number is how many of your cards are among its neighbors (not counting itself). Use ? when the count is unknown.',
   'legend.infoBody':
@@ -45,7 +45,7 @@ export const mineHelperEn = {
   'legend.infoBodyHunt':
     'Neutral or opponent card with a clue. Not your card. The number still counts how many of your cards are among its neighbors.',
   'legend.flagBodySafe':
-    'Flag = mine (no number). Deduced certain mines also look like a flag — do not click them. (Opposite of Find targets, where the mark means “not yours”.)',
+    'Flag = mine (no number). Deduced certain mines also look like a flag - do not click them. (Opposite of Find targets, where the mark means “not yours”.)',
   'legend.flagBodyHunt':
     '× = your card is 100% not here (do not click). Only the solver marks these from numbers - you cannot place them. Your targets are green {sure}.',
   'legend.safeBody':
@@ -147,8 +147,7 @@ export const mineHelperEn = {
   'tools.flagTitle': 'Flag = mine (no number) (F)',
   'tools.flagTitleHunt': 'Marked = 100% not yours, do not click (F)',
   'tools.safeErase': 'Click again to erase (B)',
-  'tools.safeTitle':
-    'Safe = revealed safe with no digit (classic empty) (B)',
+  'tools.safeTitle': 'Safe = revealed safe with no digit (classic empty) (B)',
   'tools.safeTitleHunt':
     'Ruled out = opponent/neutral with no clue, ignore (B)',
   'tools.infoTitle': 'Info number = clue only (this cell is not a mine)',

@@ -14,7 +14,7 @@ export const sudokuEn = {
   'sudoku.pad.digitTitle': 'Paint {n} ({left} left) · key {n}',
   'sudoku.pad.digitClearTitle': 'Deselect {n}',
   'sudoku.pad.erase': 'Erase',
-  'sudoku.pad.eraseTitle': 'Erase mode — click cells to clear (E / ⌫)',
+  'sudoku.pad.eraseTitle': 'Erase mode - click cells to clear (E / ⌫)',
   'sudoku.pad.eraseOffTitle': 'Turn off erase mode',
   'sudoku.empty': 'Left',
   'sudoku.emptyLeft': 'Empty cells remaining',
@@ -41,9 +41,9 @@ export const sudokuEn = {
   'sudoku.tools.check': 'Check',
   'sudoku.tools.checkTitle': 'Check filled cells against the solution (C)',
   'sudoku.check.ok': 'All filled cells are correct.',
-  'sudoku.check.empty': 'Nothing to check yet — fill some cells first.',
-  'sudoku.check.mistakes': '{n} wrong — highlighted in red.',
-  'sudoku.check.mistakes1': '1 wrong — highlighted in red.',
+  'sudoku.check.empty': 'Nothing to check yet - fill some cells first.',
+  'sudoku.check.mistakes': '{n} wrong - highlighted in red.',
+  'sudoku.check.mistakes1': '1 wrong - highlighted in red.',
   'sudoku.tools.clearNotes': 'Clear',
   'sudoku.tools.clearNotesShort': 'Clear',
   'sudoku.tools.clearNotesTitle': 'Remove every pencil mark',
@@ -52,7 +52,7 @@ export const sudokuEn = {
   'sudoku.help.body':
     'Fill the 9×9 so every row, column, and 3×3 box contains digits 1–9 once.',
   'sudoku.help.controls':
-    'Pick a digit, then tap cells to paint it — changing the digit never fills a cell by itself. Erase tool (E) clears every cell you tap. Hint (H) fills one correct cell. Check (C) marks mistakes. N = new game.',
+    'Pick a digit, then tap cells to paint it - changing the digit never fills a cell by itself. Erase tool (E) clears every cell you tap. Hint (H) fills one correct cell. Check (C) marks mistakes. N = new game.',
   'sudoku.help.notes':
     'Notes mode (P / Space) toggles pencil marks in empty cells. Conflicts highlight in red.',
 

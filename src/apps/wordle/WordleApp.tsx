@@ -28,8 +28,8 @@ export default function WordleApp() {
   const initial = useRef(loadGame()).current
   const [board, dispatch] = useReducer(reduce, initial.board)
   const [seconds, setSeconds] = useState(initial.seconds)
-  const [canUndo, setCanUndo] = useState(false)
-  const [canRedo, setCanRedo] = useState(false)
+  const [, setCanUndo] = useState(false)
+  const [, setCanRedo] = useState(false)
   const [shake, setShake] = useState(false)
   const [flashKey, setFlashKey] = useState<string | null>(null)
   const [hydrated, setHydrated] = useState(false)

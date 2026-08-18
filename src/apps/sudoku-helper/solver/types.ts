@@ -7,7 +7,7 @@ export type Cell = {
 
 export type SingleKind = 'naked' | 'hidden'
 
-/** Overlay from Solve — candidates and optional forced single. */
+/** Overlay from Solve - candidates and optional forced single. */
 export type SolverMark = {
   candidates: number[]
   single?: { digit: number; kind: SingleKind }

@@ -24,7 +24,7 @@ type ExportImportButtonsProps = {
   className?: string
 }
 
-/** Header Export / Import — sized to sit next to the language switcher. */
+/** Header Export / Import - sized to sit next to the language switcher. */
 export function ExportImportButtons({
   filename,
   family,

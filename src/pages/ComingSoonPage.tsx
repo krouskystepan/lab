@@ -45,7 +45,10 @@ export function ComingSoonPage() {
   }, [t, locale, title])
 
   return (
-    <ThemeScope theme={theme} className="flex h-full min-h-0 flex-col overflow-auto">
+    <ThemeScope
+      theme={theme}
+      className="flex h-full min-h-0 flex-col overflow-auto"
+    >
       <div className="hub-page mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-5 pb-6 sm:px-8 sm:pt-6">
         <header className="flex items-center justify-between gap-4 border-b border-line pb-3">
           <Link
@@ -69,7 +72,11 @@ export function ComingSoonPage() {
                   to="/"
                   className="inline-flex shrink-0 items-center gap-1 rounded-sm border border-accent bg-accent px-2.5 py-1 text-[0.75rem] font-semibold text-white no-underline hover:border-accent-hover hover:bg-accent-hover"
                 >
-                  <ArrowLeft className="size-3.5" strokeWidth={2.25} aria-hidden />
+                  <ArrowLeft
+                    className="size-3.5"
+                    strokeWidth={2.25}
+                    aria-hidden
+                  />
                   {t('hub.backHomeCta')}
                 </Link>
               </div>
@@ -126,7 +133,7 @@ function AltCard({ entry }: { entry: CatalogEntry }) {
         'flex h-full w-full min-w-0 items-center gap-1.5 border border-line bg-elevated px-2 py-1.5 text-left no-underline hover:border-muted/50 hover:bg-cell-hover',
         soon && 'opacity-55'
       )}
-      title={soon ? `${title} — ${t('hub.soon')}` : title}
+      title={soon ? `${title} - ${t('hub.soon')}` : title}
     >
       <Icon
         className="size-3.5 shrink-0"

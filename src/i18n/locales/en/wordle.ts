@@ -11,7 +11,7 @@ export const wordleEn = {
   'wordle.diff.applyTitle': 'Start a new word at this difficulty',
   'wordle.diff.helpTitle': 'Difficulty',
   'wordle.diff.helpBody':
-    'Harder settings draw from a rarer word pool. Hard and Expert also require you to reuse greens and yellows (hard mode). Expert gives you five guesses instead of six. Random picks any word from the full list. Letter count is separate — 4, 5, 6, or 7.',
+    'Harder settings draw from a rarer word pool. Hard and Expert also require you to reuse greens and yellows (hard mode). Expert gives you five guesses instead of six. Random picks any word from the full list. Letter count is separate - 4, 5, 6, or 7.',
   'wordle.len.title': 'Letters',
   'wordle.len.option': '{n}',
   'wordle.len.applyTitle': 'Play with {n}-letter words',
@@ -38,13 +38,12 @@ export const wordleEn = {
   'wordle.tools.hintTitle': 'Reveal one correct letter',
   'wordle.tools.hintTipTitle': 'Hint',
   'wordle.tools.hintTipBody':
-    'Fills in one answer letter that is not green yet, as a faint tile on the row you are typing. Nothing is submitted — empty rows stay unused.',
+    'Fills in one answer letter that is not green yet, as a faint tile on the row you are typing. Nothing is submitted - empty rows stay unused.',
 
   'wordle.help.title': 'How to play',
   'wordle.help.body':
     'Guess the word. Green is the right letter in the right place. Gold is in the word, wrong place. Grey is not in the word.',
-  'wordle.help.lang':
-    'The word list is English only — Czech is just the UI.',
+  'wordle.help.lang': 'The word list is English only - Czech is just the UI.',
   'wordle.help.controls':
     'Type letters, Enter submits, Backspace deletes. Hint reveals one green. Undo takes back the last submitted guess.',
   'wordle.help.hard':
