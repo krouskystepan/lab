@@ -11,7 +11,7 @@ export type Cell = {
   /** 0 = empty, 1–9 = filled */
   value: number
   notes: NotesMask
-  /** Clue from the puzzle — not editable. */
+  /** Clue from the puzzle - not editable. */
   given: boolean
 }
 

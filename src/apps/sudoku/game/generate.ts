@@ -61,13 +61,11 @@ export function candidatesAt(values: number[], index: number): number[] {
   return out
 }
 
-export function valuesFromCells(
-  cells: { value: number }[]
-): number[] {
+export function valuesFromCells(cells: { value: number }[]): number[] {
   return cells.map((c) => c.value)
 }
 
-/** Band/stack shuffle for a known filled Latin-like seed — faster variety. */
+/** Band/stack shuffle for a known filled Latin-like seed - faster variety. */
 function scrambleComplete(values: number[]): void {
   // Swap digits
   const map = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -149,9 +147,7 @@ export function generatePuzzle(targetClues: number): GeneratedPuzzle {
   scrambleComplete(solution)
 
   const puzzle = solution.slice()
-  const order = shuffle(
-    Array.from({ length: CELL_COUNT }, (_, i) => i)
-  )
+  const order = shuffle(Array.from({ length: CELL_COUNT }, (_, i) => i))
 
   let clues = CELL_COUNT
   for (const idx of order) {

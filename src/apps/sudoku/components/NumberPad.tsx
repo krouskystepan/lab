@@ -33,7 +33,7 @@ export function NumberPad({
       <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
         {t('sudoku.pad.title')}
       </h2>
-      {/* 9 equal digits + fixed erase slot — same total width in every locale */}
+      {/* 9 equal digits + fixed erase slot - same total width in every locale */}
       <div className="grid w-full grid-cols-[repeat(9,minmax(0,1fr))_2.75rem] gap-1.5">
         {DIGITS.map((n) => {
           const left = remaining[n] ?? 0

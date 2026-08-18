@@ -13,7 +13,7 @@ export const wordleCs: Record<keyof typeof wordleEn, string> = {
   'wordle.diff.applyTitle': 'Nové slovo na této obtížnosti',
   'wordle.diff.helpTitle': 'Obtížnost',
   'wordle.diff.helpBody':
-    'Těžší nastavení bere vzácnější slova. Těžká a Expert navíc vyžadují použít zelená a žlutá písmena (tvrdý režim). Expert má pět pokusů místo šesti. Náhodné bere libovolné slovo z celého seznamu. Počet písmen je zvlášť — 4, 5, 6 nebo 7.',
+    'Těžší nastavení bere vzácnější slova. Těžká a Expert navíc vyžadují použít zelená a žlutá písmena (tvrdý režim). Expert má pět pokusů místo šesti. Náhodné bere libovolné slovo z celého seznamu. Počet písmen je zvlášť - 4, 5, 6 nebo 7.',
   'wordle.len.title': 'Písmena',
   'wordle.len.option': '{n}',
   'wordle.len.applyTitle': 'Hrát se slovy o {n} písmenech',
@@ -40,13 +40,12 @@ export const wordleCs: Record<keyof typeof wordleEn, string> = {
   'wordle.tools.hintTitle': 'Odhalit jedno správné písmeno',
   'wordle.tools.hintTipTitle': 'Nápověda',
   'wordle.tools.hintTipBody':
-    'Do rozepsaného řádku doplní jedno písmeno řešení, které ještě není zelené (bledá dlaždice). Nic se neodešle — prázdné řádky ti zůstanou.',
+    'Do rozepsaného řádku doplní jedno písmeno řešení, které ještě není zelené (bledá dlaždice). Nic se neodešle - prázdné řádky ti zůstanou.',
 
   'wordle.help.title': 'Jak hrát',
   'wordle.help.body':
     'Hádej slovo. Zelená je správné písmeno na správném místě. Zlatá je ve slově, ale jinde. Šedá ve slově není.',
-  'wordle.help.lang':
-    'Slovník je jen anglický — čeština je jen v ovládání.',
+  'wordle.help.lang': 'Slovník je jen anglický - čeština je jen v ovládání.',
   'wordle.help.controls':
     'Piš písmena, Enter odešle, Backspace maže. Nápověda odhalí jednu zelenou. Zpět vezme poslední odeslaný tip.',
   'wordle.help.hard':

@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState
+} from 'react'
 import { Link } from 'react-router-dom'
 import { Grid3x3 } from 'lucide-react'
 import { DiffBar } from './components/DiffBar'
@@ -7,11 +14,7 @@ import { HotkeysBar } from './components/HotkeysBar'
 import { NumberPad } from './components/NumberPad'
 import { ToolsBar } from './components/ToolsBar'
 import { CELL_COUNT, colOf, rowOf } from './game/board'
-import {
-  boardHasNotes,
-  reduce,
-  remainingEmpty
-} from './game/engine'
+import { boardHasNotes, reduce, remainingEmpty } from './game/engine'
 import { findHint, findMistakes, filledCount } from './game/hint'
 import { PlayHistory, snapshotOf } from './game/history'
 import { loadGame, saveGame } from './game/prefs'
@@ -37,9 +40,7 @@ export default function SudokuApp() {
   const [seconds, setSeconds] = useState(initial.seconds)
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
-  const [mistakes, setMistakes] = useState<ReadonlySet<number>>(
-    () => new Set()
-  )
+  const [mistakes, setMistakes] = useState<ReadonlySet<number>>(() => new Set())
   const [hydrated, setHydrated] = useState(false)
   const tickRef = useRef<number | null>(null)
   const historyRef = useRef(new PlayHistory())
@@ -170,7 +171,7 @@ export default function SudokuApp() {
     [eraseAt, pushHistory]
   )
 
-  /** Pad: select digit paint tool only — never auto-fills the selected cell. */
+  /** Pad: select digit paint tool only - never auto-fills the selected cell. */
   const onDigitChange = useCallback((d: number) => {
     setEraseMode(false)
     if (digitRef.current === d && !eraseModeRef.current) {
@@ -180,7 +181,7 @@ export default function SudokuApp() {
     setDigit(d)
   }, [])
 
-  /** Pad Erase: toggle erase paint mode — then click cells to clear many. */
+  /** Pad Erase: toggle erase paint mode - then click cells to clear many. */
   const onEraseMode = useCallback(() => {
     setEraseMode((on) => {
       const next = !on
@@ -320,7 +321,13 @@ export default function SudokuApp() {
         return
       }
 
-      if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0' || e.key === 'e' || e.key === 'E') {
+      if (
+        e.key === 'Backspace' ||
+        e.key === 'Delete' ||
+        e.key === '0' ||
+        e.key === 'e' ||
+        e.key === 'E'
+      ) {
         e.preventDefault()
         onEraseMode()
         return

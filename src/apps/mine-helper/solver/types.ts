@@ -2,7 +2,7 @@ export type EditMode = 'number' | 'info' | 'flag' | 'blank' | 'erase'
 
 /**
  * What the solver highlights for the player:
- * - safe (Avoid): classic Minesweeper — find safe cells to click.
+ * - safe (Avoid): classic Minesweeper - find safe cells to click.
  *   Safe # / Bezpečné # = revealed safe with digit; Flag/Vlajka = mine;
  *   Safe / Bezpečné = revealed safe with no digit. No Info tool.
  * - hunt: find your cards - Moje # = your card; Info # = clue only (not yours);

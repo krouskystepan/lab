@@ -38,7 +38,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.safestTitleSafe': 'Nejbezpečnější klik',
   'legend.safestTitleHunt': 'Nejjistější tip na cíl',
   'legend.numberBodySafe':
-    'Odhalené bezpečné pole (není mina — opak Moje # v Hledat cíle). Číslo říká, kolik min je mezi sousedy. Sem přepisuj čísla, která vidíš na desce.',
+    'Odhalené bezpečné pole (není mina - opak Moje # v Hledat cíle). Číslo říká, kolik min je mezi sousedy. Sem přepisuj čísla, která vidíš na desce.',
   'legend.numberBodyHunt':
     'Tvoje odhalená karta. Počítá se jako cíl. Číslo říká, kolik tvých karet je mezi sousedy (sama sebe nepočítá). ? = karta je tu, počet neznáš.',
   'legend.infoBody':
@@ -46,7 +46,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.infoBodyHunt':
     'Neutrální nebo soupeřova karta s nápovědou. Není tvoje. Číslo stejně počítá, kolik tvých karet je mezi sousedy.',
   'legend.flagBodySafe':
-    'Vlajka = mina (bez čísla). Odvozené jisté miny vypadají taky jako vlajka — neklikej na ně. (Opak Hledat cíle, kde značka znamená „není tvoje“.)',
+    'Vlajka = mina (bez čísla). Odvozené jisté miny vypadají taky jako vlajka - neklikej na ně. (Opak Hledat cíle, kde značka znamená „není tvoje“.)',
   'legend.flagBodyHunt':
     '× = tvoje karta tu 100% není (neklikej). Dává jen řešič z čísel - ručně to neoznačuješ. Tvoje cíle jsou zelené {sure}.',
   'legend.safeBody':
@@ -149,8 +149,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'tools.flagTitle': 'Vlajka = mina (bez čísla) (F)',
   'tools.flagTitleHunt': 'Označené = 100% není tvoje, neklikej (F)',
   'tools.safeErase': 'Klikni znovu pro smazání (B)',
-  'tools.safeTitle':
-    'Bezpečné = odhalené bez čísla (klasická prázdná) (B)',
+  'tools.safeTitle': 'Bezpečné = odhalené bez čísla (klasická prázdná) (B)',
   'tools.safeTitleHunt':
     'Vyřazené = soupeř/neutrál bez nápovědy, ignorovat (B)',
   'tools.infoTitle': 'Info číslo = jen nápověda (tato buňka není mina)',

@@ -16,7 +16,7 @@ export const sudokuCs: Record<keyof typeof sudokuEn, string> = {
   'sudoku.pad.digitTitle': 'Malovat {n} (zbývá {left}) · klávesa {n}',
   'sudoku.pad.digitClearTitle': 'Zrušit výběr {n}',
   'sudoku.pad.erase': 'Smazat',
-  'sudoku.pad.eraseTitle': 'Režim mazání — klepej na pole (E / ⌫)',
+  'sudoku.pad.eraseTitle': 'Režim mazání - klepej na pole (E / ⌫)',
   'sudoku.pad.eraseOffTitle': 'Vypnout režim mazání',
   'sudoku.empty': 'Zbývá',
   'sudoku.emptyLeft': 'Prázdná pole',
@@ -39,13 +39,13 @@ export const sudokuCs: Record<keyof typeof sudokuEn, string> = {
   'sudoku.tools.hintTitle': 'Vyplnit jedno pole (H)',
   'sudoku.tools.hintTipTitle': 'Nápověda',
   'sudoku.tools.hintTipBody':
-    'Vyplní vynucené jedničky, když jdou. Když nic není vynucené, odhalí další správnou číslici — vždycky dořešíš.',
+    'Vyplní vynucené jedničky, když jdou. Když nic není vynucené, odhalí další správnou číslici - vždycky dořešíš.',
   'sudoku.tools.check': 'Check',
   'sudoku.tools.checkTitle': 'Zkontrolovat vyplněná pole podle řešení (C)',
   'sudoku.check.ok': 'Všechna vyplněná pole jsou správně.',
-  'sudoku.check.empty': 'Zatím není co kontrolovat — nejdřív něco vyplň.',
-  'sudoku.check.mistakes': '{n} chyb — zvýrazněno červeně.',
-  'sudoku.check.mistakes1': '1 chyba — zvýrazněno červeně.',
+  'sudoku.check.empty': 'Zatím není co kontrolovat - nejdřív něco vyplň.',
+  'sudoku.check.mistakes': '{n} chyb - zvýrazněno červeně.',
+  'sudoku.check.mistakes1': '1 chyba - zvýrazněno červeně.',
   'sudoku.tools.clearNotes': 'Smaz',
   'sudoku.tools.clearNotesShort': 'Smaz',
   'sudoku.tools.clearNotesTitle': 'Odstranit všechny tužkové značky',
@@ -54,7 +54,7 @@ export const sudokuCs: Record<keyof typeof sudokuEn, string> = {
   'sudoku.help.body':
     'Vyplň 9×9 tak, aby každý řádek, sloupec a 3×3 čtverec obsahoval čísla 1–9 právě jednou.',
   'sudoku.help.controls':
-    'Vyber číslici a klepej na pole — maluješ. Změna číslice sama o sobě nic nevyplní. Mazání (E) vyčistí každé pole, na které klepneš. Nápověda (H) vyplní jedno správné pole. Check (C) označí chyby. N = nová hra.',
+    'Vyber číslici a klepej na pole - maluješ. Změna číslice sama o sobě nic nevyplní. Mazání (E) vyčistí každé pole, na které klepneš. Nápověda (H) vyplní jedno správné pole. Check (C) označí chyby. N = nová hra.',
   'sudoku.help.notes':
     'Režim poznámek (P / mezerník) přepíná tužkové značky v prázdných polích. Konflikty se zvýrazní červeně.',
 
