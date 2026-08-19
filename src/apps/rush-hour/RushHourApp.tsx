@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useReducer, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Car } from 'lucide-react'
-import { Board } from './components/Board'
+import { Board, BuildingLot } from './components/Board'
 import { DiffBar } from './components/DiffBar'
 import { HotkeysBar } from './components/HotkeysBar'
 import { ToolsBar } from './components/ToolsBar'
@@ -10,7 +10,7 @@ import { PlayHistory, snapshotOf } from './game/history'
 import { loadGame, saveGame } from './game/prefs'
 import { pickPuzzle } from './game/puzzles'
 import { shortestSlide } from './game/solver'
-import type { DiffId } from './game/types'
+import { isBoardSize, type DiffId, type Puzzle } from './game/types'
 import { useI18n } from '../../i18n'
 import { showToast } from '../../shared/toast'
 import {
@@ -31,6 +31,10 @@ export default function RushHourApp() {
   const [canRedo, setCanRedo] = useState(false)
   const [hintId, setHintId] = useState<string | null>(null)
   const [hydrated, setHydrated] = useState(false)
+  const [building, setBuilding] = useState(false)
+  const [pendingDiff, setPendingDiff] = useState<DiffId | null>(null)
+  const [buildKey, setBuildKey] = useState(0)
+  const pendingPuzzle = useRef<Puzzle | null>(null)
   const tickRef = useRef<number | null>(null)
   const hintTimer = useRef<number | null>(null)
   const historyRef = useRef(new PlayHistory())
@@ -148,29 +152,48 @@ export default function RushHourApp() {
   }, [flashHint, pushHistory, t])
 
   const onReset = useCallback(() => {
+    if (pendingPuzzle.current) return
     clearHistory()
     setSelected(null)
     dispatch({ type: 'reset' })
   }, [clearHistory])
 
+  const queuePuzzle = useCallback((puzzle: Puzzle) => {
+    pendingPuzzle.current = puzzle
+    setPendingDiff(puzzle.diffId)
+    setBuilding(true)
+    setBuildKey((k) => k + 1)
+  }, [])
+
   const onNew = useCallback(() => {
     const state = boardRef.current
-    clearHistory()
-    setSelected(null)
-    dispatch({
-      type: 'newGame',
-      puzzle: pickPuzzle(state.diffId, state.puzzleId)
-    })
-  }, [clearHistory])
+    queuePuzzle(pickPuzzle(state.diffId, state.puzzleId))
+  }, [queuePuzzle])
 
   const onDiff = useCallback(
     (id: DiffId) => {
+      queuePuzzle(pickPuzzle(id, boardRef.current.puzzleId))
+    },
+    [queuePuzzle]
+  )
+
+  useEffect(() => {
+    if (!building) return
+    const puzzle = pendingPuzzle.current
+    if (!puzzle) {
+      setBuilding(false)
+      return
+    }
+    const t = window.setTimeout(() => {
       clearHistory()
       setSelected(null)
-      dispatch({ type: 'newGame', puzzle: pickPuzzle(id) })
-    },
-    [clearHistory]
-  )
+      dispatch({ type: 'newGame', puzzle })
+      pendingPuzzle.current = null
+      setPendingDiff(null)
+      setBuilding(false)
+    }, 70)
+    return () => window.clearTimeout(t)
+  }, [building, buildKey, clearHistory])
 
   const onExportBoard = useCallback(
     () => exportRushHourGame(boardRef.current, secondsRef.current),
@@ -244,7 +267,7 @@ export default function RushHourApp() {
   }, [onHint, onNew, onRedo, onReset, onSlide, onUndo])
 
   const ended = board.status === 'won'
-  const canHint = !ended
+  const canHint = !ended && !building
 
   return (
     <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
@@ -307,18 +330,25 @@ export default function RushHourApp() {
         </div>
       </header>
 
-      <div className="board-frame order-1 min-h-0 flex-1 rounded-md bg-elevated/40 p-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]">
+      <div
+        className="board-frame order-1 min-h-0 flex-1 rounded-md bg-elevated/40 p-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]"
+        aria-busy={building}
+      >
         <div className="board-stage">
-          <Board
-            vehicles={board.vehicles}
-            size={board.size}
-            walls={board.walls}
-            selected={selected}
-            hintId={hintId}
-            ended={ended}
-            onSelect={setSelected}
-            onSlide={onSlide}
-          />
+          {building ? (
+            <BuildingLot size={buildingSize(pendingPuzzle.current, board.size)} />
+          ) : (
+            <Board
+              vehicles={board.vehicles}
+              size={board.size}
+              walls={board.walls}
+              selected={selected}
+              hintId={hintId}
+              ended={ended}
+              onSelect={setSelected}
+              onSlide={onSlide}
+            />
+          )}
         </div>
       </div>
 
@@ -339,8 +369,18 @@ export default function RushHourApp() {
       </div>
 
       <div className="relative z-5 order-3 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem]">
-        <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
+        <DiffBar
+          diffId={pendingDiff ?? board.diffId}
+          busy={building}
+          onDiffChange={onDiff}
+        />
       </div>
     </div>
   )
+}
+
+function buildingSize(puzzle: Puzzle | null, fallback: number): number {
+  if (!puzzle) return fallback
+  const n = Math.sqrt(puzzle.grid.replace(/\s+/g, '').length)
+  return isBoardSize(n) ? n : fallback
 }

@@ -1,7 +1,7 @@
 import { PRIMARY, type Vehicle } from '../game/types'
 
 const PALETTE: Record<string, string> = {
-  A: '#ef5350',
+  A: '#ff3b3b',
   B: '#e0b84d',
   C: '#5b9cf6',
   D: '#3dba8a',

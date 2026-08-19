@@ -492,6 +492,38 @@
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.rush-grid-building {
+  pointer-events: none;
+}
+
+.rush-cell-building {
+  animation: rush-building-pulse 0.9s ease-in-out infinite;
+}
+
+@keyframes rush-building-pulse {
+  50% {
+    background: #252e38;
+  }
+}
+
+.rush-building-label {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-panel) 92%, transparent);
+  color: var(--color-ink);
+  font-size: clamp(0.78rem, 3.4cqmin, 1rem);
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
 .rush-grid {
   position: relative;
   gap: 0;
@@ -632,8 +664,28 @@
   transform: translateX(-50%);
 }
 
-.rush-car-red:not(.rush-car-selected):not(.rush-car-dragging) {
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, white 20%, transparent);
+.rush-car-red {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white 40%, transparent),
+    0 0 0 2px color-mix(in srgb, #fff 55%, var(--color-accent));
+}
+
+.rush-car-hero {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.rush-car-hero-arrow {
+  position: absolute;
+  top: 50%;
+  right: 14%;
+  width: 18%;
+  height: 18%;
+  border-right: 2.5px solid #fff;
+  border-top: 2.5px solid #fff;
+  transform: translateY(-50%) rotate(45deg);
+  opacity: 0.95;
 }
 
 .rush-car-selected:not(.rush-car-dragging) {

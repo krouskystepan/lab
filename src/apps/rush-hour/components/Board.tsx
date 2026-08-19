@@ -213,6 +213,51 @@ export function Board({
   )
 }
 
+export function BuildingLot({ size }: { size: number }) {
+  const { t } = useI18n()
+  const cols = visCols(size)
+  const outRow = exitRow(size)
+  return (
+    <div className="flex h-full min-h-0 w-full items-center justify-center">
+      <div className="relative">
+        <div
+          className="mine-grid rush-grid rush-grid-building"
+          style={
+            {
+              gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+              ['--cols' as string]: cols,
+              ['--rows' as string]: size,
+              ['--cell-ar' as string]: 1
+            } as CSSProperties
+          }
+          role="status"
+          aria-live="polite"
+          aria-label={t('rushHour.building')}
+        >
+        {Array.from({ length: size * cols }, (_, vis) => {
+          const row = Math.floor(vis / cols)
+          const col = vis % cols
+          const exit = col === size && row === outRow
+          const gutter = col === size && !exit
+          return (
+            <div
+              key={vis}
+              className={cn(
+                'rush-cell',
+                gutter && 'rush-cell-gutter',
+                exit && 'rush-cell-exit',
+                col < size && 'rush-cell-lot rush-cell-building'
+              )}
+            />
+          )
+        })}
+        </div>
+        <p className="rush-building-label">{t('rushHour.building')}</p>
+      </div>
+    </div>
+  )
+}
+
 function Car({
   vehicle,
   size,
@@ -265,10 +310,16 @@ function Car({
       disabled={ended}
       onPointerDown={onPointerDown}
     >
-      <span
-        className={cn('rush-car-mark', dir === 'h' ? 'rush-car-mark-h' : 'rush-car-mark-v')}
-        aria-hidden
-      />
+      {isPrimary(vehicle) ? (
+        <span className="rush-car-hero" aria-hidden>
+          <span className="rush-car-hero-arrow" />
+        </span>
+      ) : (
+        <span
+          className={cn('rush-car-mark', dir === 'h' ? 'rush-car-mark-h' : 'rush-car-mark-v')}
+          aria-hidden
+        />
+      )}
     </button>
   )
 }
