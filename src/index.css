@@ -491,3 +491,182 @@
   height: 12.5%;
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+.rush-grid {
+  position: relative;
+  gap: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #12171d;
+  touch-action: none;
+}
+
+.rush-grid > .rush-cell {
+  border-radius: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+.rush-cell-lot {
+  background: #1c242d;
+  box-shadow: inset 0 0 0 1px #12171d;
+}
+
+.rush-cell-gutter {
+  background: #12171d;
+}
+
+.rush-cell-wall {
+  background: #1c242d;
+  box-shadow: inset 0 0 0 1px #12171d;
+}
+
+.rush-wall {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18%;
+  box-sizing: border-box;
+  width: 72%;
+  height: 72%;
+  padding: 16%;
+  border-radius: clamp(4px, 1.1cqmin, 8px);
+  background: #d8dee6;
+}
+
+.rush-wall-bar {
+  flex: 0 0 auto;
+  height: 22%;
+  min-height: 3px;
+  border-radius: 999px;
+  background: #5a6572;
+}
+
+.rush-cell-gate {
+  box-shadow:
+    inset 0 0 0 1px #12171d,
+    inset -2px 0 0 color-mix(in srgb, var(--color-accent) 75%, transparent);
+}
+
+.rush-cell-exit {
+  background: #12171d;
+}
+
+.rush-exit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.7cqmin, 5px);
+  width: 70%;
+  height: 36%;
+  font-size: clamp(0.7rem, 5.2cqmin, 1.25rem);
+}
+
+.rush-exit-chevron {
+  flex: 0 0 auto;
+  width: 0.32em;
+  height: 0.32em;
+  border-right: 2px solid color-mix(in srgb, var(--color-accent) 75%, white);
+  border-top: 2px solid color-mix(in srgb, var(--color-accent) 75%, white);
+  transform: rotate(45deg);
+  opacity: 0.85;
+}
+
+.rush-exit-chevron:first-child {
+  opacity: 0.35;
+}
+
+.rush-car {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: clamp(6px, 1.5cqmin, 12px);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, white 12%, transparent);
+  touch-action: none;
+  user-select: none;
+  appearance: none;
+  cursor: pointer;
+  -webkit-user-drag: none;
+}
+
+.rush-car:focus {
+  outline: none;
+}
+
+.rush-car:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.rush-car-mark {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 999px;
+  background: color-mix(in srgb, white 26%, transparent);
+}
+
+.rush-car-mark-h {
+  top: 50%;
+  right: 14%;
+  width: 16%;
+  height: 10%;
+  min-height: 3px;
+  transform: translateY(-50%);
+}
+
+.rush-car-mark-v {
+  left: 50%;
+  bottom: 14%;
+  width: 10%;
+  height: 16%;
+  min-width: 3px;
+  transform: translateX(-50%);
+}
+
+.rush-car-red:not(.rush-car-selected):not(.rush-car-dragging) {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, white 20%, transparent);
+}
+
+.rush-car-selected:not(.rush-car-dragging) {
+  z-index: 3;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.rush-car-hint {
+  animation: rush-hint-pulse 0.9s ease;
+}
+
+@keyframes rush-hint-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  40% {
+    filter: brightness(1.18);
+  }
+}
+
+.rush-car-dragging {
+  z-index: 4;
+  transition: none;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.rush-car:not(.rush-car-dragging) {
+  transition:
+    left 0.12s ease-out,
+    top 0.12s ease-out;
+}
+
+.rush-car-ended {
+  cursor: default;
+}
