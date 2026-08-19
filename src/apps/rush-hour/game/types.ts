@@ -1,7 +1,7 @@
 export const PRIMARY = 'A'
 
 export type Dir = 'h' | 'v'
-export type DiffId = 'easy' | 'medium' | 'hard' | 'expert'
+export type DiffId = 'easy' | 'medium' | 'hard' | 'expert' | 'insane'
 export type GameStatus = 'ready' | 'playing' | 'won'
 
 export type Vehicle = {

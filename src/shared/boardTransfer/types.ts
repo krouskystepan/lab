@@ -86,13 +86,13 @@ export type RushHourBoardFile = {
   format: typeof BOARD_FORMAT
   version: typeof BOARD_VERSION
   family: 'rushhour'
-  /** Current 36-char lot. */
+  /** Current square lot. */
   grid: string
   /** Starting lot for Reset. */
   start?: string
   game?: {
     puzzleId: string
-    diffId: 'easy' | 'medium' | 'hard' | 'expert'
+    diffId: 'easy' | 'medium' | 'hard' | 'expert' | 'insane'
     moves?: number
     status?: 'ready' | 'playing' | 'won'
     seconds?: number

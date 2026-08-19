@@ -13,7 +13,7 @@ import {
 } from './types'
 
 function isDiffId(v: unknown): v is DiffId {
-  return v === 'easy' || v === 'medium' || v === 'hard' || v === 'expert'
+  return v === 'easy' || v === 'medium' || v === 'hard' || v === 'expert' || v === 'insane'
 }
 
 function isStatus(v: unknown): v is GameStatus {

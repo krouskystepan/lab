@@ -15,19 +15,22 @@ const DIFF_LABEL: Record<
   | 'rushHour.diff.medium'
   | 'rushHour.diff.hard'
   | 'rushHour.diff.expert'
+  | 'rushHour.diff.insane'
 > = {
   easy: 'rushHour.diff.easy',
   medium: 'rushHour.diff.medium',
   hard: 'rushHour.diff.hard',
-  expert: 'rushHour.diff.expert'
+  expert: 'rushHour.diff.expert',
+  insane: 'rushHour.diff.insane'
 }
 
 type DiffBarProps = {
   diffId: DiffId
+  busy?: boolean
   onDiffChange: (id: DiffId) => void
 }
 
-export function DiffBar({ diffId, onDiffChange }: DiffBarProps) {
+export function DiffBar({ diffId, busy, onDiffChange }: DiffBarProps) {
   const { t } = useI18n()
 
   return (
@@ -40,17 +43,23 @@ export function DiffBar({ diffId, onDiffChange }: DiffBarProps) {
           <p className="m-0">{t('rushHour.diff.helpBody')}</p>
         </HelpTip>
       </div>
-      <div className="grid w-full grid-cols-4 gap-1.5">
+      <div className="grid w-full grid-cols-5 gap-1.5">
         {PRESETS.map((p) => (
           <button
             key={p.id}
             type="button"
             className={cn(
               btn,
-              'min-w-0 truncate px-1 py-[0.4rem] text-center text-[0.8rem] max-[720px]:text-[0.9rem]',
-              diffId === p.id && btnActive
+              'min-w-0 truncate px-1 py-[0.4rem] text-center text-[0.75rem] max-[720px]:text-[0.82rem]',
+              p.id === 'insane' &&
+                'border-danger/45 text-[#ffb0b0] hover:border-danger/75 hover:bg-danger/20',
+              diffId === p.id && btnActive,
+              diffId === p.id &&
+                p.id === 'insane' &&
+                'border-danger bg-danger/25 text-[#ffd0d0]'
             )}
             title={t('rushHour.diff.applyTitle')}
+            aria-busy={busy && diffId === p.id}
             onClick={() => onDiffChange(p.id)}
           >
             {t(DIFF_LABEL[p.id])}
