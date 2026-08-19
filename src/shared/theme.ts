@@ -56,6 +56,14 @@ export const chessMateTheme: AppTheme = {
   glow: '#6b7c90'
 }
 
+/** Rush Hour - traffic red. */
+export const rushHourTheme: AppTheme = {
+  accent: '#e24a4a',
+  accentHover: '#ed6060',
+  onAccent: '#ffe8e8',
+  glow: '#e24a4a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }

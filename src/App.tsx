@@ -6,10 +6,12 @@ import SudokuApp from './apps/sudoku/SudokuApp'
 import SudokuHelperApp from './apps/sudoku-helper/SudokuHelperApp'
 import WordleApp from './apps/wordle/WordleApp'
 import ChessMateApp from './apps/chess-mate/ChessMateApp'
+import RushHourApp from './apps/rush-hour/RushHourApp'
 import {
   chessMateTheme,
   mineHelperTheme,
   minesweeperTheme,
+  rushHourTheme,
   sudokuTheme,
   wordleTheme
 } from './shared/theme'
@@ -66,6 +68,14 @@ function ChessMateRoute() {
   )
 }
 
+function RushHourRoute() {
+  return (
+    <ThemeScope theme={rushHourTheme} className="flex h-full min-h-0 flex-col">
+      <RushHourApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -88,6 +98,7 @@ export default function App() {
           <Route path="/games/minesweeper" element={<MinesweeperRoute />} />
           <Route path="/games/sudoku" element={<SudokuRoute />} />
           <Route path="/games/wordle" element={<WordleRoute />} />
+          <Route path="/games/rush-hour" element={<RushHourRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/solvers/chess-mate" element={<ChessMateRoute />} />
