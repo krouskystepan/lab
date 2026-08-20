@@ -373,7 +373,7 @@ export default function SudokuHelperApp() {
         ]}
       />
 
-      <div className="board-frame order-3 rounded-md bg-elevated/40 p-1 max-[980px]:order-1">
+      <div className="board-frame order-3 [--board-pad:0.25rem] rounded-md bg-elevated/40 max-[980px]:order-1">
         <div className="board-stage">
           <Grid
             cells={cells}

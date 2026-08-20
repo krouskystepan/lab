@@ -3,6 +3,7 @@ import { Bomb, Flag } from 'lucide-react'
 import type { Cell, PointerMode } from '../game/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { cellCornerClass } from '../../../shared/lib/cellCorner'
 
 const LONG_PRESS_MS = 450
 
@@ -67,6 +68,7 @@ export function Grid({
           ended={ended}
           isHit={hitIndex === i}
           mode={mode}
+          cornerClass={cellCornerClass(i, width, height)}
           onReveal={onReveal}
           onFlag={onFlag}
           onChord={onChord}
@@ -82,6 +84,7 @@ function CellButton({
   ended,
   isHit,
   mode,
+  cornerClass,
   onReveal,
   onFlag,
   onChord
@@ -91,6 +94,7 @@ function CellButton({
   ended: boolean
   isHit: boolean
   mode: PointerMode
+  cornerClass?: string
   onReveal: (index: number) => void
   onFlag: (index: number) => void
   onChord: (index: number) => void
@@ -117,7 +121,7 @@ function CellButton({
   return (
     <button
       type="button"
-      className={cn(cellClass(cell, isHit))}
+      className={cn(cellClass(cell, isHit), cornerClass)}
       style={cellStyle(cell)}
       disabled={ended && cell.view !== 'revealed' && !cell.isMine}
       onPointerDown={(e) => {

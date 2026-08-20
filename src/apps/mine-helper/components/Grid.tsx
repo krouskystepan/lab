@@ -5,6 +5,7 @@ import { CELL_ASPECTS, chanceTip } from '../solver/types'
 import { colLabel } from '../solver/neighbors'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { cellCornerClass } from '../../../shared/lib/cellCorner'
 
 interface GridProps {
   width: number
@@ -66,6 +67,7 @@ export function Grid({
           index={i}
           cell={cell}
           goalMode={goalMode}
+          cornerClass={cellCornerClass(i, width, height)}
           onCellClick={onCellClick}
           onCellClear={onCellClear}
           whyClass={whyClass(
@@ -141,6 +143,7 @@ function CellButton({
   index,
   cell,
   goalMode,
+  cornerClass,
   onCellClick,
   onCellClear,
   whyClass
@@ -148,6 +151,7 @@ function CellButton({
   index: number
   cell: BoardCell
   goalMode: GoalMode
+  cornerClass?: string
   onCellClick: (index: number) => void
   onCellClear?: (index: number) => void
   whyClass: string
@@ -171,7 +175,7 @@ function CellButton({
   return (
     <button
       type="button"
-      className={cn(cellClass(cell, goalMode), whyClass)}
+      className={cn(cellClass(cell, goalMode), whyClass, cornerClass)}
       style={cellStyle(cell, goalMode)}
       title={hint}
       onPointerDown={(e) => {

@@ -356,7 +356,7 @@ export default function WordleApp() {
         ]}
       />
 
-      <div className="board-frame order-1 rounded-md bg-elevated/40 p-1">
+      <div className="board-frame order-1 [--board-pad:0.25rem] rounded-md bg-elevated/40">
         <div className="board-stage">
           <Grid board={board} shake={shake} />
         </div>

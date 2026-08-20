@@ -973,7 +973,7 @@ export default function MineHelperApp() {
       </header>
 
       <div
-        className={`board-frame order-1 rounded-md border border-line bg-elevated p-[0.15rem] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] ${whyMode ? 'why-mode' : ''}`}
+        className={`board-frame order-1 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] ${whyMode ? 'why-mode' : ''}`}
       >
         <div className={`board-stage ${whyMode ? 'with-why' : ''}`}>
           <Grid

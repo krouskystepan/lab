@@ -1,15 +1,22 @@
 import type { ReactNode } from 'react'
 import { cn } from '../lib/cn'
 
-/** Shared panel chrome for game control strips. */
-export const gamePanel =
-  'flex min-w-0 w-full max-w-none flex-col gap-2 overflow-visible rounded-md border border-line bg-panel px-2.5 py-2 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[980px]:px-1.5 max-[980px]:py-1.5'
+/**
+ * Shared panel chrome for game control strips.
+ * Padding + radius stay in sync via --panel-* so nested buttons don’t pinch corners.
+ */
+export const gamePanel = cn(
+  'game-panel',
+  'flex min-w-0 w-full max-w-none flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]'
+)
 
 export const gamePanelTitle =
   'm-0 shrink-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[980px]:hidden [@media(max-height:700px)]:hidden'
 
-export const gameBtn =
-  'cursor-pointer appearance-none rounded-sm border border-line bg-cell font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40'
+export const gameBtn = cn(
+  'game-panel-btn',
+  'cursor-pointer appearance-none border border-line bg-cell font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40'
+)
 
 export const gameBtnActive = 'border-accent bg-accent/25 text-on-accent'
 

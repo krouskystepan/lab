@@ -54,7 +54,7 @@ export function Board({
   }, [anim])
 
   return (
-    <div className="relative w-full max-w-full self-center">
+    <div className="relative mx-auto w-fit max-w-full self-center">
       <div
         className="mine-grid chess-grid"
         style={

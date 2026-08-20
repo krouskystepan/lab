@@ -47,7 +47,7 @@ export function ComingSoonPage() {
   return (
     <ThemeScope
       theme={theme}
-      className="flex h-full min-h-0 flex-col overflow-auto"
+      className="flex min-h-0 w-full flex-1 flex-col"
     >
       <div className="hub-page mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-5 pb-6 sm:px-8 sm:pt-6">
         <header className="flex items-center justify-between gap-4 border-b border-line pb-3">
