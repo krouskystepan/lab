@@ -963,7 +963,7 @@ export default function MineHelperApp() {
             </div>
           </div>
         </div>
-        <div className="w-full min-[981px]:hidden">
+        <div className="game-secondary w-full min-[981px]:hidden">
           <GoalModeToggle value={goalMode} onChange={onGoalModeChange} />
         </div>
         <div className="hidden w-full flex-wrap items-center justify-start gap-2.5 min-[981px]:flex">
@@ -1005,7 +1005,7 @@ export default function MineHelperApp() {
       </div>
 
       {/* Size | Tools — under the board so the grid stays visible */}
-      <div className="relative z-5 order-3 flex w-full shrink-0 flex-col gap-[0.55rem] min-[981px]:order-2 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] min-[981px]:items-stretch">
+      <div className="game-secondary relative z-5 order-3 flex w-full shrink-0 flex-col gap-[0.55rem] min-[981px]:order-2 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] min-[981px]:items-stretch">
         <div className="min-[981px]:order-2 min-[981px]:h-full">
           <Toolbar
             mode={mode}
@@ -1041,7 +1041,7 @@ export default function MineHelperApp() {
 
       {/* Number pad sticky on phone; board tools last */}
       <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-start gap-[0.55rem] max-[980px]:contents min-[981px]:order-3">
-        <div className="max-[980px]:order-5 max-[980px]:w-full min-[981px]:w-fit">
+        <div className="game-secondary max-[980px]:order-5 max-[980px]:w-full min-[981px]:w-fit">
           <BoardTools
             width={width}
             height={height}

@@ -24,7 +24,7 @@ export function SiteFooter() {
   }
 
   return (
-    <footer className="relative z-40 w-full shrink-0 border-t border-line bg-elevated/95">
+    <footer className="relative z-40 w-full shrink-0 border-t border-line bg-elevated/95 [@media(max-width:980px)_and_(max-height:480px)]:hidden">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-1.5 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-8 sm:py-2.5">
         <nav aria-label={t('hub.breadcrumb')} className="min-w-0 w-full sm:flex-1">
           <ol className="m-0 flex list-none flex-wrap items-center gap-x-1.5 gap-y-0.5 p-0 text-[0.75rem] leading-snug">

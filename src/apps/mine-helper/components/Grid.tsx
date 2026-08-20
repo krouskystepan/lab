@@ -388,7 +388,7 @@ function cellLabel(
         {tag && (
           <span
             className={cn(
-              'px-[0.1em] text-center text-[0.48em] font-extrabold uppercase leading-[1.05] tracking-[0.02em]',
+              'px-[0.05em] text-center text-[0.4em] font-extrabold uppercase leading-[1.05] tracking-[0.01em]',
               tip === 'best' && 'text-[#ffe566]',
               tip === 'safest' && 'text-[#ffb078]',
               tip === 'unclued' && 'text-[#e0c4ff]'

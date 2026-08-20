@@ -35,10 +35,10 @@ interface ToolbarProps {
 }
 
 const btn =
-  'game-panel-btn cursor-pointer appearance-none border border-line bg-cell px-2 py-1.5 text-sm font-semibold whitespace-nowrap transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40 max-[980px]:min-h-[2.45rem] max-[980px]:justify-center max-[720px]:text-[0.9rem]'
+  'game-panel-btn cursor-pointer appearance-none border border-line bg-cell px-2 py-1.5 text-sm font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40 max-[980px]:min-h-[2.45rem] max-[980px]:justify-center max-[720px]:text-[0.9rem]'
 
 const modeBtn =
-  'max-[980px]:min-w-0 max-[980px]:flex-1 max-[980px]:justify-center max-[980px]:px-1.5'
+  'inline-flex min-w-0 flex-col items-center justify-center gap-0.5 px-1.5 py-1.5 text-center leading-tight sm:flex-row sm:gap-1.5 sm:px-2'
 
 const iconCls = 'h-[0.95em] w-[0.95em] shrink-0'
 
@@ -112,7 +112,7 @@ export function Toolbar({
   )
 
   return (
-    <section className="game-panel flex h-full min-w-0 flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]">
+    <section className="game-panel flex min-h-0 min-w-0 flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]">
       <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
         <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
           {t('tools.title')}
@@ -121,14 +121,13 @@ export function Toolbar({
       </div>
 
       {/* Row 1: mark modes + Total/Auto — wraps on narrow panels */}
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <div className="flex min-w-0 w-full items-stretch gap-[0.35rem] min-[481px]:w-auto min-[481px]:flex-wrap">
+      <div className="flex flex-col gap-2 min-[640px]:flex-row min-[640px]:flex-wrap min-[640px]:items-center min-[640px]:justify-between">
+        <div className="grid w-full grid-cols-3 gap-[0.35rem] min-[640px]:flex min-[640px]:w-auto min-[640px]:flex-wrap">
           <button
             type="button"
             className={cn(
               btn,
               modeBtn,
-              'inline-flex items-center gap-1.5',
               mode === 'number' &&
                 'border-mine bg-[color-mix(in_srgb,var(--color-mine)_28%,var(--color-cell))] text-[#c8d6ff]'
             )}
@@ -144,7 +143,9 @@ export function Toolbar({
             >
               #
             </span>
-            <span className="min-w-0 truncate">{numberLabel}</span>
+            <span className="max-w-full whitespace-normal break-words">
+              {numberLabel}
+            </span>
           </button>
 
           {showInfoTool ? (
@@ -153,7 +154,6 @@ export function Toolbar({
               className={cn(
                 btn,
                 modeBtn,
-                'inline-flex items-center gap-1.5',
                 mode === 'info' &&
                   'border-info bg-[color-mix(in_srgb,var(--color-info)_28%,var(--color-cell))] text-[#bffaf5]'
               )}
@@ -169,7 +169,9 @@ export function Toolbar({
               >
                 #
               </span>
-              <span className="min-w-0 truncate">{t('tools.info')}</span>
+              <span className="max-w-full whitespace-normal break-words">
+                {t('tools.info')}
+              </span>
             </button>
           ) : null}
 
@@ -179,7 +181,6 @@ export function Toolbar({
               className={cn(
                 btn,
                 modeBtn,
-                'inline-flex items-center gap-1.5',
                 mode === 'flag' &&
                   'border-[color-mix(in_srgb,var(--color-flag)_65%,var(--color-line))] bg-[color-mix(in_srgb,var(--color-flag)_22%,var(--color-cell))] text-flag'
               )}
@@ -192,7 +193,9 @@ export function Toolbar({
                 strokeWidth={1.5}
                 aria-hidden
               />
-              <span className="min-w-0 truncate">{t('tools.flag')}</span>
+              <span className="max-w-full whitespace-normal break-words">
+                {t('tools.flag')}
+              </span>
             </button>
           ) : null}
 
@@ -202,7 +205,6 @@ export function Toolbar({
               className={cn(
                 btn,
                 modeBtn,
-                'inline-flex items-center gap-1.5',
                 mode === 'blank' &&
                   'border-[#6a7585] bg-[color-mix(in_srgb,#4a5360_55%,var(--color-cell))] text-[#c5ced8]'
               )}
@@ -222,7 +224,9 @@ export function Toolbar({
               ) : (
                 <Shield className={iconCls} aria-hidden />
               )}
-              <span className="min-w-0 truncate">{safeLabel}</span>
+              <span className="max-w-full whitespace-normal break-words">
+                {safeLabel}
+              </span>
             </button>
           ) : null}
         </div>
@@ -268,9 +272,9 @@ export function Toolbar({
         </div>
       </div>
 
-      {/* Row 2: history + actions — wraps on narrow panels */}
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <div className="flex min-w-0 flex-wrap items-center gap-[0.35rem] max-[980px]:w-full">
+      {/* History left · actions right — one row with space between */}
+      <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <div className="flex min-w-0 items-center gap-[0.35rem]">
           <button
             type="button"
             className={cn(btn, 'inline-flex shrink-0 items-center gap-1.5')}
@@ -292,7 +296,7 @@ export function Toolbar({
             {t('tools.redo')}
           </button>
         </div>
-        <div className="flex min-w-0 flex-wrap items-center gap-[0.35rem] max-[980px]:w-full">
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-[0.35rem]">
           <button
             type="button"
             className={cn(
