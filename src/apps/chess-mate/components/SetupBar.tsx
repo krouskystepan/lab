@@ -84,12 +84,12 @@ export function SetupBar({
             </button>
           ))}
         </div>
-        <div className="ml-auto flex min-w-0 flex-1 flex-wrap items-center justify-end gap-1">
+        <div className="grid w-full min-w-0 grid-cols-2 gap-1 sm:ml-auto sm:flex sm:w-auto sm:flex-1 sm:flex-wrap sm:items-center sm:justify-end">
           {PRESETS.map((p) => (
             <button
               key={p.id}
               type="button"
-              className={cn(btn, 'px-2 py-[0.32rem] text-[0.75rem]')}
+              className={cn(btn, 'min-w-0 px-2 py-[0.4rem] text-[0.75rem] max-[980px]:min-h-[2.4rem]')}
               title={t(PRESET_LABEL[p.id])}
               onClick={() => onPreset(p)}
             >

@@ -3,6 +3,7 @@ export const commonEn = {
   'lang.cs': 'CS',
   'lang.switch': 'Language',
   'help.about': 'About {title}',
+  'help.menu': 'Help',
   'author.by': 'by Štěpán Krouský',
   'author.title': 'Štěpán Krouský - portfolio',
   'transfer.export': 'Export',

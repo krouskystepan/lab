@@ -6,8 +6,9 @@ import { showToast } from '../toast'
 import { downloadJson, parseBoardFile, readFileAsText } from './types'
 import type { BoardFamily, BoardFile } from './types'
 
-const headerBtn =
-  'cursor-pointer appearance-none inline-flex items-center gap-1 rounded-sm border border-line bg-cell px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] text-muted transition-[background,color] duration-100 hover:bg-cell-hover hover:text-ink active:scale-[0.97]'
+/** Match LangSwitch: one segmented shell, flush icon cells. */
+const segBtn =
+  'cursor-pointer appearance-none inline-flex h-[1.7rem] items-center justify-center gap-1 rounded-none border-0 px-[0.45rem] text-[0.68rem] font-bold tracking-[0.04em] text-muted transition-[background,color] duration-100 hover:bg-cell-hover hover:text-ink'
 
 const iconCls = 'h-[0.85em] w-[0.85em] shrink-0'
 
@@ -24,7 +25,7 @@ type ExportImportButtonsProps = {
   className?: string
 }
 
-/** Header Export / Import - sized to sit next to the language switcher. */
+/** Header Export / Import — same chrome as language switch. */
 export function ExportImportButtons({
   filename,
   family,
@@ -75,29 +76,31 @@ export function ExportImportButtons({
   return (
     <div
       className={cn(
-        'inline-flex shrink-0 items-center gap-[0.35rem]',
+        'inline-flex h-[1.7rem] shrink-0 overflow-hidden rounded-sm border border-line bg-cell',
         className
       )}
+      role="group"
+      aria-label={`${t('transfer.export')} / ${t('transfer.import')}`}
     >
       <button
         type="button"
-        className={headerBtn}
+        className={segBtn}
         onClick={handleExport}
         title={t('transfer.exportTitle')}
         aria-label={t('transfer.export')}
       >
         <Download className={iconCls} aria-hidden />
-        <span className="max-[520px]:hidden">{t('transfer.export')}</span>
+        <span className="max-[980px]:hidden">{t('transfer.export')}</span>
       </button>
       <button
         type="button"
-        className={headerBtn}
+        className={segBtn}
         onClick={() => inputRef.current?.click()}
         title={t('transfer.importTitle')}
         aria-label={t('transfer.import')}
       >
         <Upload className={iconCls} aria-hidden />
-        <span className="max-[520px]:hidden">{t('transfer.import')}</span>
+        <span className="max-[980px]:hidden">{t('transfer.import')}</span>
       </button>
       <input
         ref={inputRef}

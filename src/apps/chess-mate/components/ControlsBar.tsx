@@ -1,22 +1,22 @@
-import {
-  FlipHorizontal2,
-  Redo2,
-  Sparkles,
-  Undo2
-} from 'lucide-react'
+import { FlipHorizontal2, Redo2, Sparkles, Undo2 } from 'lucide-react'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { HelpTip } from './HelpTip'
 import { PieceGlyph } from './PieceGlyph'
-import type { MatePly, MateResult, Piece, PieceKind, Side } from '../solver/types'
+import type {
+  MatePly,
+  MateResult,
+  Piece,
+  PieceKind,
+  Side
+} from '../solver/types'
 import { KINDS } from '../solver/types'
 import type { Brush } from '../storage/prefs'
 
 const btn =
   'cursor-pointer appearance-none rounded-sm border border-line bg-cell font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40'
 
-const iconBtn =
-  'inline-flex size-9 shrink-0 items-center justify-center p-0'
+const iconBtn = 'inline-flex size-9 shrink-0 items-center justify-center p-0'
 
 const PIECE_NAME: Record<
   PieceKind,
@@ -74,7 +74,7 @@ export function ControlsBar({
   const { t } = useI18n()
 
   return (
-    <div className="flex min-w-0 flex-col gap-1.5">
+    <div className="flex min-w-0 w-full flex-col gap-1.5">
       <ResultStrip
         result={result}
         mateN={mateN}
@@ -82,73 +82,69 @@ export function ControlsBar({
         viewStep={viewStep}
         onViewStep={onViewStep}
       />
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-        <PieceRow
-          side="w"
-          brush={brush}
-          onBrush={onBrush}
-          label={t('chessMate.pad.white')}
-        />
-        <PieceRow
-          side="b"
-          brush={brush}
-          onBrush={onBrush}
-          label={t('chessMate.pad.black')}
-        />
+      <PieceRow
+        side="w"
+        brush={brush}
+        onBrush={onBrush}
+        label={t('chessMate.pad.white')}
+      />
+      <PieceRow
+        side="b"
+        brush={brush}
+        onBrush={onBrush}
+        label={t('chessMate.pad.black')}
+      />
 
-        <span className="hidden h-7 w-px shrink-0 bg-line sm:block" aria-hidden />
-
-        <div className="flex shrink-0 flex-nowrap items-center justify-end gap-1">
-          <HelpTip title={t('chessMate.help.title')}>
-            <p className="m-0 mb-1.5">{t('chessMate.help.body')}</p>
-            <p className="m-0">{t('chessMate.help.solve')}</p>
-          </HelpTip>
-          <button
-            type="button"
-            className={cn(toolBtn, iconBtn)}
-            onClick={onFlip}
-            title={t('chessMate.tools.flipTitle')}
-            aria-label={t('chessMate.tools.flip')}
-          >
-            <FlipHorizontal2 className={iconCls} aria-hidden />
-          </button>
-          <button
-            type="button"
-            className={cn(toolBtn, iconBtn)}
-            onClick={onUndo}
-            disabled={!canUndo}
-            title={t('chessMate.tools.undoTitle')}
-            aria-label={t('chessMate.tools.undo')}
-          >
-            <Undo2 className={iconCls} aria-hidden />
-          </button>
-          <button
-            type="button"
-            className={cn(toolBtn, iconBtn)}
-            onClick={onRedo}
-            disabled={!canRedo}
-            title={t('chessMate.tools.redoTitle')}
-            aria-label={t('chessMate.tools.redo')}
-          >
-            <Redo2 className={iconCls} aria-hidden />
-          </button>
-          <button
-            type="button"
-            className={cn(
-              toolBtn,
-              'inline-flex shrink-0 items-center gap-1.5 border-accent bg-accent px-3 font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
-            )}
-            onClick={onSolve}
-            disabled={searching}
-            title={t('chessMate.tools.solveTitle')}
-          >
-            <Sparkles
-              className={cn(iconCls, searching && 'animate-pulse')}
-              aria-hidden
-            />
-            {t('chessMate.tools.solve')}
-          </button>
-        </div>
+      <div className="flex min-w-0 w-full flex-wrap items-center gap-1.5">
+        <HelpTip title={t('chessMate.help.title')}>
+          <p className="m-0 mb-1.5">{t('chessMate.help.body')}</p>
+          <p className="m-0">{t('chessMate.help.solve')}</p>
+        </HelpTip>
+        <button
+          type="button"
+          className={cn(toolBtn, iconBtn)}
+          onClick={onFlip}
+          title={t('chessMate.tools.flipTitle')}
+          aria-label={t('chessMate.tools.flip')}
+        >
+          <FlipHorizontal2 className={iconCls} aria-hidden />
+        </button>
+        <button
+          type="button"
+          className={cn(toolBtn, iconBtn)}
+          onClick={onUndo}
+          disabled={!canUndo}
+          title={t('chessMate.tools.undoTitle')}
+          aria-label={t('chessMate.tools.undo')}
+        >
+          <Undo2 className={iconCls} aria-hidden />
+        </button>
+        <button
+          type="button"
+          className={cn(toolBtn, iconBtn)}
+          onClick={onRedo}
+          disabled={!canRedo}
+          title={t('chessMate.tools.redoTitle')}
+          aria-label={t('chessMate.tools.redo')}
+        >
+          <Redo2 className={iconCls} aria-hidden />
+        </button>
+        <button
+          type="button"
+          className={cn(
+            toolBtn,
+            'ml-auto inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 border-accent bg-accent px-3 font-bold text-white hover:border-accent-hover hover:bg-accent-hover max-[980px]:min-h-10 sm:flex-none'
+          )}
+          onClick={onSolve}
+          disabled={searching}
+          title={t('chessMate.tools.solveTitle')}
+        >
+          <Sparkles
+            className={cn(iconCls, searching && 'animate-pulse')}
+            aria-hidden
+          />
+          {t('chessMate.tools.solve')}
+        </button>
       </div>
     </div>
   )
@@ -230,7 +226,12 @@ function ResultStrip({
               title={t('chessMate.steps.startTitle')}
               onClick={() => onViewStep(0)}
             >
-              <span className={cn('tabular-nums', viewStep === 0 ? 'text-white/70' : 'text-muted')}>
+              <span
+                className={cn(
+                  'tabular-nums',
+                  viewStep === 0 ? 'text-white/70' : 'text-muted'
+                )}
+              >
                 0
               </span>
               <span>{t('chessMate.steps.start')}</span>
@@ -252,7 +253,12 @@ function ResultStrip({
                   title={t('chessMate.steps.item', { n: step, san: ply.san })}
                   onClick={() => onViewStep(step)}
                 >
-                  <span className={cn('tabular-nums', active ? 'text-white/70' : 'text-muted')}>
+                  <span
+                    className={cn(
+                      'tabular-nums',
+                      active ? 'text-white/70' : 'text-muted'
+                    )}
+                  >
                     {step}
                   </span>
                   <span className="font-mono">{ply.san}</span>
@@ -279,20 +285,22 @@ function PieceRow({
 }) {
   const { t } = useI18n()
   return (
-    <div className="inline-flex items-center gap-1" role="group" aria-label={label}>
+    <div
+      className="grid w-full min-w-0 grid-cols-6 gap-1"
+      role="group"
+      aria-label={label}
+    >
       {KINDS.map((kind) => {
         const piece: Piece = { kind, side }
         const active =
-          brush !== null &&
-          brush.kind === kind &&
-          brush.side === side
+          brush !== null && brush.kind === kind && brush.side === side
         return (
           <button
             key={`${side}${kind}`}
             type="button"
             className={cn(
               btn,
-              iconBtn,
+              'inline-flex aspect-square min-h-10 w-full items-center justify-center p-0 max-[980px]:min-h-11',
               side === 'w'
                 ? 'border-[#c9c0b0] bg-[#efe8da] hover:bg-[#f6f0e4]'
                 : 'border-[#4a4a4a] bg-[#1f1f1f] hover:bg-[#2a2a2a]',

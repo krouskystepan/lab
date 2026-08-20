@@ -2,14 +2,14 @@ import { useI18n } from '../i18n'
 import { cn } from '../shared/lib/cn'
 
 const btn =
-  'cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em]'
+  'cursor-pointer appearance-none inline-flex h-[1.7rem] items-center rounded-none border-0 px-[0.45rem] text-[0.68rem] font-bold tracking-[0.04em]'
 
 export function LangSwitch() {
   const { t, locale, setLocale } = useI18n()
 
   return (
     <div
-      className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
+      className="inline-flex h-[1.7rem] shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
       role="group"
       aria-label={t('lang.switch')}
     >

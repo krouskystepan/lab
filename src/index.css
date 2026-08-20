@@ -50,6 +50,81 @@
     overflow-x: clip;
   }
 
+  /*
+   * Full-screen game pages. Desktop: max-width column. Mobile: full bleed.
+   * Scrolling lives on .game-page (full viewport width) so the scrollbar
+   * sits on the far right — not beside a centered column.
+   */
+  .game-shell {
+    @apply mx-auto flex h-full min-h-0 w-full max-w-275 flex-col gap-[0.55rem] overflow-x-clip px-[0.85rem] pt-[0.65rem] pb-3;
+  }
+
+  .game-page {
+    @apply flex h-full min-h-0 w-full flex-col overflow-x-clip overflow-y-auto;
+  }
+
+  /*
+   * Sudoku / Wordle: lock to the viewport — no scrollport.
+   * Board flex-fills leftover space; chrome stays shrink-0.
+   */
+  .game-page--fit {
+    @apply overflow-y-hidden;
+  }
+
+  .game-page--fit .game-shell {
+    @apply h-full min-h-0 overflow-x-clip overflow-y-hidden;
+  }
+
+  @media (max-width: 980px) {
+    .game-shell {
+      @apply mx-0 max-w-none gap-[0.35rem] pt-1.5 pb-[0.45rem];
+      width: 100%;
+      height: auto;
+      min-height: 100%;
+      padding-inline: max(0.35rem, env(safe-area-inset-left, 0px))
+        max(0.35rem, env(safe-area-inset-right, 0px));
+      --board-max-h: calc(100svh - 8.5rem - env(safe-area-inset-bottom, 0px));
+    }
+
+    .game-page {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
+
+    .game-page--fit .game-shell {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .game-page--fit .game-sticky-controls {
+      position: relative;
+      bottom: auto;
+      z-index: 20;
+      border-top-width: 0;
+      background: transparent;
+      backdrop-filter: none;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  /* Sticky control strip under the board on phone/tablet */
+  .game-sticky-controls {
+    @apply relative z-20 w-full min-w-0;
+  }
+
+  @media (max-width: 980px) {
+    .game-sticky-controls {
+      /* No negative margins — those shrink the flex item and desync board width. */
+      @apply sticky bottom-0 z-30 w-full min-w-0 border-t border-line bg-bg/95 pt-1.5 pb-[max(0.45rem,env(safe-area-inset-bottom))] backdrop-blur-sm;
+    }
+
+    .game-sticky-controls > * {
+      @apply w-full max-w-none min-w-0;
+    }
+  }
+
   button,
   input {
     font: inherit;
@@ -326,25 +401,6 @@
   .board-stage.with-why > aside {
     margin-left: 0;
   }
-
-  .board-stage.with-why .mine-grid {
-    width: min(
-      100cqw,
-      calc(100cqh * 0.62 * var(--cols) * var(--cell-ar) / var(--rows))
-    );
-    max-height: 62%;
-  }
-
-  .board-stage.with-why .coord-board {
-    width: min(
-      100cqw,
-      calc(
-        (100cqh * 0.62 - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
-          var(--rows) + var(--coord-gutter-x)
-      )
-    );
-    max-height: 62%;
-  }
 }
 
 .wordle-grid {
@@ -363,6 +419,137 @@
 .mine-grid.wordle-grid > .cell {
   container-type: size;
   font-size: clamp(0.7rem, 52cqmin, 1.85rem);
+}
+
+/*
+ * Phone/tablet: full-bleed width. Square boards use the screen width;
+ * only shrink when the short side is height (e.g. landscape).
+ * Must come after .mine-grid / .wordle-grid / .coord-board.
+ */
+@media (max-width: 980px) {
+  .board-frame {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    align-items: center;
+    justify-content: center;
+    container-type: inline-size;
+  }
+
+  .board-stage {
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mine-grid,
+  .wordle-grid {
+    width: min(
+      100cqw,
+      calc(var(--board-max-h) * var(--cols) * var(--cell-ar) / var(--rows))
+    );
+    max-height: var(--board-max-h);
+  }
+
+  /* Wordle: always budget as if 6 rows so early guesses don’t inflate tiles */
+  .wordle-grid {
+    width: min(
+      100cqw,
+      calc(
+        var(--board-max-h) * var(--cols) * var(--cell-ar) /
+          var(--layout-rows, 6)
+      )
+    );
+    max-height: min(
+      var(--board-max-h),
+      calc(var(--board-max-h) * var(--rows) / var(--layout-rows, 6))
+    );
+  }
+
+  /*
+   * Coord gutters: 1fr row + indefinite height → board height collapses to ~0.
+   * Use auto row so the inner grid’s aspect-ratio can size the board.
+   */
+  .coord-board,
+  .board-stage.with-why .coord-board {
+    width: min(
+      100cqw,
+      calc(
+        (var(--board-max-h) - var(--coord-gutter-y)) * var(--cols) *
+          var(--cell-ar) / var(--rows) + var(--coord-gutter-x)
+      )
+    );
+    max-height: var(--board-max-h);
+    height: auto;
+    grid-template-rows: var(--coord-label-y) auto;
+  }
+
+  .coord-board .mine-grid {
+    width: 100% !important;
+    height: auto;
+    max-height: none;
+    aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
+  }
+
+  .board-stage.with-why .mine-grid {
+    width: min(
+      100cqw,
+      calc(var(--board-max-h) * var(--cols) * var(--cell-ar) / var(--rows))
+    );
+    max-height: var(--board-max-h);
+  }
+
+  .mine-grid > .cell {
+    font-size: clamp(0.7rem, 7.5cqw, 1.25rem);
+  }
+
+  .sudoku-grid > .cell {
+    font-size: clamp(0.85rem, 8.5cqw, 1.5rem);
+  }
+
+  .mine-grid.wordle-grid > .cell {
+    font-size: clamp(0.85rem, 12cqw, 2rem);
+  }
+
+  /*
+   * Locked games (Sudoku / Wordle): override width-first rules above.
+   * Board flex-fills leftover height; page does not scroll.
+   */
+  .game-page--fit .board-frame {
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    align-items: center;
+    justify-content: center;
+    container-type: size;
+  }
+
+  .game-page--fit .board-stage {
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .game-page--fit .mine-grid,
+  .game-page--fit .wordle-grid {
+    width: min(
+      100cqw,
+      calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows))
+    );
+    max-height: 100%;
+  }
+
+  .game-page--fit .wordle-grid {
+    width: min(
+      100cqw,
+      calc(100cqh * var(--cols) * var(--cell-ar) / var(--layout-rows, 6))
+    );
+    max-height: min(100%, calc(100cqh * var(--rows) / var(--layout-rows, 6)));
+  }
 }
 
 .wordle-mark-correct {

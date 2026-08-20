@@ -9,7 +9,7 @@ interface GoalModeToggleProps {
 }
 
 const chip =
-  'inline-flex cursor-pointer appearance-none items-center gap-1 rounded-none border-0 px-[0.5rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.02em] transition-[background,color] duration-100'
+  'inline-flex min-w-0 cursor-pointer appearance-none items-center justify-center gap-1 rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.02em] transition-[background,color] duration-100 max-[980px]:min-h-[2.4rem] max-[980px]:px-1.5 max-[980px]:text-[0.75rem]'
 
 /** Segmented control: find safe tiles vs find targets. */
 export function GoalModeToggle({ value, onChange }: GoalModeToggleProps) {
@@ -17,7 +17,7 @@ export function GoalModeToggle({ value, onChange }: GoalModeToggleProps) {
 
   return (
     <div
-      className="inline-flex overflow-hidden rounded-sm border border-line bg-cell"
+      className="grid w-full min-w-0 grid-cols-2 overflow-hidden rounded-sm border border-line bg-cell min-[981px]:inline-flex min-[981px]:w-auto"
       role="group"
       aria-label={t('goal.aria')}
     >
@@ -33,8 +33,8 @@ export function GoalModeToggle({ value, onChange }: GoalModeToggleProps) {
         title={t('goal.safeTip')}
         onClick={() => onChange('safe')}
       >
-        <Shield className="h-3 w-3 shrink-0" aria-hidden />
-        {t('goal.safe')}
+        <Shield className="h-3.5 w-3.5 shrink-0" aria-hidden />
+        <span className="truncate">{t('goal.safe')}</span>
       </button>
       <button
         type="button"
@@ -48,8 +48,8 @@ export function GoalModeToggle({ value, onChange }: GoalModeToggleProps) {
         title={t('goal.huntTip')}
         onClick={() => onChange('hunt')}
       >
-        <Target className="h-3 w-3 shrink-0" aria-hidden />
-        {t('goal.hunt')}
+        <Target className="h-3.5 w-3.5 shrink-0" aria-hidden />
+        <span className="truncate">{t('goal.hunt')}</span>
       </button>
     </div>
   )

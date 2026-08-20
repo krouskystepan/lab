@@ -6,6 +6,7 @@ export const commonCs: Record<keyof typeof commonEn, string> = {
   'lang.cs': 'CS',
   'lang.switch': 'Jazyk',
   'help.about': 'O {title}',
+  'help.menu': 'Nápověda',
   'author.by': 'autor Štěpán Krouský',
   'author.title': 'Štěpán Krouský - portfolio',
   'transfer.export': 'Export',

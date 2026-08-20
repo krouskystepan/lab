@@ -18,6 +18,7 @@ import type { Castling, MateN, MatePly, MateResult, Piece, Position, Side } from
 import { PositionHistory } from './storage/history'
 import { loadBoard, saveBoard, type Brush } from './storage/prefs'
 import { useI18n } from '../../i18n'
+import { LangSwitch } from '../../shell/LangSwitch'
 import { showToast } from '../../shared/toast'
 import {
   ExportImportButtons,
@@ -26,6 +27,7 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
+import { MobileHelpCard } from '../../shared/gameUi'
 
 function kingIndex(pos: Position, side: Side): number | null {
   const i = pos.squares.findIndex((p) => p?.kind === 'k' && p.side === side)
@@ -104,7 +106,7 @@ function moveAnim(
 }
 
 export default function ChessMateApp() {
-  const { t, locale, setLocale } = useI18n()
+  const { t, locale } = useI18n()
   const initial = useRef(loadBoard()).current
   const [pos, setPos] = useState<Position>(initial.pos)
   const [mateN, setMateN] = useState<MateN>(initial.prefs.mateN)
@@ -385,9 +387,9 @@ export default function ChessMateApp() {
   const boardPos = frames?.[viewStep] ?? pos
 
   return (
-    <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
+    <div className="game-shell">
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
-        <div className="flex min-h-8 w-full flex-wrap items-center justify-between gap-2.5 max-[720px]:gap-[0.35rem]">
+        <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
             <Link
               to="/"
@@ -401,43 +403,14 @@ export default function ChessMateApp() {
               {t('chessMate.appName')}
             </h1>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-[0.45rem]">
             <ExportImportButtons
               filename="chess-mate.json"
               family="chess"
               onExport={onExportBoard}
               onImport={onImportBoard}
             />
-            <div
-              className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
-              role="group"
-              aria-label={t('lang.switch')}
-            >
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'en'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'en'}
-                onClick={() => setLocale('en')}
-              >
-                {t('lang.en')}
-              </button>
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'cs'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'cs'}
-                onClick={() => setLocale('cs')}
-              >
-                {t('lang.cs')}
-              </button>
-            </div>
+            <LangSwitch />
           </div>
         </div>
         <div className="hidden w-full flex-wrap items-center justify-start gap-2.5 [@media(min-width:960px)_and_(min-height:780px)]:flex">
@@ -445,7 +418,33 @@ export default function ChessMateApp() {
         </div>
       </header>
 
-      <div className="board-frame order-1 min-h-0 flex-1 rounded-md bg-elevated/40 p-1 max-[720px]:min-h-[38dvh]">
+      <MobileHelpCard
+        sections={[
+          {
+            title: t('chessMate.help.title'),
+            body: (
+              <>
+                <p className="m-0 mb-1.5">{t('chessMate.help.body')}</p>
+                <p className="m-0">{t('chessMate.help.solve')}</p>
+              </>
+            )
+          },
+          {
+            title: t('chessMate.n.helpTitle'),
+            body: <p className="m-0">{t('chessMate.n.helpBody')}</p>
+          },
+          {
+            title: t('chessMate.fen.helpTitle'),
+            body: <p className="m-0">{t('chessMate.fen.helpBody')}</p>
+          },
+          {
+            title: t('chessMate.castle.helpTitle'),
+            body: <p className="m-0">{t('chessMate.castle.helpBody')}</p>
+          }
+        ]}
+      />
+
+      <div className="board-frame order-1 min-h-0 flex-1 rounded-md bg-elevated/40 p-1 max-[980px]:order-1">
         <div className="board-stage">
           <Board
             pos={boardPos}
@@ -460,24 +459,27 @@ export default function ChessMateApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-2 w-full shrink-0">
+      <div className="relative z-5 order-2 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-2">
+        <div className="game-sticky-controls">
+          <section className="flex min-w-0 w-full flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-1.5">
+            <ControlsBar
+              brush={brush}
+              onBrush={setBrush}
+              searching={searching}
+              canUndo={canUndo}
+              canRedo={canRedo}
+              result={result}
+              mateN={mateN}
+              viewStep={viewStep}
+              onViewStep={onViewStep}
+              onFlip={() => setFlipped((v) => !v)}
+              onUndo={onUndo}
+              onRedo={onRedo}
+              onSolve={onSolve}
+            />
+          </section>
+        </div>
         <section className="flex min-w-0 w-full flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-1.5">
-          <ControlsBar
-            brush={brush}
-            onBrush={setBrush}
-            searching={searching}
-            canUndo={canUndo}
-            canRedo={canRedo}
-            result={result}
-            mateN={mateN}
-            viewStep={viewStep}
-            onViewStep={onViewStep}
-            onFlip={() => setFlipped((v) => !v)}
-            onUndo={onUndo}
-            onRedo={onRedo}
-            onSolve={onSolve}
-          />
-          <div className="h-px w-full bg-line" aria-hidden />
           <SetupBar
             pos={pos}
             fenDraft={fenDraft}

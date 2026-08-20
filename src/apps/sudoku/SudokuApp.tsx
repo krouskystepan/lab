@@ -20,6 +20,7 @@ import { PlayHistory, snapshotOf } from './game/history'
 import { loadGame, saveGame } from './game/prefs'
 import type { DiffId, PointerMode } from './game/types'
 import { useI18n } from '../../i18n'
+import { LangSwitch } from '../../shell/LangSwitch'
 import { showToast } from '../../shared/toast'
 import {
   ExportImportButtons,
@@ -28,9 +29,10 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
+import { MobileHelpCard } from '../../shared/gameUi'
 
 export default function SudokuApp() {
-  const { t, locale, setLocale } = useI18n()
+  const { t, locale } = useI18n()
   const initial = useRef(loadGame()).current
   const [board, dispatch] = useReducer(reduce, initial.board)
   const [mode, setMode] = useState<PointerMode>(initial.mode)
@@ -373,9 +375,9 @@ export default function SudokuApp() {
   const checkAvailable = board.status !== 'won'
 
   return (
-    <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
+    <div className="game-shell">
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
-        <div className="flex min-h-8 w-full flex-wrap items-center justify-between gap-2.5 max-[720px]:gap-[0.35rem]">
+        <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
             <Link
               to="/"
@@ -389,43 +391,14 @@ export default function SudokuApp() {
               {t('sudoku.appName')}
             </h1>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-[0.45rem]">
             <ExportImportButtons
               filename="sudoku-board.json"
               family="sudoku"
               onExport={onExportBoard}
               onImport={onImportBoard}
             />
-            <div
-              className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
-              role="group"
-              aria-label={t('lang.switch')}
-            >
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'en'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'en'}
-                onClick={() => setLocale('en')}
-              >
-                {t('lang.en')}
-              </button>
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'cs'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'cs'}
-                onClick={() => setLocale('cs')}
-              >
-                {t('lang.cs')}
-              </button>
-            </div>
+            <LangSwitch />
           </div>
         </div>
         <div className="flex w-full flex-wrap items-center justify-start gap-2.5 max-[720px]:hidden">
@@ -433,7 +406,26 @@ export default function SudokuApp() {
         </div>
       </header>
 
-      <div className="board-frame order-3 rounded-md bg-elevated/40 p-1 max-[720px]:order-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]">
+      <MobileHelpCard
+        sections={[
+          {
+            title: t('sudoku.help.title'),
+            body: (
+              <>
+                <p className="m-0 mb-1.5">{t('sudoku.help.body')}</p>
+                <p className="m-0 mb-1.5">{t('sudoku.help.controls')}</p>
+                <p className="m-0">{t('sudoku.help.notes')}</p>
+              </>
+            )
+          },
+          {
+            title: t('sudoku.diff.helpTitle'),
+            body: <p className="m-0">{t('sudoku.diff.helpBody')}</p>
+          }
+        ]}
+      />
+
+      <div className="board-frame order-3 rounded-md bg-elevated/40 p-1 max-[980px]:order-1">
         <div className="board-stage">
           <Grid
             board={board}
@@ -445,35 +437,39 @@ export default function SudokuApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-1 flex w-full shrink-0 flex-col gap-[0.55rem] max-[720px]:order-2">
-        <NumberPad
-          digit={digit}
-          eraseMode={eraseMode}
-          remaining={remainingByDigit}
-          onDigitChange={onDigitChange}
-          onEraseMode={onEraseMode}
-        />
-        <ToolsBar
-          mode={mode}
-          emptyLeft={remainingEmpty(board)}
-          seconds={seconds}
-          status={board.status}
-          canUndo={canUndo}
-          canRedo={canRedo}
-          canHint={hintAvailable}
-          canCheck={checkAvailable}
-          hasNotes={boardHasNotes(board)}
-          onModeChange={setMode}
-          onUndo={onUndo}
-          onRedo={onRedo}
-          onHint={onHint}
-          onCheck={onCheck}
-          onClearNotes={onClearNotes}
-          onNew={onNew}
-        />
+      <div className="relative z-5 order-1 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:contents">
+        <div className="game-sticky-controls max-[980px]:order-2">
+          <NumberPad
+            digit={digit}
+            eraseMode={eraseMode}
+            remaining={remainingByDigit}
+            onDigitChange={onDigitChange}
+            onEraseMode={onEraseMode}
+          />
+        </div>
+        <div className="max-[980px]:order-3">
+          <ToolsBar
+            mode={mode}
+            emptyLeft={remainingEmpty(board)}
+            seconds={seconds}
+            status={board.status}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            canHint={hintAvailable}
+            canCheck={checkAvailable}
+            hasNotes={boardHasNotes(board)}
+            onModeChange={setMode}
+            onUndo={onUndo}
+            onRedo={onRedo}
+            onHint={onHint}
+            onCheck={onCheck}
+            onClearNotes={onClearNotes}
+            onNew={onNew}
+          />
+        </div>
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[720px]:order-3">
+      <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[980px]:order-4">
         <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
       </div>
     </div>

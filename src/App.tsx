@@ -20,7 +20,7 @@ import { ThemeScope } from './shell/ThemeScope'
 
 function MineHelperRoute() {
   return (
-    <ThemeScope theme={mineHelperTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={mineHelperTheme} className="game-page">
       <MineHelperApp />
     </ThemeScope>
   )
@@ -28,7 +28,7 @@ function MineHelperRoute() {
 
 function MinesweeperRoute() {
   return (
-    <ThemeScope theme={minesweeperTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={minesweeperTheme} className="game-page">
       <MinesweeperApp />
     </ThemeScope>
   )
@@ -36,7 +36,7 @@ function MinesweeperRoute() {
 
 function SudokuRoute() {
   return (
-    <ThemeScope theme={sudokuTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={sudokuTheme} className="game-page game-page--fit">
       <SudokuApp />
     </ThemeScope>
   )
@@ -44,7 +44,7 @@ function SudokuRoute() {
 
 function SudokuHelperRoute() {
   return (
-    <ThemeScope theme={sudokuTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={sudokuTheme} className="game-page game-page--fit">
       <SudokuHelperApp />
     </ThemeScope>
   )
@@ -52,7 +52,7 @@ function SudokuHelperRoute() {
 
 function WordleRoute() {
   return (
-    <ThemeScope theme={wordleTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={wordleTheme} className="game-page game-page--fit">
       <WordleApp />
     </ThemeScope>
   )
@@ -60,7 +60,7 @@ function WordleRoute() {
 
 function ChessMateRoute() {
   return (
-    <ThemeScope theme={chessMateTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={chessMateTheme} className="game-page">
       <ChessMateApp />
     </ThemeScope>
   )
