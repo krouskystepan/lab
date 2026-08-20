@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { useEffect, useState } from 'react'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { CELL_GLYPH, CHESS_SQ } from '../../../shared/lib/cellChrome'
 import { PieceGlyph } from './PieceGlyph'
 import { fileOf, indexFromVisual, rankOf, squareName, visualIndex } from '../solver/fen'
 import type { Piece, Position } from '../solver/types'
@@ -126,7 +127,7 @@ function MoveFlyer({
 
   return (
     <span
-      className="chess-move-flyer"
+      className="pointer-events-none absolute z-4 flex h-[12.5%] w-[12.5%] items-center justify-center transition-transform duration-[280ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
       style={{
         left: `${start.col * 12.5}%`,
         top: `${start.row * 12.5}%`,
@@ -171,11 +172,11 @@ function Square({
     <button
       type="button"
       className={cn(
-        'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border-0 p-0 leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',
-        light ? 'chess-sq-light' : 'chess-sq-dark',
-        isFrom && 'chess-sq-from',
-        isTo && 'chess-sq-to',
-        inCheck && 'chess-sq-check'
+        'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border-0 p-0 leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none rounded-none',
+        light ? CHESS_SQ.light : CHESS_SQ.dark,
+        isFrom && CHESS_SQ.from,
+        isTo && CHESS_SQ.to,
+        inCheck && CHESS_SQ.check
       )}
       aria-label={moveLabel ? `${name} ${moveLabel}` : name}
       role="gridcell"
@@ -202,7 +203,7 @@ function Square({
         </span>
       ) : null}
       {piece ? (
-        <span className="cell-glyph chess-glyph">
+        <span className={cn(CELL_GLYPH, 'leading-none')}>
           <PieceGlyph kind={piece.kind} side={piece.side} className="h-[72%] w-[72%]" />
         </span>
       ) : null}

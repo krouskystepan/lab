@@ -6,6 +6,19 @@ import { colLabel } from '../solver/neighbors'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { cellCornerClass } from '../../../shared/lib/cellCorner'
+import {
+  CELL_CONFLICT,
+  CELL_GLYPH,
+  CELL_GLYPH_INNER,
+  CELL_SIZE_HOST,
+  CELL_TIP_BEST,
+  CELL_TIP_SAFEST,
+  CELL_TIP_UNCLUED,
+  MARK_CHANCE,
+  MARK_CHANCE_TIP,
+  MARK_SURE,
+  WHY_HL
+} from '../../../shared/lib/cellChrome'
 
 interface GridProps {
   width: number
@@ -132,10 +145,10 @@ function whyClass(
 ): string {
   // One ring only - priority: focus → clue → linked → keyboard cursor
   // Clue/linked sets are already filtered to the active Why step.
-  if (whyFocus === index) return 'why-hl why-hl-focus'
-  if (whyClues?.has(index)) return 'why-hl why-hl-clue'
-  if (whyPeers?.has(index)) return 'why-hl why-hl-peer'
-  if (cursorIndex === index) return 'why-hl why-hl-cursor'
+  if (whyFocus === index) return WHY_HL.focus
+  if (whyClues?.has(index)) return WHY_HL.clue
+  if (whyPeers?.has(index)) return WHY_HL.peer
+  if (cursorIndex === index) return WHY_HL.cursor
   return ''
 }
 
@@ -238,6 +251,7 @@ function cellClass(cell: BoardCell, goalMode: GoalMode): string {
 
   return cn(
     'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',
+    CELL_SIZE_HOST,
     isNumber && 'bg-[#364352] text-ink',
     infoNumber &&
       'border-info bg-[#0f4a48] font-bold text-[#e8fffc] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-info)_50%,transparent)]',
@@ -254,14 +268,14 @@ function cellClass(cell: BoardCell, goalMode: GoalMode): string {
       'cell-solver-fill font-semibold [text-shadow:none]',
     cell.solver?.kind === 'chance' &&
       chanceTip(cell.solver) === 'best' &&
-      'cell-best',
+      CELL_TIP_BEST,
     cell.solver?.kind === 'chance' &&
       chanceTip(cell.solver) === 'safest' &&
-      'cell-safest',
+      CELL_TIP_SAFEST,
     cell.solver?.kind === 'chance' &&
       chanceTip(cell.solver) === 'unclued' &&
-      'cell-unclued',
-    cell.solver?.kind === 'conflict' && 'cell-conflict'
+      CELL_TIP_UNCLUED,
+    cell.solver?.kind === 'conflict' && CELL_CONFLICT
   )
 }
 
@@ -319,8 +333,13 @@ function cellLabel(
     </span>
   )
   const ruledOutIcon = (
-    <span className="cell-glyph font-bold text-[#c5ced8] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]">
-      <span>?</span>
+    <span
+      className={cn(
+        CELL_GLYPH,
+        'font-bold text-[#c5ced8] drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)]'
+      )}
+    >
+      <span className={CELL_GLYPH_INNER}>?</span>
     </span>
   )
   const mineIcon = (
@@ -335,11 +354,7 @@ function cellLabel(
       />
     </span>
   )
-  const sure100 = (
-    <span className="mark-sure font-bold tracking-[-0.02em] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.35)]">
-      100%
-    </span>
-  )
+  const sure100 = <span className={MARK_SURE}>100%</span>
 
   // Certain SAFE - hunt mode: × = not your card
   if (cell.solver?.kind === 'flagged') {
@@ -367,12 +382,7 @@ function cellLabel(
             : null
 
     return (
-      <span
-        className={cn(
-          'mark-chance relative flex flex-col items-center justify-center gap-[0.05em] tracking-[-0.02em] font-semibold opacity-[0.72]',
-          tip && 'opacity-100'
-        )}
-      >
+      <span className={tip ? MARK_CHANCE_TIP : MARK_CHANCE}>
         <span
           className={cn(
             tip === 'best' &&
@@ -388,7 +398,7 @@ function cellLabel(
         {tag && (
           <span
             className={cn(
-              'px-[0.05em] text-center text-[0.4em] font-extrabold uppercase leading-[1.05] tracking-[0.01em]',
+              'px-[0.05em] text-center text-[0.4em] font-extrabold uppercase leading-[1.05] tracking-[0.01em] min-[981px]:text-[0.55em]',
               tip === 'best' && 'text-[#ffe566]',
               tip === 'safest' && 'text-[#ffb078]',
               tip === 'unclued' && 'text-[#e0c4ff]'
@@ -402,8 +412,10 @@ function cellLabel(
   }
   if (cell.user.type === 'number') {
     return (
-      <span className="cell-glyph">
-        <span>{cell.user.value == null ? '?' : cell.user.value}</span>
+      <span className={CELL_GLYPH}>
+        <span className={CELL_GLYPH_INNER}>
+          {cell.user.value == null ? '?' : cell.user.value}
+        </span>
       </span>
     )
   }

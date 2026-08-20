@@ -3,6 +3,7 @@ import type { Guess, TileMark } from '../game/types'
 import { bestKeyMark } from '../game/score'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { WORDLE_MARK } from '../../../shared/lib/cellChrome'
 
 const ROWS: string[][] = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
@@ -112,8 +113,8 @@ export function Keyboard({
 }
 
 function keyClass(mark: TileMark | 'empty'): string {
-  if (mark === 'correct') return 'wordle-mark-correct'
-  if (mark === 'present') return 'wordle-mark-present'
-  if (mark === 'absent') return 'wordle-mark-absent'
+  if (mark === 'correct') return WORDLE_MARK.correct
+  if (mark === 'present') return WORDLE_MARK.present
+  if (mark === 'absent') return WORDLE_MARK.absent
   return 'border-line bg-cell text-ink'
 }

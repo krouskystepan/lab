@@ -19,7 +19,7 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
-import { MobileHelpCard } from '../../shared/gameUi'
+import { MobileHelpCard, boardStage, gameShell, gameStickyControls } from '../../shared/gameUi'
 
 export default function SudokuHelperApp() {
   const { t, locale } = useI18n()
@@ -328,7 +328,7 @@ export default function SudokuHelperApp() {
     nextMove != null || cells.some((c) => c.user.value === 0)
 
   return (
-    <div className="game-shell">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
         <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
@@ -374,7 +374,7 @@ export default function SudokuHelperApp() {
       />
 
       <div className="board-frame order-3 [--board-pad:0.25rem] rounded-md bg-elevated/40 max-[980px]:order-1">
-        <div className="board-stage">
+        <div className={boardStage}>
           <Grid
             cells={cells}
             selected={selected}
@@ -384,7 +384,7 @@ export default function SudokuHelperApp() {
         </div>
       </div>
 
-      <div className="game-sticky-controls relative z-5 order-1 w-full shrink-0 max-[980px]:order-2">
+      <div className={`${gameStickyControls} relative z-5 order-1 w-full shrink-0 max-[980px]:order-2`}>
         <ControlsBar
           digit={digit}
           eraseMode={eraseMode}

@@ -4,6 +4,7 @@ import type { Cell, PointerMode } from '../game/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { cellCornerClass } from '../../../shared/lib/cellCorner'
+import { CELL_GLYPH, CELL_GLYPH_INNER, CELL_SIZE_HOST } from '../../../shared/lib/cellChrome'
 
 const LONG_PRESS_MS = 450
 
@@ -169,8 +170,10 @@ function CellButton({
 }
 
 function cellClass(cell: Cell, isHit: boolean): string {
-  const base =
-    'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none'
+  const base = cn(
+    'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',
+    CELL_SIZE_HOST
+  )
 
   if (cell.view === 'flagged') {
     return cn(
@@ -212,7 +215,7 @@ function cellStyle(cell: Cell): CSSProperties | undefined {
 function cellLabel(cell: Cell, isHit: boolean): ReactNode {
   if (cell.view === 'flagged') {
     return (
-      <span className="cell-glyph">
+      <span className={CELL_GLYPH}>
         <Flag
           className="h-[55%] w-[55%]"
           fill="currentColor"
@@ -225,7 +228,7 @@ function cellLabel(cell: Cell, isHit: boolean): ReactNode {
   if (cell.view !== 'revealed') return null
   if (cell.isMine) {
     return (
-      <span className="cell-glyph">
+      <span className={CELL_GLYPH}>
         <Bomb
           className={cn('h-[55%] w-[55%]', isHit && 'text-white')}
           strokeWidth={2.25}
@@ -235,5 +238,9 @@ function cellLabel(cell: Cell, isHit: boolean): ReactNode {
     )
   }
   if (cell.adjacent === 0) return null
-  return <span className="cell-glyph">{cell.adjacent}</span>
+  return (
+    <span className={CELL_GLYPH}>
+      <span className={CELL_GLYPH_INNER}>{cell.adjacent}</span>
+    </span>
+  )
 }

@@ -38,7 +38,7 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
-import { MobileHelpCard } from '../../shared/gameUi'
+import { MobileHelpCard, boardStage, boardStageWhy, gameShell, gameStickyControls } from '../../shared/gameUi'
 import {
   flipBoardHorizontal,
   flipBoardVertical,
@@ -906,7 +906,7 @@ export default function MineHelperApp() {
   )
 
   return (
-    <div className="game-shell">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
         <div className="flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex min-w-0 items-center gap-[0.55rem]">
@@ -973,9 +973,9 @@ export default function MineHelperApp() {
       </header>
 
       <div
-        className={`board-frame order-1 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] ${whyMode ? 'why-mode' : ''}`}
+        className={`board-frame order-1 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] ${whyMode ? 'why-mode border-best/40' : ''}`}
       >
-        <div className={`board-stage ${whyMode ? 'with-why' : ''}`}>
+        <div className={whyMode ? boardStageWhy : boardStage}>
           <Grid
             width={width}
             height={height}
@@ -1052,7 +1052,7 @@ export default function MineHelperApp() {
             onTrimEmpty={onTrimEmpty}
           />
         </div>
-        <div className="game-sticky-controls min-w-0 flex-1 max-[980px]:order-2">
+        <div className={`${gameStickyControls} min-w-0 flex-1 max-[980px]:order-2`}>
           <NumberPad
             mode={mode}
             numberValue={numberValue}

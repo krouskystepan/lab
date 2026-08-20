@@ -1,6 +1,7 @@
 import type { EditMode, GoalMode } from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { gameBtn, gamePanel } from '../../../shared/gameUi'
 import { HelpTip } from './HelpTip'
 import {
   Flag,
@@ -34,8 +35,10 @@ interface ToolbarProps {
   goalMode?: GoalMode
 }
 
-const btn =
-  'game-panel-btn cursor-pointer appearance-none border border-line bg-cell px-2 py-1.5 text-sm font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40 max-[980px]:min-h-[2.45rem] max-[980px]:justify-center max-[720px]:text-[0.9rem]'
+const btn = cn(
+  gameBtn,
+  'px-2 py-1.5 text-sm max-[980px]:min-h-[2.45rem] max-[980px]:justify-center max-[720px]:text-[0.9rem]'
+)
 
 const modeBtn =
   'inline-flex min-w-0 flex-col items-center justify-center gap-0.5 px-1.5 py-1.5 text-center leading-tight sm:flex-row sm:gap-1.5 sm:px-2'
@@ -112,7 +115,7 @@ export function Toolbar({
   )
 
   return (
-    <section className="game-panel flex min-h-0 min-w-0 flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]">
+    <section className={cn(gamePanel, 'min-h-0')}>
       <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
         <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
           {t('tools.title')}

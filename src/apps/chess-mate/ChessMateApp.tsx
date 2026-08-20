@@ -27,7 +27,7 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
-import { MobileHelpCard } from '../../shared/gameUi'
+import { MobileHelpCard, boardStage, gameShell, gameStickyControls } from '../../shared/gameUi'
 
 function kingIndex(pos: Position, side: Side): number | null {
   const i = pos.squares.findIndex((p) => p?.kind === 'k' && p.side === side)
@@ -387,7 +387,7 @@ export default function ChessMateApp() {
   const boardPos = frames?.[viewStep] ?? pos
 
   return (
-    <div className="game-shell">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
         <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
@@ -445,7 +445,7 @@ export default function ChessMateApp() {
       />
 
       <div className="board-frame order-1 min-h-0 flex-1 [--board-pad:0.25rem] rounded-md bg-elevated/40 max-[980px]:order-1">
-        <div className="board-stage">
+        <div className={boardStage}>
           <Board
             pos={boardPos}
             flipped={flipped}
@@ -460,7 +460,7 @@ export default function ChessMateApp() {
       </div>
 
       <div className="relative z-5 order-2 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-2">
-        <div className="game-sticky-controls">
+        <div className={gameStickyControls}>
           <section className="flex min-w-0 w-full flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-1.5">
             <ControlsBar
               brush={brush}

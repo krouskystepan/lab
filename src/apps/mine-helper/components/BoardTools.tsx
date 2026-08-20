@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { gameBtn, gamePanel } from '../../../shared/gameUi'
 import { MAX_GRID, MIN_GRID } from '../solver/types'
 import type { GridEdge } from './SizeBar'
 
@@ -33,8 +34,10 @@ interface BoardToolsProps {
 
 const EDGES = ['left', 'right', 'top', 'bottom'] as const
 
-const trigger =
-  'game-panel-btn inline-flex w-full min-w-0 cursor-pointer appearance-none items-center justify-center gap-1 whitespace-nowrap border border-line bg-cell px-[0.65rem] py-[0.35rem] text-[0.8rem] font-semibold text-ink transition-[background,border-color,color] duration-100 hover:bg-cell-hover max-[980px]:min-h-[2.45rem]'
+const trigger = cn(
+  gameBtn,
+  'inline-flex w-full min-w-0 items-center justify-center gap-1 whitespace-nowrap px-[0.65rem] py-[0.35rem] text-[0.8rem] text-ink max-[980px]:min-h-[2.45rem]'
+)
 
 const triggerOpen = 'border-accent bg-accent/25 text-on-accent'
 
@@ -98,7 +101,10 @@ export function BoardTools({
 
   return (
     <section
-      className="game-panel flex h-full w-fit max-w-full min-w-0 flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[980px]:w-full"
+      className={cn(
+        gamePanel,
+        'h-full w-fit max-w-full max-[980px]:w-full'
+      )}
       ref={rootRef}
     >
       <h2 className="m-0 shrink-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[980px]:hidden [@media(max-height:700px)]:hidden">

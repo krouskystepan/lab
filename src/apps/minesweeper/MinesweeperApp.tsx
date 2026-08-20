@@ -20,7 +20,7 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
-import { MobileHelpCard } from '../../shared/gameUi'
+import { MobileHelpCard, boardStage, gameShell } from '../../shared/gameUi'
 
 export default function MinesweeperApp() {
   const { t, locale } = useI18n()
@@ -272,7 +272,7 @@ export default function MinesweeperApp() {
   const hintAvailable = findHint(board) != null
 
   return (
-    <div className="game-shell">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
         <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
@@ -332,7 +332,7 @@ export default function MinesweeperApp() {
       />
 
       <div className="board-frame order-3 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[980px]:order-1">
-        <div className="board-stage">
+        <div className={boardStage}>
           <Grid
             width={board.width}
             height={board.height}

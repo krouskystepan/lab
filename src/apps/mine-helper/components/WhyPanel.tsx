@@ -17,7 +17,7 @@ interface WhyPanelProps {
 }
 
 const panelShell =
-  'flex max-h-full max-w-64 min-w-50 flex-[0_0_14.5rem] flex-col gap-2 overflow-hidden rounded-sm border border-line bg-panel px-[0.7rem] py-2.5 max-[720px]:max-h-[38%] max-[720px]:min-w-0 max-[720px]:max-w-none max-[720px]:flex-[1_1_auto]'
+  'ml-auto flex max-h-full max-w-64 min-w-50 flex-[0_0_14.5rem] flex-col gap-2 self-stretch overflow-hidden rounded-sm border border-line bg-panel px-[0.7rem] py-2.5 max-[720px]:ml-0 max-[720px]:max-h-[38%] max-[720px]:min-w-0 max-[720px]:max-w-none max-[720px]:flex-[1_1_auto]'
 
 const navBtn =
   'cursor-pointer appearance-none inline-flex items-center gap-1 rounded-sm border border-line bg-cell px-[0.55rem] py-[0.3rem] text-[0.75rem] font-semibold text-ink disabled:cursor-default disabled:opacity-40'

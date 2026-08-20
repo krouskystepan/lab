@@ -1,6 +1,7 @@
 import { CELL_ASPECTS, MAX_GRID, MIN_GRID, PRESETS, type CellAspect } from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { gameBtn, gamePanel } from '../../../shared/gameUi'
 
 export type GridEdge = 'left' | 'right' | 'top' | 'bottom'
 
@@ -15,14 +16,15 @@ interface SizeBarProps {
 const MIN = MIN_GRID
 const MAX = MAX_GRID
 
-const panel =
-  'game-panel flex h-full min-w-0 flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]'
+const panel = cn(gamePanel, 'h-full')
 
 const panelTitle =
   'm-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden'
 
-const btn =
-  'game-panel-btn cursor-pointer appearance-none border border-line bg-cell px-2 py-1.5 text-sm font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] max-[720px]:min-h-[2.35rem] max-[720px]:px-[0.55rem] max-[720px]:py-1.5 max-[720px]:text-[0.9rem]'
+const btn = cn(
+  gameBtn,
+  'px-2 py-1.5 text-sm max-[720px]:min-h-[2.35rem] max-[720px]:px-[0.55rem] max-[720px]:py-1.5 max-[720px]:text-[0.9rem]'
+)
 
 const btnActive = 'border-accent bg-accent/25 text-on-accent'
 
