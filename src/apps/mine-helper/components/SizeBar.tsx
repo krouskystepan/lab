@@ -1,7 +1,7 @@
 import { CELL_ASPECTS, MAX_GRID, MIN_GRID, PRESETS, type CellAspect } from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
-import { gameBtn, gamePanel } from '../../../shared/gameUi'
+import { gameBtn, GamePanel } from '../../../shared/gameUi'
 
 export type GridEdge = 'left' | 'right' | 'top' | 'bottom'
 
@@ -15,11 +15,6 @@ interface SizeBarProps {
 
 const MIN = MIN_GRID
 const MAX = MAX_GRID
-
-const panel = cn(gamePanel, 'h-full')
-
-const panelTitle =
-  'm-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden'
 
 const btn = cn(
   gameBtn,
@@ -38,8 +33,7 @@ export function SizeBar({
   const { t } = useI18n()
 
   return (
-    <section className={panel}>
-      <h2 className={panelTitle}>{t('size.title')}</h2>
+    <GamePanel title={t('size.title')} className="h-full">
       {/* Row 1: presets stretch / wrap */}
       <div className="flex flex-wrap items-center gap-[0.35rem]">
         {PRESETS.map((p) => (
@@ -110,7 +104,7 @@ export function SizeBar({
           ))}
         </div>
       </div>
-    </section>
+    </GamePanel>
   )
 }
 

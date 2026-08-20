@@ -437,17 +437,12 @@ export default function SudokuApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-1 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:contents">
-        <div className={`${gameStickyControls} max-[980px]:order-2`}>
-          <NumberPad
-            digit={digit}
-            eraseMode={eraseMode}
-            remaining={remainingByDigit}
-            onDigitChange={onDigitChange}
-            onEraseMode={onEraseMode}
-          />
+      {/* Diff | Tools — same titled GamePanel grid as Mine Helper Size|Tools */}
+      <div className="game-secondary relative z-5 order-1 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-3 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] min-[981px]:items-stretch">
+        <div className="min-[981px]:h-full">
+          <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
         </div>
-        <div className="max-[980px]:order-3">
+        <div className="min-[981px]:h-full">
           <ToolsBar
             mode={mode}
             emptyLeft={remainingEmpty(board)}
@@ -469,8 +464,14 @@ export default function SudokuApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[980px]:order-4">
-        <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
+      <div className={`${gameStickyControls} relative z-5 order-2 w-full shrink-0 max-[980px]:order-2`}>
+        <NumberPad
+          digit={digit}
+          eraseMode={eraseMode}
+          remaining={remainingByDigit}
+          onDigitChange={onDigitChange}
+          onEraseMode={onEraseMode}
+        />
       </div>
     </div>
   )

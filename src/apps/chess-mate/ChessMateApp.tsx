@@ -459,38 +459,35 @@ export default function ChessMateApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-2">
-        <div className={gameStickyControls}>
-          <section className="flex min-w-0 w-full flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-1.5">
-            <ControlsBar
-              brush={brush}
-              onBrush={setBrush}
-              searching={searching}
-              canUndo={canUndo}
-              canRedo={canRedo}
-              result={result}
-              mateN={mateN}
-              viewStep={viewStep}
-              onViewStep={onViewStep}
-              onFlip={() => setFlipped((v) => !v)}
-              onUndo={onUndo}
-              onRedo={onRedo}
-              onSolve={onSolve}
-            />
-          </section>
+      <div className="relative z-5 order-2 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-2 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] min-[981px]:items-stretch">
+        <div className={`${gameStickyControls} min-[981px]:h-full`}>
+          <ControlsBar
+            brush={brush}
+            onBrush={setBrush}
+            searching={searching}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            result={result}
+            mateN={mateN}
+            viewStep={viewStep}
+            onViewStep={onViewStep}
+            onMateN={setMateN}
+            onFlip={() => setFlipped((v) => !v)}
+            onUndo={onUndo}
+            onRedo={onRedo}
+            onSolve={onSolve}
+          />
         </div>
-        <section className="flex min-w-0 w-full flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-1.5">
+        <div className="min-[981px]:h-full">
           <SetupBar
             pos={pos}
             fenDraft={fenDraft}
-            mateN={mateN}
             onFenDraft={setFenDraft}
             onLoadFen={onLoadFen}
-            onMateN={setMateN}
             onCastle={onCastle}
             onPreset={onPreset}
           />
-        </section>
+        </div>
       </div>
     </div>
   )

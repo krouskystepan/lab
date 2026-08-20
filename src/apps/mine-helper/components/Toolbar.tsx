@@ -1,7 +1,7 @@
 import type { EditMode, GoalMode } from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
-import { gameBtn, gamePanel } from '../../../shared/gameUi'
+import { gameBtn, GamePanel } from '../../../shared/gameUi'
 import { HelpTip } from './HelpTip'
 import {
   Flag,
@@ -104,9 +104,7 @@ export function Toolbar({
       <span
         className={cn(
           'font-mono text-[0.78rem] font-medium text-ink',
-          useTotal &&
-            knownFound > totalTargets &&
-            'text-[#ffb0b0]'
+          useTotal && knownFound > totalTargets && 'text-[#ffb0b0]'
         )}
       >
         {useTotal ? `${knownFound}/${totalTargets}` : knownFound}
@@ -115,14 +113,11 @@ export function Toolbar({
   )
 
   return (
-    <section className={cn(gamePanel, 'min-h-0')}>
-      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-        <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
-          {t('tools.title')}
-        </h2>
-        <div className="ml-auto">{foundLabel}</div>
-      </div>
-
+    <GamePanel
+      title={t('tools.title')}
+      headerRight={foundLabel}
+      className="min-h-0"
+    >
       {/* Row 1: mark modes + Total/Auto — wraps on narrow panels */}
       <div className="flex flex-col gap-2 min-[640px]:flex-row min-[640px]:flex-wrap min-[640px]:items-center min-[640px]:justify-between">
         <div className="grid w-full grid-cols-3 gap-[0.35rem] min-[640px]:flex min-[640px]:w-auto min-[640px]:flex-wrap">
@@ -146,7 +141,7 @@ export function Toolbar({
             >
               #
             </span>
-            <span className="max-w-full whitespace-normal break-words">
+            <span className="max-w-full whitespace-normal wrap-break-word">
               {numberLabel}
             </span>
           </button>
@@ -172,7 +167,7 @@ export function Toolbar({
               >
                 #
               </span>
-              <span className="max-w-full whitespace-normal break-words">
+              <span className="max-w-full whitespace-normal wrap-break-word">
                 {t('tools.info')}
               </span>
             </button>
@@ -196,7 +191,7 @@ export function Toolbar({
                 strokeWidth={1.5}
                 aria-hidden
               />
-              <span className="max-w-full whitespace-normal break-words">
+              <span className="max-w-full whitespace-normal wrap-break-word">
                 {t('tools.flag')}
               </span>
             </button>
@@ -227,7 +222,7 @@ export function Toolbar({
               ) : (
                 <Shield className={iconCls} aria-hidden />
               )}
-              <span className="max-w-full whitespace-normal break-words">
+              <span className="max-w-full whitespace-normal wrap-break-word">
                 {safeLabel}
               </span>
             </button>
@@ -244,7 +239,9 @@ export function Toolbar({
             />
             {t('tools.total')}
             <HelpTip
-              title={t(hunt ? 'tools.totalTipTitleHunt' : 'tools.totalTipTitle')}
+              title={t(
+                hunt ? 'tools.totalTipTitleHunt' : 'tools.totalTipTitle'
+              )}
             >
               {t(hunt ? 'tools.totalTipBodyHunt' : 'tools.totalTipBody')}
             </HelpTip>
@@ -340,6 +337,6 @@ export function Toolbar({
           </button>
         </div>
       </div>
-    </section>
+    </GamePanel>
   )
 }

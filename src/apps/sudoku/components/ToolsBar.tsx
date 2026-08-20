@@ -10,7 +10,12 @@ import {
 import type { GameStatus, PointerMode } from '../game/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
-import { GamePanel, ToolRow, gameBtn, gameBtnActive } from '../../../shared/gameUi'
+import {
+  GamePanel,
+  ToolRow,
+  gameBtn,
+  gameBtnActive
+} from '../../../shared/gameUi'
 import { HelpTip } from './HelpTip'
 
 const btn = cn(
@@ -62,6 +67,7 @@ export function ToolsBar({
 
   return (
     <GamePanel
+      title={t('sudoku.tools.title')}
       headerRight={
         <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 font-mono text-[0.85rem] font-bold tabular-nums text-ink">
           <HelpTip title={t('sudoku.help.title')}>

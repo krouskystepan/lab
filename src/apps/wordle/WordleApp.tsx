@@ -5,6 +5,7 @@ import { DiffBar } from './components/DiffBar'
 import { Grid } from './components/Grid'
 import { HotkeysBar } from './components/HotkeysBar'
 import { Keyboard } from './components/Keyboard'
+import { LenBar } from './components/LenBar'
 import { ToolsBar } from './components/ToolsBar'
 import { reduce } from './game/engine'
 import { findHint } from './game/hint'
@@ -362,18 +363,20 @@ export default function WordleApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:contents">
-        <div className={`${gameStickyControls} max-[980px]:order-2`}>
-          <Keyboard
-            guesses={board.guesses}
-            disabled={ended}
-            flashKey={flashKey}
-            onLetter={onLetter}
-            onEnter={onSubmit}
-            onBackspace={onBackspace}
-          />
-        </div>
-        <div className="max-[980px]:order-3">
+      <div className={`${gameStickyControls} order-2 max-[980px]:order-2 min-[981px]:hidden`}>
+        <Keyboard
+          guesses={board.guesses}
+          disabled={ended}
+          flashKey={flashKey}
+          onLetter={onLetter}
+          onEnter={onSubmit}
+          onBackspace={onBackspace}
+        />
+      </div>
+
+      {/* Tools | Letters side by side; Difficulty below */}
+      <div className="game-secondary relative z-5 order-3 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-3">
+        <div className="grid w-full grid-cols-1 items-stretch gap-[0.55rem] min-[720px]:grid-cols-2">
           <ToolsBar
             seconds={seconds}
             status={board.status}
@@ -382,16 +385,9 @@ export default function WordleApp() {
             onHint={onHint}
             onNew={onNew}
           />
+          <LenBar wordLen={board.wordLen} onWordLenChange={onWordLen} />
         </div>
-      </div>
-
-      <div className="relative z-5 order-3 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[980px]:order-4">
-        <DiffBar
-          diffId={board.diffId}
-          wordLen={board.wordLen}
-          onDiffChange={onDiff}
-          onWordLenChange={onWordLen}
-        />
+        <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
       </div>
     </div>
   )

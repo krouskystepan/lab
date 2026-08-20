@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
-import { gameBtn, gamePanel } from '../../../shared/gameUi'
+import { gameBtn, GamePanel } from '../../../shared/gameUi'
 import { MAX_GRID, MIN_GRID } from '../solver/types'
 import type { GridEdge } from './SizeBar'
 
@@ -60,7 +60,7 @@ export function BoardTools({
 }: BoardToolsProps) {
   const { t } = useI18n()
   const [open, setOpen] = useState<MenuId>(null)
-  const rootRef = useRef<HTMLElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -100,16 +100,8 @@ export function BoardTools({
     )
 
   return (
-    <section
-      className={cn(
-        gamePanel,
-        'h-full w-fit max-w-full max-[980px]:w-full'
-      )}
-      ref={rootRef}
-    >
-      <h2 className="m-0 shrink-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[980px]:hidden [@media(max-height:700px)]:hidden">
-        {t('board.title')}
-      </h2>
+    <div ref={rootRef} className="h-full w-fit max-w-full max-[980px]:w-full">
+      <GamePanel title={t('board.title')} className="h-full w-full">
       <div className="grid w-full min-w-0 grid-cols-2 gap-1.5 min-[700px]:grid-cols-4">
         <div
           className="relative min-w-0"
@@ -295,6 +287,7 @@ export function BoardTools({
           <span className="truncate">{t('board.trim')}</span>
         </button>
       </div>
-    </section>
+      </GamePanel>
+    </div>
   )
 }

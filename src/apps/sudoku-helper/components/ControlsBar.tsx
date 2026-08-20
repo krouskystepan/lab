@@ -30,26 +30,34 @@ type ControlsBarProps = {
   onClear: () => void
 }
 
-export function ControlsBar({
+/** Digits + Tools as separate titled GamePanels (same chrome as Mine Helper). */
+export function ControlsBar(props: ControlsBarProps) {
+  return (
+    <div className="flex w-full min-w-0 flex-col gap-[0.55rem]">
+      <NumberPad
+        digit={props.digit}
+        eraseMode={props.eraseMode}
+        onDigitChange={props.onDigitChange}
+        onEraseMode={props.onEraseMode}
+      />
+      <ToolsPanel {...props} />
+    </div>
+  )
+}
+
+function NumberPad({
   digit,
   eraseMode,
   onDigitChange,
-  onEraseMode,
-  autoSolve,
-  onAutoSolveChange,
-  canUndo,
-  canRedo,
-  canNext,
-  onUndo,
-  onRedo,
-  onSolve,
-  onNext,
-  onClear
-}: ControlsBarProps) {
+  onEraseMode
+}: Pick<
+  ControlsBarProps,
+  'digit' | 'eraseMode' | 'onDigitChange' | 'onEraseMode'
+>) {
   const { t } = useI18n()
 
   return (
-    <GamePanel>
+    <GamePanel title={t('sudokuHelper.pad.title')}>
       <DigitPad
         value={digit}
         selectionActive={!eraseMode}
@@ -76,28 +84,56 @@ export function ControlsBar({
             aria-label={t('sudokuHelper.pad.erase')}
             onClick={onEraseMode}
           >
-            <Eraser className="h-[0.95em] w-[0.95em]" strokeWidth={2.25} aria-hidden />
+            <Eraser
+              className="h-[0.95em] w-[0.95em]"
+              strokeWidth={2.25}
+              aria-hidden
+            />
           </button>
         }
       />
+    </GamePanel>
+  )
+}
 
-      <div className="flex w-full min-w-0 items-center gap-2">
-        <HelpTip title={t('sudokuHelper.help.title')}>
-          <p className="m-0 mb-1.5">{t('sudokuHelper.help.body')}</p>
-          <p className="m-0">{t('sudokuHelper.help.solve')}</p>
-        </HelpTip>
-        <label className="inline-flex cursor-pointer items-center gap-1.5 text-[0.85rem] font-semibold text-ink">
-          <input
-            type="checkbox"
-            className="accent-accent"
-            checked={autoSolve}
-            onChange={(e) => onAutoSolveChange(e.target.checked)}
-          />
-          {t('sudokuHelper.tools.auto')}
-        </label>
-      </div>
+function ToolsPanel({
+  autoSolve,
+  onAutoSolveChange,
+  canUndo,
+  canRedo,
+  canNext,
+  onUndo,
+  onRedo,
+  onSolve,
+  onNext,
+  onClear
+}: Omit<
+  ControlsBarProps,
+  'digit' | 'eraseMode' | 'onDigitChange' | 'onEraseMode'
+>) {
+  const { t } = useI18n()
 
-      {/* Same 5-column track as DigitPad — equal width, no col-span hacks */}
+  return (
+    <GamePanel
+      title={t('sudokuHelper.tools.title')}
+      headerRight={
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+          <HelpTip title={t('sudokuHelper.help.title')}>
+            <p className="m-0 mb-1.5">{t('sudokuHelper.help.body')}</p>
+            <p className="m-0">{t('sudokuHelper.help.solve')}</p>
+          </HelpTip>
+          <label className="inline-flex cursor-pointer items-center gap-1.5 text-[0.85rem] font-semibold text-ink">
+            <input
+              type="checkbox"
+              className="accent-accent"
+              checked={autoSolve}
+              onChange={(e) => onAutoSolveChange(e.target.checked)}
+            />
+            {t('sudokuHelper.tools.auto')}
+          </label>
+        </div>
+      }
+    >
       <ToolRow mobileCols={5} desktopCols={5}>
         <button
           type="button"
