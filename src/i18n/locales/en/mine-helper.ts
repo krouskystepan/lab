@@ -15,6 +15,7 @@ export const mineHelperEn = {
   'legend.best': 'Interesting',
   'legend.safest': 'Safest',
   'legend.surestTarget': 'Surest target',
+  'legend.unclued': 'No clue',
   'legend.numberTitleSafe': 'Safe #',
   'legend.numberTitleHunt': 'My card #',
   'legend.infoTitle': 'Info number',
@@ -36,6 +37,8 @@ export const mineHelperEn = {
   'legend.bestTitleHunt': 'Most interesting tip',
   'legend.safestTitleSafe': 'Safest click',
   'legend.safestTitleHunt': 'Surest target tip',
+  'legend.uncluedTitleSafe': 'Empty with no clue',
+  'legend.uncluedTitleHunt': 'Empty with no card clue',
   'legend.numberBodySafe':
     'Revealed safe tile (not a mine - opposite of My # in Find targets). The digit is how many mines are among its neighbors. Copy the numbers you see on the board here.',
   'legend.numberBodyHunt':
@@ -68,16 +71,37 @@ export const mineHelperEn = {
     'Orange ring + {safest} on the highest safe {chance}. On a tie, marks every cell with that %.',
   'legend.safestBodyHunt':
     'Orange ring + {surestTarget} on the highest target {chance}. On a tie, marks every cell with that %.',
+  'legend.uncluedBodySafe':
+    'Purple ring on leftover empties that no number touches. Total still says a leftover mine could be there, so they share the remaining %.',
+  'legend.uncluedBodyHunt':
+    'Purple ring on leftover empties that no My/Info number touches. Total still says a leftover card could be there, so they share the remaining %.',
   'legend.pickWhen': 'Which to pick?',
   'legend.pickWhenLeftSafe': 'Interesting',
   'legend.pickWhenLeftHunt': 'Interesting',
   'legend.pickWhenRightSafe': 'Safest',
   'legend.pickWhenRightHunt': 'Surest target',
+  'legend.pickWhenTitle': 'Which to pick?',
+  'legend.pickWhenIntroSafe':
+    'Only one color per cell. If several tips apply, the highest on this list wins:',
+  'legend.pickWhenIntroHunt':
+    'Only one color per cell. If several tips apply, the highest on this list wins:',
+  'legend.pickWhenPrio1Safe': '1. {sure} — certain safe. Click these first.',
+  'legend.pickWhenPrio1Hunt': '1. {sure} — certain target. Take these first.',
+  'legend.pickWhenPrio2Safe':
+    '2. {safest} (orange) — highest leftover safe %.',
+  'legend.pickWhenPrio2Hunt':
+    '2. {surestTarget} (orange) — highest leftover target %.',
+  'legend.pickWhenPrio3':
+    '3. {best} (yellow) — the reveal that teaches you the most.',
+  'legend.pickWhenPrio4Safe':
+    '4. {unclued} (purple) — leftover empties with no nearby number.',
+  'legend.pickWhenPrio4Hunt':
+    '4. {unclued} (purple) — leftover empties with no My/Info number.',
   'legend.pickWhenSureTitle': '100% first',
   'legend.pickWhenSureBodySafe':
-    'Green {sure} cells are certain safe. Click those before any yellow or orange tip.',
+    'Green {sure} cells are certain safe. Click those before any ringed tip.',
   'legend.pickWhenSureBodyHunt':
-    'Green {sure} cells are certain targets. Take those before any yellow or orange tip.',
+    'Green {sure} cells are certain targets. Take those before any ringed tip.',
   'legend.pickWhenSafestBodySafe':
     'Highest safe {chance} remaining. On a tie, marks every cell with that %.',
   'legend.pickWhenSafestBodyHunt':
@@ -86,6 +110,10 @@ export const mineHelperEn = {
     'Highest information score: mainly how uncertain the cell is ({entropy} of its {chance}), plus a small boost for higher safe %. Use when you want to learn the most about the board.',
   'legend.pickWhenBestBodyHunt':
     'Highest information score: mainly how uncertain the cell is ({entropy} of its {chance}), plus a small boost for higher target %. Use when you want to learn the most about the board.',
+  'legend.pickWhenUncluedBodySafe':
+    'No nearby number constrains these empties. With Total on, leftover mines are split equally among them.',
+  'legend.pickWhenUncluedBodyHunt':
+    'No My/Info number touches these empties. With Total on, leftover cards are split equally among them.',
   'legend.entropy': 'entropy',
   'legend.entropySearch':
     'information entropy explained simply uncertainty probability',
@@ -168,10 +196,24 @@ export const mineHelperEn = {
   'tools.exitWhyTitle': 'Exit Why mode (W) - board unlocked',
   'tools.whyTitle': 'Why mode (W) - lock board, tap any cell for explanation',
   'tools.resetTitle': 'Clear entire board',
-  'tools.totalAria': 'Total targets among unknowns',
+  'tools.totalAria': 'Total mines on the board',
+  'tools.totalAriaHunt': 'Total of your cards on the board',
   'tools.totalTipTitle': 'Total mines',
+  'tools.totalTipTitleHunt': 'Total cards',
   'tools.totalTipBody':
-    'When on, the solver also uses this count: exactly this many mines among all empty cells. Helps when local clues alone are not enough. Ignored if there are too many unknowns to search.',
+    'When on, this is the mine count for the whole board - including flags you already placed. Remaining mines are among empty cells. Empties with no nearby clue still get a leftover %.',
+  'tools.totalTipBodyHunt':
+    'When on, this is how many of your cards are on the whole board, including My cards you already placed. Info, Ruled out, and Marked are not yours, so they do not count. Remaining cards go on empty cells - even empties with no clue get a %.',
+  'tools.foundHunt': 'My',
+  'tools.foundSafe': 'Flags',
+  'tools.foundTipHunt':
+    'My cards you already placed. Shown even when Total is off. Solver 100% tips are not counted until you mark them My.',
+  'tools.foundTipSafe':
+    'Flags you already placed. Shown even when Total is off. Solver mine marks are not counted until you flag them.',
+  'tools.foundAriaHunt': 'My cards found: {n}',
+  'tools.foundAriaSafe': 'Mines flagged: {n}',
+  'tools.foundAriaOfHunt': 'My cards found: {found} of {total}',
+  'tools.foundAriaOfSafe': 'Mines flagged: {found} of {total}',
   'tools.autoTipTitle': 'Auto-solve',
   'tools.autoTipBody':
     'Re-runs Solve after each board edit and when Total changes, so you do not have to press Solve every time. Turn off if you want to mark the board first and solve once.',
@@ -220,6 +262,7 @@ export const mineHelperEn = {
   'why.best': 'Interesting',
   'why.safest': 'Safest',
   'why.surestTarget': 'Surest target',
+  'why.unclued': 'No clue',
   'why.markAll': 'Mark all - every clue and linked cell at once',
   'why.prev': 'Prev',
   'why.next': 'Next',
@@ -235,6 +278,7 @@ export const mineHelperEn = {
   'grid.best': 'Interesting',
   'grid.safest': 'Safest',
   'grid.surestTarget': 'Surest target',
+  'grid.unclued': 'No clue',
   'grid.bestSafe': 'Interesting',
   'grid.bestTarget': 'Interesting',
 
@@ -330,6 +374,21 @@ export const mineHelperEn = {
   'ex.nearby': 'Nearby clues: {clues}.',
   'ex.cluesMatter': 'Clues that matter: {clues}.',
   'ex.totalLeft': 'Total: exactly {count} {mines} left among empties.',
+  'ex.meta.totalShare': '{count} of {n} leftover empties',
+  'ex.totalKnownSafe': 'Flags already placed: {known} of Total {total}.',
+  'ex.totalKnownHunt': 'My cards already found: {known} of Total {total}.',
+  'ex.totalShareSafe':
+    'The leftover {count} {mines} are shared among {n} empty cells with no clue → {percent}% safe each.',
+  'ex.totalShareHunt':
+    'The leftover {count} {mines} are shared among {n} empty cells with no clue → {percent}% each.',
+  'ex.totalAllSafe':
+    '{cell} must be a mine - every leftover empty is needed to reach Total.',
+  'ex.totalAllHunt':
+    '{cell} must be your card - every leftover empty is needed to reach Total.',
+  'ex.totalNoneSafe':
+    '{cell} is safe - Total is already accounted for, so leftover empties are not mines.',
+  'ex.totalNoneHunt':
+    '{cell} is not yours - Total is already accounted for, so leftover empties are not your cards.',
   'ex.stillNeeds': '{clue} still needs {count} among {open}.',
   'ex.everyLayout':
     '{cell} is a mine in every valid layout ({total}/{total}) → mine (do not click).',
@@ -356,6 +415,10 @@ export const mineHelperEn = {
   'ex.safestWhySafe':
     'Safest = the tip with the highest chance the cell is safe.',
   'ex.safestWhyTied': 'Same {percent}% also on {peers} - all are marked.',
+  'ex.uncluedWhyHunt':
+    'No clue = leftover empty with no My/Info number. Total splits remaining cards equally among these cells.',
+  'ex.uncluedWhySafe':
+    'No clue = leftover empty with no nearby number. Total splits remaining mines equally among these cells.',
   'ex.nothing': 'Nothing to explain here.',
   'ex.placedMine':
     '{kind} {value} at {cell}: a known mine. The number is how many mines are among its neighbors.',

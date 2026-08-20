@@ -15,7 +15,7 @@ import { WhyPanel } from './components/WhyPanel'
 import { PlaceBlockedDialog } from './components/PlaceBlockedDialog'
 import { attachWhyHints, explainCell } from './solver/explain'
 import { solve } from './solver/solve'
-import { validatePlacement } from './solver/validate'
+import { countKnownTargets, validatePlacement } from './solver/validate'
 import type {
   BoardCell,
   CellAspect,
@@ -836,6 +836,11 @@ export default function MineHelperApp() {
   onWhyModeRef.current = onWhyMode
   onSolveRef.current = onSolve
 
+  const knownFound = useMemo(
+    () => countKnownTargets(cells.map((c) => c.user), goalMode),
+    [cells, goalMode]
+  )
+
   const huntGoal = goalMode === 'hunt'
   const tipLabel = huntGoal ? t('legend.surestTarget') : t('legend.safest')
 
@@ -851,6 +856,7 @@ export default function MineHelperApp() {
       surestTarget: (
         <LegendMark kind="surestTarget">{t('legend.surestTarget')}</LegendMark>
       ),
+      unclued: <LegendMark kind="unclued">{t('legend.unclued')}</LegendMark>,
       chance: <LegendMark kind="chance">{t('legend.chance')}</LegendMark>,
       flag: (
         <LegendMark kind="flag">
@@ -894,6 +900,33 @@ export default function MineHelperApp() {
               ? 'legend.pickWhenSureBodyHunt'
               : 'legend.pickWhenSureBodySafe'
           ),
+          legendMarks
+        )}
+      </p>
+    </div>
+  )
+
+  const legendPickPrioSection = (
+    <div className="flex flex-col gap-1.5">
+      <p className="m-0">
+        {t(huntGoal ? 'legend.pickWhenIntroHunt' : 'legend.pickWhenIntroSafe')}
+      </p>
+      <p className="m-0">
+        {legendRichText(
+          t(huntGoal ? 'legend.pickWhenPrio1Hunt' : 'legend.pickWhenPrio1Safe'),
+          legendMarks
+        )}
+      </p>
+      <p className="m-0">
+        {legendRichText(
+          t(huntGoal ? 'legend.pickWhenPrio2Hunt' : 'legend.pickWhenPrio2Safe'),
+          legendMarks
+        )}
+      </p>
+      <p className="m-0">{legendRichText(t('legend.pickWhenPrio3'), legendMarks)}</p>
+      <p className="m-0">
+        {legendRichText(
+          t(huntGoal ? 'legend.pickWhenPrio4Hunt' : 'legend.pickWhenPrio4Safe'),
           legendMarks
         )}
       </p>
@@ -1108,46 +1141,14 @@ export default function MineHelperApp() {
               {legendRichText(t(huntGoal ? 'legend.chanceBodyHunt' : 'legend.chanceBodySafe'), legendMarks)}
             </LegendTip>
             <LegendTip
-              label={t('legend.best')}
-              swatchClass="best"
-              title={t(huntGoal ? 'legend.bestTitleHunt' : 'legend.bestTitleSafe')}
-              stacked
-            >
-              {legendSureFirstSection}
-              <div className="flex flex-col gap-1">
-                <strong className="text-[0.78rem] font-bold leading-[1.3]">
-                  <LegendMark kind="best">{t('legend.best')}</LegendMark>
-                </strong>
-                <p className="m-0">
-                  {legendRichText(
-                    t(huntGoal ? 'legend.bestBodyHunt' : 'legend.bestBodySafe'),
-                    legendMarks
-                  )}
-                </p>
-              </div>
-            </LegendTip>
-            <LegendTip
               label={t('legend.pickWhen')}
               swatchClass="vs"
-              title={
-                <>
-                  <LegendMark kind="best">
-                    {t(huntGoal ? 'legend.pickWhenLeftHunt' : 'legend.pickWhenLeftSafe')}
-                  </LegendMark>
-                  {' vs '}
-                  <LegendMark kind="safest">
-                    {t(
-                      huntGoal
-                        ? 'legend.pickWhenRightHunt'
-                        : 'legend.pickWhenRightSafe'
-                    )}
-                  </LegendMark>
-                </>
-              }
+              title={t('legend.pickWhenTitle')}
               titleClassName="text-ink"
               wide
               stacked
             >
+              {legendPickPrioSection}
               {legendSureFirstSection}
               <div className="flex flex-col gap-1">
                 <strong className="text-[0.78rem] font-bold leading-[1.3]">
@@ -1179,29 +1180,57 @@ export default function MineHelperApp() {
                   )}
                 </p>
               </div>
-            </LegendTip>
-            <LegendTip
-              label={tipLabel}
-              swatchClass="safest"
-              title={t(huntGoal ? 'legend.safestTitleHunt' : 'legend.safestTitleSafe')}
-              stacked
-            >
-              {legendSureFirstSection}
               <div className="flex flex-col gap-1">
                 <strong className="text-[0.78rem] font-bold leading-[1.3]">
-                  <LegendMark kind="safest">{tipLabel}</LegendMark>
+                  <LegendMark kind="unclued">{t('legend.unclued')}</LegendMark>
                 </strong>
                 <p className="m-0">
                   {legendRichText(
                     t(
                       huntGoal
-                        ? 'legend.safestBodyHunt'
-                        : 'legend.safestBodySafe'
+                        ? 'legend.pickWhenUncluedBodyHunt'
+                        : 'legend.pickWhenUncluedBodySafe'
                     ),
                     legendMarks
                   )}
                 </p>
               </div>
+            </LegendTip>
+            <LegendTip
+              label={tipLabel}
+              swatchClass="safest"
+              title={t(huntGoal ? 'legend.safestTitleHunt' : 'legend.safestTitleSafe')}
+            >
+              {legendRichText(
+                t(
+                  huntGoal ? 'legend.safestBodyHunt' : 'legend.safestBodySafe'
+                ),
+                legendMarks
+              )}
+            </LegendTip>
+            <LegendTip
+              label={t('legend.best')}
+              swatchClass="best"
+              title={t(huntGoal ? 'legend.bestTitleHunt' : 'legend.bestTitleSafe')}
+            >
+              {legendRichText(
+                t(huntGoal ? 'legend.bestBodyHunt' : 'legend.bestBodySafe'),
+                legendMarks
+              )}
+            </LegendTip>
+            <LegendTip
+              label={t('legend.unclued')}
+              swatchClass="unclued"
+              title={t(
+                huntGoal ? 'legend.uncluedTitleHunt' : 'legend.uncluedTitleSafe'
+              )}
+            >
+              {legendRichText(
+                t(
+                  huntGoal ? 'legend.uncluedBodyHunt' : 'legend.uncluedBodySafe'
+                ),
+                legendMarks
+              )}
             </LegendTip>
           </div>
           <HotkeysBar goalMode={goalMode} />
@@ -1255,6 +1284,7 @@ export default function MineHelperApp() {
           onUseTotalChange={setUseTotal}
           totalTargets={totalTargets}
           onTotalTargetsChange={setTotalTargets}
+          knownFound={knownFound}
           autoSolve={autoSolve}
           onAutoSolveChange={setAutoSolve}
           onSolve={onSolve}

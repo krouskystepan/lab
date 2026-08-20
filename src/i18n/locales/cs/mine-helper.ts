@@ -16,6 +16,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.best': 'Nejzajímavější',
   'legend.safest': 'Nejbezpečnější',
   'legend.surestTarget': 'Nejjistější cíl',
+  'legend.unclued': 'Bez nápovědy',
   'legend.numberTitleSafe': 'Bezpečné #',
   'legend.numberTitleHunt': 'Moje karta #',
   'legend.infoTitle': 'Info číslo',
@@ -37,6 +38,8 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'legend.bestTitleHunt': 'Nejzajímavější tip',
   'legend.safestTitleSafe': 'Nejbezpečnější klik',
   'legend.safestTitleHunt': 'Nejjistější tip na cíl',
+  'legend.uncluedTitleSafe': 'Prázdné bez nápovědy',
+  'legend.uncluedTitleHunt': 'Prázdné bez nápovědy karty',
   'legend.numberBodySafe':
     'Odhalené bezpečné pole (není mina - opak Moje # v Hledat cíle). Číslo říká, kolik min je mezi sousedy. Sem přepisuj čísla, která vidíš na desce.',
   'legend.numberBodyHunt':
@@ -69,16 +72,37 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
     'Oranžový rámeček + {safest} na nejvyšším bezpečném {chance}. Při remízě označí všechny se stejným %.',
   'legend.safestBodyHunt':
     'Oranžový rámeček + {surestTarget} na nejvyšší šanci na cíl {chance}. Při remízě označí všechny se stejným %.',
+  'legend.uncluedBodySafe':
+    'Fialový rámeček na zbývajících prázdných, kterých se žádné číslo nedotýká. Celkem pořád říká, že tam může zbývat mina, takže se o zbývající % rozdělí.',
+  'legend.uncluedBodyHunt':
+    'Fialový rámeček na zbývajících prázdných, kterých se žádné Moje/Info číslo nedotýká. Celkem pořád říká, že tam může zbývat karta, takže se o zbývající % rozdělí.',
   'legend.pickWhen': 'Které brát?',
   'legend.pickWhenLeftSafe': 'Nejzajímavější',
   'legend.pickWhenLeftHunt': 'Nejzajímavější',
   'legend.pickWhenRightSafe': 'Nejbezpečnější',
   'legend.pickWhenRightHunt': 'Nejjistější cíl',
+  'legend.pickWhenTitle': 'Které brát?',
+  'legend.pickWhenIntroSafe':
+    'Na buňce je jen jedna barva. Když sedí víc tipů, vyhraje ten výš na seznamu:',
+  'legend.pickWhenIntroHunt':
+    'Na buňce je jen jedna barva. Když sedí víc tipů, vyhraje ten výš na seznamu:',
+  'legend.pickWhenPrio1Safe': '1. {sure} — jistě bezpečné. Ty klikni nejdřív.',
+  'legend.pickWhenPrio1Hunt': '1. {sure} — jistý cíl. Ty ber nejdřív.',
+  'legend.pickWhenPrio2Safe':
+    '2. {safest} (oranžová) — nejvyšší zbývající bezpečné %.',
+  'legend.pickWhenPrio2Hunt':
+    '2. {surestTarget} (oranžová) — nejvyšší zbývající % cíle.',
+  'legend.pickWhenPrio3':
+    '3. {best} (žlutá) — odhalení, ze kterého se o desce dozvíš nejvíc.',
+  'legend.pickWhenPrio4Safe':
+    '4. {unclued} (fialová) — zbývající prázdná bez blízkého čísla.',
+  'legend.pickWhenPrio4Hunt':
+    '4. {unclued} (fialová) — zbývající prázdná bez Moje/Info čísla.',
   'legend.pickWhenSureTitle': 'Nejdřív 100 %',
   'legend.pickWhenSureBodySafe':
-    'Zelené buňky {sure} jsou jistě bezpečné. Ty klikni dřív než jakýkoli žlutý nebo oranžový tip.',
+    'Zelené buňky {sure} jsou jistě bezpečné. Ty klikni dřív než jakýkoli rámeček.',
   'legend.pickWhenSureBodyHunt':
-    'Zelené buňky {sure} jsou jisté cíle. Ty ber dřív než jakýkoli žlutý nebo oranžový tip.',
+    'Zelené buňky {sure} jsou jisté cíle. Ty ber dřív než jakýkoli rámeček.',
   'legend.pickWhenSafestBodySafe':
     'Nejvyšší zbývající bezpečné {chance}. Při remízě označí všechny se stejným %.',
   'legend.pickWhenSafestBodyHunt':
@@ -87,6 +111,10 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
     'Nejvyšší informační skóre: hlavně jak nejistá buňka je ({entropy} její {chance}), plus malý bonus za vyšší % bezpečnosti. Ber ji, když se chceš o desce dozvědět nejvíc.',
   'legend.pickWhenBestBodyHunt':
     'Nejvyšší informační skóre: hlavně jak nejistá buňka je ({entropy} její {chance}), plus malý bonus za vyšší % cíle. Ber ji, když se chceš o desce dozvědět nejvíc.',
+  'legend.pickWhenUncluedBodySafe':
+    'Žádné blízké číslo je nesvazuje. Když je Celkem zapnuté, zbývající miny se mezi ně rozdělí stejně.',
+  'legend.pickWhenUncluedBodyHunt':
+    'Žádné Moje/Info číslo se jich nedotýká. Když je Celkem zapnuté, zbývající karty se mezi ně rozdělí stejně.',
   'legend.entropy': 'entropie',
   'legend.entropySearch':
     'co je informační entropie jednoduše nejistota pravděpodobnost',
@@ -170,10 +198,24 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'tools.whyTitle':
     'Režim Proč (W) - zamkne desku, klepni na buňku pro vysvětlení',
   'tools.resetTitle': 'Vymazat celou desku',
-  'tools.totalAria': 'Celkový počet min mezi neznámými',
-  'tools.totalTipTitle': 'Celkem min',
+  'tools.totalAria': 'Celkový počet mých karet na desce',
+  'tools.totalAriaHunt': 'Celkový počet mých karet na desce',
+  'tools.totalTipTitle': 'Celkem mých karet',
+  'tools.totalTipTitleHunt': 'Celkem mých karet',
   'tools.totalTipBody':
-    'Když je zapnuto, řešič použije i tento počet: přesně tolik min mezi všemi prázdnými buňkami. Pomáhá, když nestačí lokální nápovědy. Ignorováno, pokud je příliš mnoho neznámých.',
+    'Když je zapnuto, je to počet mých karet na celé desce - včetně už zadaných Moje. Zbývající karty jsou mezi prázdnými poli. I prázdná bez nápovědy dostanou zbývající %.',
+  'tools.totalTipBodyHunt':
+    'Když je zapnuto, je to počet mých karet na celé desce, včetně už zadaných Moje. Info, Vyřazené a Označené nejsou tvoje, takže se nepočítají. Zbývající karty jdou na prázdná pole - i prázdná bez nápovědy dostanou %.',
+  'tools.foundHunt': 'Moje',
+  'tools.foundSafe': 'Vlajky',
+  'tools.foundTipHunt':
+    'Kolik Moje karet už máš zadaných. Vidíš to i když je Celkem vypnuté. Tipy 100 % od řešiče se nepočítají, dokud je neoznačíš jako Moje.',
+  'tools.foundTipSafe':
+    'Kolik vlajek už máš zadaných. Vidíš to i když je Celkem vypnuté. Miny od řešiče se nepočítají, dokud je neoznačíš vlajkou.',
+  'tools.foundAriaHunt': 'Nalezené Moje karty: {n}',
+  'tools.foundAriaSafe': 'Označené miny: {n}',
+  'tools.foundAriaOfHunt': 'Nalezené Moje karty: {found} z {total}',
+  'tools.foundAriaOfSafe': 'Označené miny: {found} z {total}',
   'tools.autoTipTitle': 'Auto-řešení',
   'tools.autoTipBody':
     'Znovu spustí Řešit po každé úpravě a při změně Celkem, abys nemusel mačkat Řešit pořád. Vypni, pokud chceš nejdřív označit desku a řešit jednou.',
@@ -222,6 +264,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'why.best': 'Nejzajímavější',
   'why.safest': 'Nejbezpečnější',
   'why.surestTarget': 'Nejjistější cíl',
+  'why.unclued': 'Bez nápovědy',
   'why.markAll': 'Označit vše - všechny nápovědy a propojené buňky najednou',
   'why.prev': 'Předchozí',
   'why.next': 'Další',
@@ -237,6 +280,7 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'grid.best': 'Nejzajímavější',
   'grid.safest': 'Nejbezpečnější',
   'grid.surestTarget': 'Nejjistější cíl',
+  'grid.unclued': 'Bez nápovědy',
   'grid.bestSafe': 'Nejzajímavější',
   'grid.bestTarget': 'Nejzajímavější',
   'solve.mismatch': 'Neshoda velikosti desky.',
@@ -327,6 +371,21 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
   'ex.nearby': 'Blízké nápovědy: {clues}.',
   'ex.cluesMatter': 'Důležité nápovědy: {clues}.',
   'ex.totalLeft': 'Celkem: přesně {count} {mines} zbývá mezi prázdnými.',
+  'ex.meta.totalShare': '{count} z {n} zbývajících prázdných',
+  'ex.totalKnownSafe': 'Už zadané vlajky: {known} z Celkem {total}.',
+  'ex.totalKnownHunt': 'Už nalezené Moje karty: {known} z Celkem {total}.',
+  'ex.totalShareSafe':
+    'Zbývajících {count} {mines} se rozdělí mezi {n} prázdných bez nápovědy → {percent} % bezpečné každé.',
+  'ex.totalShareHunt':
+    'Zbývajících {count} {mines} se rozdělí mezi {n} prázdných bez nápovědy → {percent} % každé.',
+  'ex.totalAllSafe':
+    '{cell} musí být mina - každé zbývající prázdné je potřeba, aby vyšlo Celkem.',
+  'ex.totalAllHunt':
+    '{cell} musí být tvoje karta - každé zbývající prázdné je potřeba, aby vyšlo Celkem.',
+  'ex.totalNoneSafe':
+    '{cell} je bezpečné - Celkem už je pokryté, takže zbývající prázdná nejsou miny.',
+  'ex.totalNoneHunt':
+    '{cell} není tvoje - Celkem už je pokryté, takže zbývající prázdná nejsou tvoje karty.',
   'ex.stillNeeds': '{clue} ještě potřebuje {count} mezi {open}.',
   'ex.everyLayout':
     '{cell} je mina v každém platném rozložení ({total}/{total}) → mina (neklikej).',
@@ -354,6 +413,10 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
     'Nejbezpečnější = tip s nejvyšší šancí, že pole je bezpečné.',
   'ex.safestWhyTied':
     'Stejných {percent} % mají i {peers} - všechny jsou označené.',
+  'ex.uncluedWhyHunt':
+    'Bez nápovědy = zbývající prázdné bez Moje/Info čísla. Celkem rozdělí zbývající karty mezi tyto buňky stejně.',
+  'ex.uncluedWhySafe':
+    'Bez nápovědy = zbývající prázdné bez blízkého čísla. Celkem rozdělí zbývající miny mezi tyto buňky stejně.',
   'ex.nothing': 'Tady není co vysvětlit.',
   'ex.placedMine':
     '{kind} {value} na {cell}: známá mina. Číslo říká, kolik min je mezi sousedy.',

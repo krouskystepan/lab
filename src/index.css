@@ -21,6 +21,7 @@
   --color-info: #2ec8c0;
   --color-best: #ffe14a;
   --color-safest: #ff6a00;
+  --color-unclued: #c084fc;
   --color-why-clue: #ff00b4;
   --color-why-peer: #00ffbc;
   --color-line: #374554;
@@ -105,7 +106,8 @@
 }
 
 .mine-grid > .cell.cell-best .mark-chance,
-.mine-grid > .cell.cell-safest .mark-chance {
+.mine-grid > .cell.cell-safest .mark-chance,
+.mine-grid > .cell.cell-unclued .mark-chance {
   font-size: clamp(0.48rem, 3.35cqmin, 0.9rem);
 }
 
@@ -219,13 +221,14 @@
   overflow: visible;
 }
 
-/* Best / Safest: inset rings so neighbors don’t clip/overlap each other */
+/* Exclusive tip rings: only one color per cell (surest > interesting > no-clue) */
 .mine-grid > .cell.cell-best,
-.mine-grid > .cell.cell-safest {
+.mine-grid > .cell.cell-safest,
+.mine-grid > .cell.cell-unclued {
   z-index: 2;
 }
 
-.mine-grid > .cell.cell-best:not(.cell-safest) {
+.mine-grid > .cell.cell-best {
   border-color: var(--color-best) !important;
   border-width: 2px;
   box-shadow:
@@ -233,7 +236,7 @@
     0 0 8px color-mix(in srgb, var(--color-best) 35%, transparent);
 }
 
-.mine-grid > .cell.cell-safest:not(.cell-best) {
+.mine-grid > .cell.cell-safest {
   border-color: var(--color-safest) !important;
   border-width: 2px;
   box-shadow:
@@ -241,13 +244,12 @@
     0 0 8px color-mix(in srgb, var(--color-safest) 35%, transparent);
 }
 
-.mine-grid > .cell.cell-best.cell-safest {
-  border-color: var(--color-best) !important;
+.mine-grid > .cell.cell-unclued {
+  border-color: var(--color-unclued) !important;
   border-width: 2px;
   box-shadow:
-    inset 0 0 0 1px var(--color-best),
-    inset 0 0 0 3px var(--color-safest),
-    0 0 8px color-mix(in srgb, var(--color-safest) 35%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--color-unclued) 70%, #000),
+    0 0 8px color-mix(in srgb, var(--color-unclued) 35%, transparent);
 }
 
 .mine-grid > .cell.cell-conflict {
@@ -309,7 +311,8 @@
 
 /* Arrow cursor on Best/Safest: match hover */
 .mine-grid > .cell.cell-best.why-hl-cursor,
-.mine-grid > .cell.cell-safest.why-hl-cursor {
+.mine-grid > .cell.cell-safest.why-hl-cursor,
+.mine-grid > .cell.cell-unclued.why-hl-cursor {
   border-width: 2px !important;
   border-color: #fff !important;
   box-shadow: none !important;

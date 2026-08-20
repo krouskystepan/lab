@@ -19,6 +19,8 @@ interface ToolbarProps {
   onUseTotalChange: (v: boolean) => void
   totalTargets: number
   onTotalTargetsChange: (n: number) => void
+  /** User-placed My cards (hunt) or flags (avoid). Shown even when Total is off. */
+  knownFound: number
   autoSolve: boolean
   onAutoSolveChange: (v: boolean) => void
   onSolve: () => void
@@ -44,6 +46,7 @@ export function Toolbar({
   onUseTotalChange,
   totalTargets,
   onTotalTargetsChange,
+  knownFound,
   autoSolve,
   onAutoSolveChange,
   onSolve,
@@ -76,11 +79,43 @@ export function Toolbar({
         : t('tools.safeTitle')
   const safeLabel = hunt ? t('tools.safeHunt') : t('tools.safe')
 
+  const foundLabel = (
+    <span
+      className="flex items-center gap-[0.3rem] whitespace-nowrap text-[0.72rem] font-semibold tracking-normal text-muted normal-case"
+      title={t(hunt ? 'tools.foundTipHunt' : 'tools.foundTipSafe')}
+      aria-label={
+        useTotal
+          ? t(hunt ? 'tools.foundAriaOfHunt' : 'tools.foundAriaOfSafe', {
+              found: knownFound,
+              total: totalTargets
+            })
+          : t(hunt ? 'tools.foundAriaHunt' : 'tools.foundAriaSafe', {
+              n: knownFound
+            })
+      }
+    >
+      {t(hunt ? 'tools.foundHunt' : 'tools.foundSafe')}
+      <span
+        className={cn(
+          'font-mono text-[0.78rem] font-medium text-ink',
+          useTotal &&
+            knownFound > totalTargets &&
+            'text-[#ffb0b0]'
+        )}
+      >
+        {useTotal ? `${knownFound}/${totalTargets}` : knownFound}
+      </span>
+    </span>
+  )
+
   return (
     <section className="flex min-w-0 flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-[0.45rem]">
-      <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
-        {t('tools.title')}
-      </h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
+          {t('tools.title')}
+        </h2>
+        <div className="ml-auto">{foundLabel}</div>
+      </div>
 
       {/* Row 1: mark modes left, solver options right */}
       <div className="flex flex-nowrap items-center justify-between gap-3 overflow-x-auto">
@@ -194,8 +229,10 @@ export function Toolbar({
               onChange={(e) => onUseTotalChange(e.target.checked)}
             />
             {t('tools.total')}
-            <HelpTip title={t('tools.totalTipTitle')}>
-              {t('tools.totalTipBody')}
+            <HelpTip
+              title={t(hunt ? 'tools.totalTipTitleHunt' : 'tools.totalTipTitle')}
+            >
+              {t(hunt ? 'tools.totalTipBodyHunt' : 'tools.totalTipBody')}
             </HelpTip>
           </label>
           <input
@@ -204,7 +241,7 @@ export function Toolbar({
             min={0}
             value={totalTargets}
             disabled={!useTotal}
-            aria-label={t('tools.totalAria')}
+            aria-label={t(hunt ? 'tools.totalAriaHunt' : 'tools.totalAria')}
             onChange={(e) =>
               onTotalTargetsChange(Math.max(0, Number(e.target.value) || 0))
             }

@@ -1,7 +1,7 @@
 import { useRef, type CSSProperties, type ReactNode } from 'react'
 import { Flag, X } from 'lucide-react'
 import type { BoardCell, CellAspect, GoalMode } from '../solver/types'
-import { CELL_ASPECTS } from '../solver/types'
+import { CELL_ASPECTS, chanceTip } from '../solver/types'
 import { colLabel } from '../solver/neighbors'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
@@ -210,7 +210,8 @@ function CellButton({
     >
       {cellLabel(cell, goalMode, {
         best: t('grid.best'),
-        safest: t(goalMode === 'hunt' ? 'grid.surestTarget' : 'grid.safest')
+        safest: t(goalMode === 'hunt' ? 'grid.surestTarget' : 'grid.safest'),
+        unclued: t('grid.unclued')
       })}
     </button>
   )
@@ -247,11 +248,15 @@ function cellClass(cell: BoardCell, goalMode: GoalMode): string {
     certainMine && (goalMode === 'hunt' ? greenFill : flagFill),
     cell.solver?.kind === 'chance' &&
       'cell-solver-fill font-semibold [text-shadow:none]',
-    cell.solver?.kind === 'chance' && cell.solver.best && 'cell-best',
     cell.solver?.kind === 'chance' &&
-      cell.solver.safest &&
-      !cell.solver.best &&
+      chanceTip(cell.solver) === 'best' &&
+      'cell-best',
+    cell.solver?.kind === 'chance' &&
+      chanceTip(cell.solver) === 'safest' &&
       'cell-safest',
+    cell.solver?.kind === 'chance' &&
+      chanceTip(cell.solver) === 'unclued' &&
+      'cell-unclued',
     cell.solver?.kind === 'conflict' && 'cell-conflict'
   )
 }
@@ -264,13 +269,18 @@ function cellStyle(
     const mineP = Math.min(1, Math.max(0, cell.solver.percent / 100))
     const fill = goalMode === 'hunt' ? mineP : 1 - mineP
     const borderAlpha = 0.2 + fill * 0.75
-    const isBest = Boolean(cell.solver.best)
-    const isSafest = Boolean(cell.solver.safest)
+    const tip = chanceTip(cell.solver)
 
-    if (isBest || isSafest) {
+    if (tip) {
+      const borderColor =
+        tip === 'best'
+          ? 'var(--color-best)'
+          : tip === 'safest'
+            ? 'var(--color-safest)'
+            : 'var(--color-unclued)'
       return {
         backgroundColor: `rgba(45, 180, 110, ${fill * 0.92})`,
-        borderColor: isBest ? 'var(--color-best)' : 'var(--color-safest)'
+        borderColor
       }
     }
 
@@ -286,7 +296,7 @@ function cellStyle(
 function cellLabel(
   cell: BoardCell,
   goalMode: GoalMode,
-  tags: { best: string; safest: string }
+  tags: { best: string; safest: string; unclued: string }
 ): ReactNode {
   const avoidIcon = (
     <span
@@ -342,24 +352,31 @@ function cellLabel(
         : Math.max(0, Math.min(100, 100 - cell.solver.percent))
     if (showPercent <= 0) return ''
     if (showPercent >= 100) return sure100
-    // Prefer Interesting over Safest/Surest when both apply
-    const isBest = Boolean(cell.solver.best)
-    const isSafest = Boolean(cell.solver.safest) && !isBest
-    const tag = isBest ? tags.best : isSafest ? tags.safest : null
+    const tip = chanceTip(cell.solver)
+    const tag =
+      tip === 'best'
+        ? tags.best
+        : tip === 'safest'
+          ? tags.safest
+          : tip === 'unclued'
+            ? tags.unclued
+            : null
 
     return (
       <span
         className={cn(
           'mark-chance relative flex flex-col items-center justify-center gap-[0.05em] tracking-[-0.02em] font-semibold opacity-[0.72]',
-          (isBest || isSafest) && 'opacity-100'
+          tip && 'opacity-100'
         )}
       >
         <span
           className={cn(
-            isBest &&
+            tip === 'best' &&
               'font-extrabold text-[#ffe566] [text-shadow:0_0_3px_rgba(0,0,0,0.85),0_1px_0_#000]',
-            isSafest &&
-              'font-extrabold text-[#ffb078] [text-shadow:0_0_3px_rgba(0,0,0,0.85),0_1px_0_#000]'
+            tip === 'safest' &&
+              'font-extrabold text-[#ffb078] [text-shadow:0_0_3px_rgba(0,0,0,0.85),0_1px_0_#000]',
+            tip === 'unclued' &&
+              'font-extrabold text-[#e0c4ff] [text-shadow:0_0_3px_rgba(0,0,0,0.85),0_1px_0_#000]'
           )}
         >
           {showPercent}%
@@ -368,8 +385,9 @@ function cellLabel(
           <span
             className={cn(
               'px-[0.1em] text-center text-[0.48em] font-extrabold uppercase leading-[1.05] tracking-[0.02em]',
-              isBest && 'text-[#ffe566]',
-              isSafest && 'text-[#ffb078]'
+              tip === 'best' && 'text-[#ffe566]',
+              tip === 'safest' && 'text-[#ffb078]',
+              tip === 'unclued' && 'text-[#e0c4ff]'
             )}
           >
             {tag}

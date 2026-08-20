@@ -1,5 +1,6 @@
 import { neighborsOf } from './neighbors'
 import { t } from '../../../i18n'
+import { remainingTargetNeed } from './validate'
 import {
   MAX_ENUMERATION,
   type GoalMode,
@@ -631,6 +632,53 @@ function contradictionResult(conflictCells?: number[]): SolveResult {
   }
 }
 
+/**
+ * After local clues have painted some empties, leftover Total cards are
+ * shared equally among empties that still have no %. Clues already counted
+ * (certain targets + expected mines from chance cells) are subtracted first.
+ * Example: 1 card left and 4 unclued empties → 25% each; 4 left in 4 → 100%.
+ */
+function applyTotalRemainder(
+  unknowns: number[],
+  need: number,
+  marks: Map<number, SolverMark>,
+  nextGroupId: { value: number }
+): void {
+  let accounted = 0
+  const unmarked: number[] = []
+  for (const i of unknowns) {
+    const m = marks.get(i)
+    if (m?.kind === 'target') accounted += 1
+    else if (m?.kind === 'chance') accounted += m.p ?? m.percent / 100
+    else if (m?.kind === 'flagged' || m?.kind === 'conflict') {
+      /* not a remaining target */
+    } else {
+      unmarked.push(i)
+    }
+  }
+  if (unmarked.length === 0) return
+
+  const leftover = need - accounted
+  const eps = 1e-6
+  if (leftover < -eps || leftover > unmarked.length + eps) return
+
+  if (leftover <= eps) {
+    for (const i of unmarked) marks.set(i, { kind: 'flagged' })
+    return
+  }
+  if (leftover >= unmarked.length - eps) {
+    for (const i of unmarked) marks.set(i, { kind: 'target' })
+    return
+  }
+
+  const p = leftover / unmarked.length
+  const percent = Math.max(1, Math.min(99, Math.round(p * 100)))
+  const groupId = nextGroupId.value++
+  for (const i of unmarked) {
+    marks.set(i, { kind: 'chance', percent, groupId, p, unclued: true })
+  }
+}
+
 export function solve(input: SolveInput): SolveResult {
   const { width, height, cells, totalTargets, goalMode = 'safe' } = input
   const size = width * height
@@ -662,17 +710,25 @@ export function solve(input: SolveInput): SolveResult {
 
   const marks = new Map<number, SolverMark>()
 
-  let constraints = localConstraints
-  const useGlobal =
-    totalTargets !== undefined &&
-    totalTargets >= 0 &&
-    totalTargets <= unknowns.length &&
-    unknowns.length <= MAX_ENUMERATION
+  const totalRemaining = remainingTargetNeed(cells, totalTargets, goalMode)
+  if (
+    totalRemaining &&
+    (totalRemaining.need < 0 || totalRemaining.need > totalRemaining.empties)
+  ) {
+    const conflictCells =
+      totalRemaining.need < 0
+        ? cells
+            .map((c, i) => (isKnownTarget(c, goalMode) ? i : -1))
+            .filter((i) => i >= 0)
+        : unknowns
+    return contradictionResult(conflictCells)
+  }
 
-  if (useGlobal) {
+  let constraints = localConstraints
+  if (totalRemaining && unknowns.length > 0) {
     constraints = [
       ...localConstraints,
-      { cellIdxs: [...unknowns], count: totalTargets! }
+      { cellIdxs: [...unknowns], count: totalRemaining.need }
     ]
   }
 
@@ -751,7 +807,19 @@ export function solve(input: SolveInput): SolveResult {
       // silently (e.g. 1-of-3 → 33%) so the user still sees useful %.
       solveLocalPockets(remaining, constraints, marks, nextGroupId)
     }
+    const afterPockets = applyTrivialDeductions(constraints, marks)
+    if (!afterPockets.ok) {
+      return contradictionResult(afterPockets.conflictCells)
+    }
   }
+
+  if (totalRemaining) {
+    applyTotalRemainder(unknowns, totalRemaining.need, marks, nextGroupId)
+  }
+
+  // Tag % cells that no My/Info number touches (Total-only leftovers).
+  // Enumeration may already have painted them without the unclued flag.
+  markUncluedChanceCells(marks, localConstraints)
 
   // Highlight most informative + goal tip among chance (%) cells
   markBestChanceMove(marks, localConstraints, goalMode)
@@ -766,13 +834,6 @@ export function solve(input: SolveInput): SolveResult {
     notice =
       localConstraints.length === 0 ? t('solve.nothing') : t('solve.noForced')
     noticeTone = 'info'
-  } else if (
-    totalTargets !== undefined &&
-    !useGlobal &&
-    unknowns.length > MAX_ENUMERATION
-  ) {
-    notice = t('solve.totalIgnored')
-    noticeTone = 'warn'
   }
 
   return { ok: true, marks, notice, noticeTone }
@@ -783,7 +844,27 @@ function entropy(p: number): number {
   return -p * Math.log2(p) - (1 - p) * Math.log2(1 - p)
 }
 
-/** Among chance cells, mark the most informative guess(es) - all ties. */
+/**
+ * Chance cells with no local number clue - only Total (or leftover fill).
+ * Purple “No clue” ring; Surest/Interesting tips skip these cells.
+ */
+function markUncluedChanceCells(
+  marks: Map<number, SolverMark>,
+  localConstraints: Constraint[]
+): void {
+  const touchedByClue = new Set<number>()
+  for (const c of localConstraints) {
+    for (const i of c.cellIdxs) touchedByClue.add(i)
+  }
+  for (const [index, mark] of marks) {
+    if (mark.kind !== 'chance') continue
+    if (touchedByClue.has(index)) continue
+    if (mark.unclued) continue
+    marks.set(index, { ...mark, unclued: true })
+  }
+}
+
+/** Among chance cells with a local clue, mark the most informative guess(es). */
 function markBestChanceMove(
   marks: Map<number, SolverMark>,
   constraints: Constraint[],
@@ -800,6 +881,8 @@ function markBestChanceMove(
 
   for (const [index, mark] of marks) {
     if (mark.kind !== 'chance') continue
+    // Total-only leftovers are “No clue” - not Interesting tips.
+    if (mark.unclued) continue
     const p = mark.p ?? mark.percent / 100
     const goalBoost = goalMode === 'hunt' ? p : 1 - p
     const deg = degree.get(index) ?? 0
@@ -825,10 +908,10 @@ function markBestChanceMove(
 }
 
 /**
- * Goal tip among chance cells:
+ * Goal tip among chance cells that have a local clue:
  * - safe: lowest mine % (safest click)
  * - hunt: highest mine % (surest target)
- * All cells tied for the top tip % are marked.
+ * Total-only “No clue” cells are skipped - they keep the purple ring.
  */
 function markGoalTipChanceMove(
   marks: Map<number, SolverMark>,
@@ -837,9 +920,9 @@ function markGoalTipChanceMove(
   const chances: { index: number; percent: number }[] = []
 
   for (const [index, mark] of marks) {
-    if (mark.kind === 'chance') {
-      chances.push({ index, percent: mark.percent })
-    }
+    if (mark.kind !== 'chance') continue
+    if (mark.unclued) continue
+    chances.push({ index, percent: mark.percent })
   }
 
   if (chances.length === 0) return

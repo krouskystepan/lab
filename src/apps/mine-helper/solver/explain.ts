@@ -2,10 +2,12 @@ import { emptyNeighborsWord, targetsWord, t } from '../../../i18n'
 import { cellRef, neighborsOf } from './neighbors'
 import {
   MAX_ENUMERATION,
+  chanceTip,
   type GoalMode,
   type SolveInput,
   type UserCell
 } from './types'
+import { remainingTargetNeed } from './validate'
 
 export type WhyStep = {
   text: string
@@ -27,6 +29,7 @@ export type CellExplanation = {
   /** Solver marked this chance cell as Best / Safest */
   best?: boolean
   safest?: boolean
+  unclued?: boolean
   steps: WhyStep[]
   /** Number/info clue cells that drive this */
   clueCells: number[]
@@ -387,6 +390,107 @@ function tryExplainForcedByClue(
 }
 
 /**
+ * Why for empties with no local clue: leftover Total cards shared equally.
+ */
+function explainFromTotalRemainder(
+  width: number,
+  cells: UserCell[],
+  cellIndex: number,
+  totalTargets: number,
+  goalMode: GoalMode,
+  board?: import('./types').BoardCell[]
+): CellExplanation | null {
+  const totalRemaining = remainingTargetNeed(cells, totalTargets, goalMode)
+  if (!totalRemaining) return null
+
+  let accounted = 0
+  const unmarked: number[] = []
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].type !== 'empty') continue
+    if (i === cellIndex) {
+      unmarked.push(i)
+      continue
+    }
+    const mark = board?.[i]?.solver
+    if (mark?.kind === 'target') accounted += 1
+    else if (mark?.kind === 'chance') accounted += mark.p ?? mark.percent / 100
+    else if (mark?.kind === 'flagged' || mark?.kind === 'conflict') {
+      /* not a remaining target */
+    } else {
+      unmarked.push(i)
+    }
+  }
+  if (unmarked.length === 0) return null
+
+  const leftover = totalRemaining.need - accounted
+  const eps = 1e-6
+  if (leftover < -eps || leftover > unmarked.length + eps) return null
+
+  const p = leftover / unmarked.length
+  const minePercent = Math.max(0, Math.min(100, Math.round(p * 100)))
+  const goalPercent =
+    goalMode === 'hunt' ? minePercent : Math.max(0, 100 - minePercent)
+  const certainMine = leftover >= unmarked.length - eps
+  const certainSafe = leftover <= eps
+  const peers = unmarked.filter((i) => i !== cellIndex)
+  const label = cellLabel(cellIndex, width)
+  const countShown = Math.round(leftover)
+
+  const steps: WhyStep[] = [
+    {
+      text: t(
+        goalMode === 'hunt' ? 'ex.totalKnownHunt' : 'ex.totalKnownSafe',
+        { known: totalRemaining.known, total: totalTargets }
+      )
+    },
+    {
+      text: t(goalMode === 'hunt' ? 'ex.totalShareHunt' : 'ex.totalShareSafe', {
+        count: countShown,
+        mines: targetsWord(countShown, goalMode),
+        n: unmarked.length,
+        percent: goalPercent
+      }),
+      cells: unmarked
+    }
+  ]
+
+  if (certainMine) {
+    steps.push({
+      text: t(
+        goalMode === 'hunt' ? 'ex.totalAllHunt' : 'ex.totalAllSafe',
+        { cell: label }
+      ),
+      cells: [cellIndex]
+    })
+  } else if (certainSafe) {
+    steps.push({
+      text: t(
+        goalMode === 'hunt' ? 'ex.totalNoneHunt' : 'ex.totalNoneSafe',
+        { cell: label }
+      ),
+      cells: [cellIndex]
+    })
+  }
+
+  return {
+    cellIndex,
+    resultLabel: certainMine
+      ? certainTargetLabel(goalMode)
+      : certainSafe
+        ? certainAvoidLabel(goalMode)
+        : `${goalPercent}%`,
+    meta: t('ex.meta.totalShare', { count: countShown, n: unmarked.length }),
+    percent: minePercent,
+    hits: certainMine ? 1 : certainSafe ? 0 : countShown,
+    total: certainMine || certainSafe ? 1 : unmarked.length,
+    isChance: true,
+    clueCells: [],
+    peerCells: peers,
+    steps
+  }
+}
+
+/**
  * Explain why an empty cell is certain (100%) or has a given chance %.
  * Works for both solver target and chance marks.
  */
@@ -416,18 +520,32 @@ export function explainChanceCell(
     goalMode
   )
 
+  const needAmongUnknowns =
+    totalTargets !== undefined ? totalTargets - knownTargetSet.size : undefined
   const useGlobal =
-    totalTargets !== undefined &&
-    totalTargets >= 0 &&
-    totalTargets <= unknowns.length &&
+    needAmongUnknowns !== undefined &&
+    needAmongUnknowns >= 0 &&
+    needAmongUnknowns <= unknowns.length &&
     unknowns.length <= MAX_ENUMERATION
 
   if (useGlobal) {
     constraints = [
       ...constraints,
-      { cellIdxs: [...unknowns], count: totalTargets!, clueIndex: null }
+      { cellIdxs: [...unknowns], count: needAmongUnknowns, clueIndex: null }
     ]
   }
+
+  const fromTotalRemainder = (): CellExplanation | null =>
+    totalTargets !== undefined
+      ? explainFromTotalRemainder(
+          width,
+          cells,
+          cellIndex,
+          totalTargets,
+          goalMode,
+          board
+        )
+      : null
 
   // Prefer a simple local forced explanation (covers most 100% / safe marks)
   const forced = tryExplainForcedByClue(
@@ -444,22 +562,24 @@ export function explainChanceCell(
     for (const i of c.cellIdxs) frontier.add(i)
   }
   if (!frontier.has(cellIndex)) {
-    return {
-      cellIndex,
-      resultLabel: t('ex.unknown'),
-      meta: t('ex.meta.noClue'),
-      percent: 0,
-      hits: 0,
-      total: 0,
-      isChance: true,
-      clueCells: [],
-      peerCells: [],
-      steps: [
-        {
-          text: t('ex.none', { cell: cellLabel(cellIndex, width) })
-        }
-      ]
-    }
+    return (
+      fromTotalRemainder() ?? {
+        cellIndex,
+        resultLabel: t('ex.unknown'),
+        meta: t('ex.meta.noClue'),
+        percent: 0,
+        hits: 0,
+        total: 0,
+        isChance: true,
+        clueCells: [],
+        peerCells: [],
+        steps: [
+          {
+            text: t('ex.none', { cell: cellLabel(cellIndex, width) })
+          }
+        ]
+      }
+    )
   }
 
   const components = connectedComponents([...frontier], constraints)
@@ -475,6 +595,10 @@ export function explainChanceCell(
           .map((c) => c.clueIndex!)
       )
     ]
+    if (nearClues.length === 0) {
+      const rem = fromTotalRemainder()
+      if (rem) return rem
+    }
     const mark = board?.[cellIndex]?.solver
     const resultLabel =
       mark?.kind === 'flagged'
@@ -1031,9 +1155,10 @@ export function explainCell(
 
   const steps = [...ex.steps]
   const peerCells = [...ex.peerCells]
-  const isBest = Boolean(mark.best)
-  // Prefer Interesting over Safest/Surest when both apply (same as grid tag).
-  const isSafest = Boolean(mark.safest) && !isBest
+  const tip = chanceTip(mark)
+  const isBest = tip === 'best'
+  const isSafest = tip === 'safest'
+  const isUnclued = tip === 'unclued'
 
   if (isBest) {
     const tip = explainBestPick(board, width, cellIndex)
@@ -1067,12 +1192,20 @@ export function explainCell(
         if (!peerCells.includes(i)) peerCells.push(i)
       }
     }
+  } else if (isUnclued) {
+    steps.push({
+      text: t(
+        goalMode === 'hunt' ? 'ex.uncluedWhyHunt' : 'ex.uncluedWhySafe'
+      ),
+      cells: [cellIndex]
+    })
   }
 
   return {
     ...ex,
     best: isBest,
     safest: isSafest,
+    unclued: isUnclued,
     steps,
     peerCells
   }
@@ -1152,12 +1285,12 @@ export function shortWhyHint(
             }
           )
   ]
-  if (explanation.best) parts.push(t('why.best'))
-  else if (explanation.safest) {
+  if (explanation.safest) {
     parts.push(
       goalMode === 'hunt' ? t('why.surestTarget') : t('why.safest')
     )
-  }
+  } else if (explanation.best) parts.push(t('why.best'))
+  else if (explanation.unclued) parts.push(t('why.unclued'))
   if (explanation.clueCells.length > 0) {
     const names = explanation.clueCells
       .slice(0, 2)

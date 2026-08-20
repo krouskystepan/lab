@@ -103,13 +103,17 @@ export function WhyPanel({
                     label: explanation.resultLabel
                   })}
             </span>
-            {explanation.best ? (
+            {explanation.safest ? (
+              <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-safest)_88%,white)]">
+                {tipLabel}
+              </span>
+            ) : explanation.best ? (
               <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-best)_88%,white)]">
                 {t('why.best')}
               </span>
-            ) : explanation.safest ? (
-              <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-safest)_88%,white)]">
-                {tipLabel}
+            ) : explanation.unclued ? (
+              <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-unclued)_88%,white)]">
+                {t('why.unclued')}
               </span>
             ) : null}
           </span>
