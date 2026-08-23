@@ -600,17 +600,35 @@ export function explainChanceCell(
       if (rem) return rem
     }
     const mark = board?.[cellIndex]?.solver
+    const chancePercent =
+      mark?.kind === 'chance'
+        ? goalMode === 'hunt'
+          ? mark.percent
+          : Math.max(0, Math.min(100, 100 - mark.percent))
+        : null
     const resultLabel =
-      mark?.kind === 'flagged'
-        ? certainAvoidLabel(goalMode)
-        : mark?.kind === 'target'
-          ? certainTargetLabel(goalMode)
-          : t('ex.unknown')
+      chancePercent != null
+        ? `${chancePercent}%`
+        : mark?.kind === 'flagged'
+          ? certainAvoidLabel(goalMode)
+          : mark?.kind === 'target'
+            ? certainTargetLabel(goalMode)
+            : t('ex.unknown')
     return {
       cellIndex,
       resultLabel,
       meta: t('ex.meta.tooLarge'),
-      percent: mark?.kind === 'flagged' ? (goalMode === 'hunt' ? 0 : 100) : mark?.kind === 'target' ? (goalMode === 'hunt' ? 100 : 0) : 0,
+      percent:
+        chancePercent ??
+        (mark?.kind === 'flagged'
+          ? goalMode === 'hunt'
+            ? 0
+            : 100
+          : mark?.kind === 'target'
+            ? goalMode === 'hunt'
+              ? 100
+              : 0
+            : 0),
       hits: mark?.kind === 'target' ? 1 : 0,
       total: mark?.kind === 'target' || mark?.kind === 'flagged' ? 1 : 0,
       isChance: true,
@@ -619,21 +637,30 @@ export function explainChanceCell(
       steps: [
         {
           text:
-            mark?.kind === 'flagged'
+            chancePercent != null
               ? t(
-                  goalMode === 'hunt' ? 'ex.largeSafeHunt' : 'ex.largeSafe',
-                  { cell: label, n: component.length }
+                  goalMode === 'hunt' ? 'ex.largeChanceHunt' : 'ex.largeChance',
+                  {
+                    cell: label,
+                    percent: chancePercent,
+                    n: component.length
+                  }
                 )
-              : mark?.kind === 'target'
+              : mark?.kind === 'flagged'
                 ? t(
-                    goalMode === 'hunt' ? 'ex.large100Hunt' : 'ex.large100',
+                    goalMode === 'hunt' ? 'ex.largeSafeHunt' : 'ex.largeSafe',
                     { cell: label, n: component.length }
                   )
-                : t('ex.largeOther', {
-                    cell: label,
-                    n: component.length,
-                    max: MAX_ENUMERATION
-                  }),
+                : mark?.kind === 'target'
+                  ? t(
+                      goalMode === 'hunt' ? 'ex.large100Hunt' : 'ex.large100',
+                      { cell: label, n: component.length }
+                    )
+                  : t('ex.largeOther', {
+                      cell: label,
+                      n: component.length,
+                      max: MAX_ENUMERATION
+                    }),
           cells: [cellIndex, ...nearClues]
         },
         ...(nearClues.length > 0

@@ -375,6 +375,10 @@ export const mineHelperEn = {
     '{cell} is marked × (not yours), but the linked group is too large ({n} empties) to show every layout step-by-step.',
   'ex.largeOther':
     '{cell} sits in a large linked group ({n} empties). A full layout walkthrough isn’t available past {max} cells.',
+  'ex.largeChance':
+    '{cell} is {percent}% from nearby clues. The full linked group is too large ({n} empties) for a layout-by-layout walkthrough.',
+  'ex.largeChanceHunt':
+    '{cell} is {percent}% yours from nearby clues. The full linked group is too large ({n} empties) for a layout-by-layout walkthrough.',
   'ex.nearby': 'Nearby clues: {clues}.',
   'ex.cluesMatter': 'Clues that matter: {clues}.',
   'ex.totalLeft': 'Total: exactly {count} {mines} left among empties.',

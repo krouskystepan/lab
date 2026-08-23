@@ -548,6 +548,79 @@ function recoverEpistemicChances(
   return true
 }
 
+function pocketHasUnmarked(
+  pocket: Constraint,
+  marks: Map<number, SolverMark>
+): boolean {
+  return pocket.cellIdxs.some((i) => !marks.has(i))
+}
+
+/**
+ * Pack overlapping pockets into one enum that still fits in MAX.
+ * Prefers adding the pocket that introduces the fewest new cells so more
+ * clues share one solve. Existing marks on the seed cells are kept.
+ */
+function packOverlappingPockets(
+  pockets: Constraint[],
+  marks: Map<number, SolverMark>
+): { cells: number[]; pockets: Constraint[] } | null {
+  const unused = pockets.filter((p) => pocketHasUnmarked(p, marks))
+  if (unused.length === 0) return null
+
+  unused.sort((a, b) => a.cellIdxs.length - b.cellIdxs.length)
+  const selected: Constraint[] = [unused[0]]
+  const cells = new Set(unused[0].cellIdxs)
+
+  let grew = true
+  while (grew) {
+    grew = false
+    let best: Constraint | null = null
+    let bestNew = Infinity
+    for (const p of unused) {
+      if (selected.includes(p)) continue
+      let overlap = false
+      let newCount = 0
+      for (const i of p.cellIdxs) {
+        if (cells.has(i)) overlap = true
+        else newCount++
+      }
+      if (!overlap || cells.size + newCount > MAX_ENUMERATION) continue
+      if (
+        newCount < bestNew ||
+        (newCount === bestNew &&
+          p.cellIdxs.length < (best?.cellIdxs.length ?? Infinity))
+      ) {
+        best = p
+        bestNew = newCount
+      }
+    }
+    if (!best) continue
+    selected.push(best)
+    for (const i of best.cellIdxs) cells.add(i)
+    grew = true
+  }
+
+  return { cells: [...cells], pockets: selected }
+}
+
+/** Enumerate a pocket subset; never replace marks already painted. */
+function solveComponentKeepExisting(
+  componentCells: number[],
+  constraints: Constraint[],
+  marks: Map<number, SolverMark>,
+  nextGroupId: { value: number }
+): boolean {
+  const snapshot = new Map<number, SolverMark>()
+  for (const i of componentCells) {
+    const m = marks.get(i)
+    if (m) snapshot.set(i, m)
+  }
+  const before = marks.size
+  const solved = solveComponent(componentCells, constraints, marks, nextGroupId)
+  for (const [i, m] of snapshot) marks.set(i, m)
+  return solved.ok && marks.size > before
+}
+
 /**
  * On oversized frontiers, still compute % for small local clue pockets.
  * Example: C1 needs 1 of {B1,D1,C2} → 33% even when the rest of the board
@@ -555,7 +628,9 @@ function recoverEpistemicChances(
  *
  * Strategy: build each clue’s remaining open set; if ≤ MAX, treat as a pocket.
  * Connected pocket clusters that fit in MAX are solved jointly; oversized
- * chains fall back to tightest pockets first (no overwrite of existing marks).
+ * chains pack as many overlapping pockets as fit, then paint leftover clues
+ * without overwriting cells already marked (skip-the-whole-pocket used to
+ * hide % on later clues that touched an earlier 1-of-n group).
  */
 function solveLocalPockets(
   remaining: number[],
@@ -606,16 +681,26 @@ function solveLocalPockets(
       continue
     }
 
-    // Chained too large: apply tightest pockets first, skip cells already marked.
-    const ordered = [...pockets]
-      .filter((p) => p.cellIdxs.some((i) => cluster.includes(i)))
-      .sort((a, b) => a.cellIdxs.length - b.cellIdxs.length)
-
-    for (const p of ordered) {
-      if (p.cellIdxs.some((i) => marks.has(i))) continue
-      const before = marks.size
-      const solved = solveComponent(p.cellIdxs, [p], marks, nextGroupId)
-      if (solved.ok && marks.size > before) painted = true
+    const clusterPockets = pockets.filter((p) =>
+      p.cellIdxs.some((i) => cluster.includes(i))
+    )
+    const dropped = new Set<Constraint>()
+    while (true) {
+      const available = clusterPockets.filter((p) => !dropped.has(p))
+      const packed = packOverlappingPockets(available, marks)
+      if (!packed) break
+      if (
+        solveComponentKeepExisting(
+          packed.cells,
+          packed.pockets,
+          marks,
+          nextGroupId
+        )
+      ) {
+        painted = true
+        continue
+      }
+      dropped.add(packed.pockets[0])
     }
   }
 

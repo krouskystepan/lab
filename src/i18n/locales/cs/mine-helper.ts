@@ -372,6 +372,10 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
     '{cell} je označené × (ne tvoje), ale propojená skupina je příliš velká ({n} prázdných) na krok za krokem.',
   'ex.largeOther':
     '{cell} je ve velké propojené skupině ({n} prázdných). Úplný průchod rozložení není dostupný nad {max} buněk.',
+  'ex.largeChance':
+    '{cell} je {percent} % z blízkých nápověd. Celá propojená skupina je příliš velká ({n} prázdných) na průchod rozložení krok za krokem.',
+  'ex.largeChanceHunt':
+    '{cell} je z {percent} % tvoje podle blízkých nápověd. Celá propojená skupina je příliš velká ({n} prázdných) na průchod rozložení krok za krokem.',
   'ex.nearby': 'Blízké nápovědy: {clues}.',
   'ex.cluesMatter': 'Důležité nápovědy: {clues}.',
   'ex.totalLeft': 'Celkem: přesně {count} {mines} zbývá mezi prázdnými.',
