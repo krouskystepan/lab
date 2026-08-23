@@ -9,7 +9,8 @@ export const gameShell = cn(
   'max-[980px]:landscape:gap-1 max-[980px]:landscape:pt-1 max-[980px]:landscape:pb-[max(0.2rem,env(safe-area-inset-bottom,0px))]'
 )
 
-export const gamePage = 'game-page flex min-h-0 w-full flex-1 flex-col overflow-x-clip'
+export const gamePage =
+  'game-page flex min-h-0 w-full flex-1 flex-col overflow-x-clip'
 
 export const gamePageFit = 'game-page--fit overflow-hidden'
 
@@ -22,7 +23,7 @@ export const boardStage = cn(
 
 export const boardStageWhy = cn(
   boardStage,
-  'with-why justify-start gap-2 max-[720px]:flex-col max-[720px]:items-stretch'
+  'with-why items-start justify-center'
 )
 
 /** Sticky / phone control strip under the board. */

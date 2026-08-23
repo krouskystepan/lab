@@ -59,13 +59,12 @@ export const CELL_CONFLICT =
 
 export const WHY_HL = {
   focus:
-    'relative z-[5] !shadow-[0_0_0_3px_#fff]',
+    'relative z-[5] !shadow-[inset_0_0_0_3px_#fff]',
   clue:
-    'relative z-[4] !shadow-[0_0_0_3px_var(--color-why-clue),0_0_12px_color-mix(in_srgb,var(--color-why-clue)_65%,transparent)]',
+    'relative z-[4] !shadow-[inset_0_0_0_3px_var(--color-why-clue)]',
   step:
-    'relative z-[3] brightness-[1.12] !shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-why-clue)_85%,white),0_0_10px_color-mix(in_srgb,var(--color-why-clue)_50%,transparent)]',
+    'relative z-[3] brightness-[1.12] !shadow-[inset_0_0_0_3px_color-mix(in_srgb,var(--color-why-clue)_85%,white)]',
   peer:
-    'relative z-[2] !shadow-[0_0_0_3px_var(--color-why-peer),0_0_12px_color-mix(in_srgb,var(--color-why-peer)_65%,transparent)]',
-  cursor:
-    'relative z-[1] !border-2 !border-white !shadow-none'
+    'relative z-[2] !shadow-[inset_0_0_0_3px_var(--color-why-peer)]',
+  cursor: 'relative z-[1] !border-2 !border-white !shadow-none'
 } as const

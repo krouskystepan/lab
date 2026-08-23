@@ -38,7 +38,13 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
-import { MobileHelpCard, boardStage, boardStageWhy, gameShell, gameStickyControls } from '../../shared/gameUi'
+import {
+  MobileHelpCard,
+  boardStage,
+  boardStageWhy,
+  gameShell,
+  gameStickyControls
+} from '../../shared/gameUi'
 import {
   flipBoardHorizontal,
   flipBoardVertical,
@@ -48,7 +54,12 @@ import {
   shiftBoard,
   trimEmptyEdges
 } from './storage/resizeBoard'
-import { loadGoalMode, loadWhyMode, saveGoalMode, saveWhyMode } from './storage/prefs'
+import {
+  loadGoalMode,
+  loadWhyMode,
+  saveGoalMode,
+  saveWhyMode
+} from './storage/prefs'
 import type { Placement } from './solver/validate'
 import { useI18n } from '../../i18n'
 import { LangSwitch } from '../../shell/LangSwitch'
@@ -597,7 +608,16 @@ export default function MineHelperApp() {
       explainIndex,
       cells
     )
-  }, [explainIndex, cells, width, height, useTotal, totalTargets, goalMode, locale])
+  }, [
+    explainIndex,
+    cells,
+    width,
+    height,
+    useTotal,
+    totalTargets,
+    goalMode,
+    locale
+  ])
 
   // Re-localize why hints when language changes
   useEffect(() => {
@@ -848,13 +868,26 @@ export default function MineHelperApp() {
     }
     setExplainIndex(null)
     setWhyMode(true)
-  }, [whyMode, cells, width, height, useTotal, totalTargets, goalMode, pushHistory])
+  }, [
+    whyMode,
+    cells,
+    width,
+    height,
+    useTotal,
+    totalTargets,
+    goalMode,
+    pushHistory
+  ])
 
   onWhyModeRef.current = onWhyMode
   onSolveRef.current = onSolve
 
   const knownFound = useMemo(
-    () => countKnownTargets(cells.map((c) => c.user), goalMode),
+    () =>
+      countKnownTargets(
+        cells.map((c) => c.user),
+        goalMode
+      ),
     [cells, goalMode]
   )
 
@@ -871,9 +904,7 @@ export default function MineHelperApp() {
         width: widthRef.current,
         height: heightRef.current,
         cells: cellsRef.current.map((c) => c.user),
-        totalTargets: useTotalRef.current
-          ? totalTargetsRef.current
-          : undefined
+        totalTargets: useTotalRef.current ? totalTargetsRef.current : undefined
       }),
     []
   )
@@ -976,31 +1007,35 @@ export default function MineHelperApp() {
         className={`board-frame order-1 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] ${whyMode ? 'why-mode border-best/40' : ''}`}
       >
         <div className={whyMode ? boardStageWhy : boardStage}>
-          <Grid
-            width={width}
-            height={height}
-            cellAspect={cellAspect}
-            cells={cells}
-            goalMode={goalMode}
-            onCellClick={onCellClick}
-            onCellClear={onCellClear}
-            cursorIndex={cursorIndex}
-            keyboardCursor={keyboardCursor}
-            showCoords
-            whyFocus={explainIndex}
-            whyClues={whyClues}
-            whyPeers={whyPeers}
-          />
-          {whyMode ? (
-            <WhyPanel
-              explanation={explanation}
-              hasSelection={explainIndex != null}
+          <div className={whyMode ? 'board-with-why' : 'contents'}>
+            <Grid
               width={width}
-              activeStep={whyStep}
-              onStepChange={setWhyStep}
+              height={height}
+              cellAspect={cellAspect}
+              cells={cells}
               goalMode={goalMode}
+              onCellClick={onCellClick}
+              onCellClear={onCellClear}
+              cursorIndex={cursorIndex}
+              keyboardCursor={keyboardCursor}
+              showCoords
+              whyFocus={explainIndex}
+              whyClues={whyClues}
+              whyPeers={whyPeers}
             />
-          ) : null}
+            {whyMode ? (
+              <div className="why-slot">
+                <WhyPanel
+                  explanation={explanation}
+                  hasSelection={explainIndex != null}
+                  width={width}
+                  activeStep={whyStep}
+                  onStepChange={setWhyStep}
+                  goalMode={goalMode}
+                />
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 
@@ -1052,7 +1087,9 @@ export default function MineHelperApp() {
             onTrimEmpty={onTrimEmpty}
           />
         </div>
-        <div className={`${gameStickyControls} min-w-0 flex-1 max-[980px]:order-2`}>
+        <div
+          className={`${gameStickyControls} min-w-0 flex-1 max-[980px]:order-2`}
+        >
           <NumberPad
             mode={mode}
             numberValue={numberValue}

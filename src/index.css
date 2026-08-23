@@ -170,14 +170,83 @@
   border-radius: 0;
 }
 
-/* Why panel open: shrink grid for the aside (hook class `.with-why`) */
-.board-stage.with-why .mine-grid {
+/*
+ * Why open: row height comes from the grid only. The slot stretches to
+ * that height; the panel is pinned inside so steps scroll instead of
+ * stretching the board.
+ */
+.board-with-why {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.board-with-why .coord-board,
+.board-with-why > .mine-grid {
+  flex: 0 1 auto;
+  min-width: 0;
+  align-self: start;
   width: min(
-    calc(100cqw - 15.5rem),
-    calc(var(--fit-h) * var(--cols) * var(--cell-ar) / var(--rows))
+    calc(100cqw - 16rem),
+    calc(
+      (var(--fit-h) - var(--coord-gutter-y, 0px)) * var(--cols) * var(--cell-ar) /
+        var(--rows) + var(--coord-gutter-x, 0px)
+    )
   );
-  max-height: var(--fit-h);
-  align-self: center;
+}
+
+.why-slot {
+  position: relative;
+  flex: 0 0 14.5rem;
+  width: 14.5rem;
+  align-self: stretch;
+}
+
+.why-slot .why-panel {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 980px) {
+  .board-with-why {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-with-why .coord-board,
+  .board-with-why > .mine-grid {
+    width: min(
+      100cqw,
+      calc(
+        (var(--fit-h) - var(--coord-gutter-y, 0px)) * var(--cols) *
+          var(--cell-ar) / var(--rows) + var(--coord-gutter-x, 0px)
+      )
+    );
+  }
+
+  .why-slot {
+    flex: 0 1 auto;
+    width: min(100%, 22rem);
+    align-self: stretch;
+    position: relative;
+  }
+
+  .why-slot .why-panel {
+    position: static;
+    width: 100%;
+    max-height: 12.5rem;
+  }
 }
 
 .coord-board {
@@ -214,22 +283,6 @@
   max-height: none;
   aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
   border-radius: 0;
-}
-
-.board-stage.with-why .coord-board {
-  width: min(
-    calc(100cqw - 15.5rem),
-    calc(
-      (var(--fit-h) - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
-        var(--rows) + var(--coord-gutter-x)
-    )
-  );
-  max-height: var(--fit-h);
-  align-self: center;
-}
-
-.board-frame.why-mode .mine-grid {
-  gap: clamp(5px, 1.4cqmin, 10px);
 }
 
 .board-frame.why-mode .cell {
@@ -303,8 +356,7 @@
     );
   }
 
-  .coord-board,
-  .board-stage.with-why .coord-board {
+  .coord-board {
     width: min(
       100cqw,
       calc(
@@ -323,14 +375,6 @@
     height: auto;
     max-height: none;
     aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
-  }
-
-  .board-stage.with-why .mine-grid {
-    width: min(
-      100cqw,
-      calc(var(--board-max-h) * var(--cols) * var(--cell-ar) / var(--rows))
-    );
-    max-height: var(--board-max-h);
   }
 
   .game-page--fit .board-frame {
@@ -382,10 +426,7 @@
 
 .game-page--fit .mine-grid,
 .game-page--fit .wordle-grid {
-  width: min(
-    100cqw,
-    calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows))
-  );
+  width: min(100cqw, calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows)));
   max-height: 100%;
 }
 
