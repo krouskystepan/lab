@@ -313,6 +313,7 @@ function Car({
       {isPrimary(vehicle) ? (
         <span className="rush-car-hero" aria-hidden>
           <span className="rush-car-hero-arrow" />
+          <span className="rush-car-hero-arrow" />
         </span>
       ) : (
         <span
