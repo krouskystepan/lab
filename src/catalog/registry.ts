@@ -25,7 +25,8 @@ import {
   minesweeperTheme,
   sudokuTheme,
   wordleTheme,
-  chessMateTheme
+  chessMateTheme,
+  rushHourTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -109,12 +110,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.rushHour.title',
     blurbKey: 'catalog.rushHour.blurb',
     icon: Car,
-    theme: {
-      accent: '#e24a4a',
-      accentHover: '#ed6060',
-      onAccent: '#ffe8e8'
-    },
-    status: 'soon'
+    theme: rushHourTheme,
+    status: 'live'
   },
   {
     id: 'sokoban',

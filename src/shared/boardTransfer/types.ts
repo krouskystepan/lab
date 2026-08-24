@@ -3,7 +3,7 @@
 export const BOARD_FORMAT = 'krouskylab.board' as const
 export const BOARD_VERSION = 1 as const
 
-export type BoardFamily = 'minesweeper' | 'sudoku' | 'wordle' | 'chess'
+export type BoardFamily = 'minesweeper' | 'sudoku' | 'wordle' | 'chess' | 'rushhour'
 
 /** Visible minesweeper knowledge (no hidden mine map). */
 export type MineTransferCell =
@@ -82,11 +82,29 @@ export type ChessBoardFile = {
   }
 }
 
+export type RushHourBoardFile = {
+  format: typeof BOARD_FORMAT
+  version: typeof BOARD_VERSION
+  family: 'rushhour'
+  /** Current square lot. */
+  grid: string
+  /** Starting lot for Reset. */
+  start?: string
+  game?: {
+    puzzleId: string
+    diffId: 'easy' | 'medium' | 'hard' | 'expert' | 'insane'
+    moves?: number
+    status?: 'ready' | 'playing' | 'won'
+    seconds?: number
+  }
+}
+
 export type BoardFile =
   | MinesweeperBoardFile
   | SudokuBoardFile
   | WordleBoardFile
   | ChessBoardFile
+  | RushHourBoardFile
 
 export function isBoardFile(data: unknown): data is BoardFile {
   if (!data || typeof data !== 'object') return false

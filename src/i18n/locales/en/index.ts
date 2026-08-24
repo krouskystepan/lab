@@ -6,6 +6,7 @@ import { sudokuEn } from './sudoku'
 import { sudokuHelperEn } from './sudoku-helper'
 import { wordleEn } from './wordle'
 import { chessMateEn } from './chess-mate'
+import { rushHourEn } from './rush-hour'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -16,5 +17,6 @@ export const en = {
   ...sudokuEn,
   ...sudokuHelperEn,
   ...wordleEn,
-  ...chessMateEn
+  ...chessMateEn,
+  ...rushHourEn
 }
