@@ -1,6 +1,7 @@
 import type { EditMode, GoalMode } from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { gameBtn, GamePanel } from '../../../shared/gameUi'
 import { HelpTip } from './HelpTip'
 import {
   Flag,
@@ -19,6 +20,8 @@ interface ToolbarProps {
   onUseTotalChange: (v: boolean) => void
   totalTargets: number
   onTotalTargetsChange: (n: number) => void
+  /** User-placed My cards (hunt) or flags (avoid). Shown even when Total is off. */
+  knownFound: number
   autoSolve: boolean
   onAutoSolveChange: (v: boolean) => void
   onSolve: () => void
@@ -32,8 +35,13 @@ interface ToolbarProps {
   goalMode?: GoalMode
 }
 
-const btn =
-  'cursor-pointer appearance-none rounded-sm border border-line bg-cell px-2 py-1.5 text-sm font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] disabled:cursor-default disabled:opacity-40 max-[720px]:min-h-[2.35rem] max-[720px]:text-[0.9rem]'
+const btn = cn(
+  gameBtn,
+  'px-2 py-1.5 text-sm max-[980px]:min-h-[2.45rem] max-[980px]:justify-center max-[720px]:text-[0.9rem]'
+)
+
+const modeBtn =
+  'inline-flex min-w-0 flex-col items-center justify-center gap-0.5 px-1.5 py-1.5 text-center leading-tight sm:flex-row sm:gap-1.5 sm:px-2'
 
 const iconCls = 'h-[0.95em] w-[0.95em] shrink-0'
 
@@ -44,6 +52,7 @@ export function Toolbar({
   onUseTotalChange,
   totalTargets,
   onTotalTargetsChange,
+  knownFound,
   autoSolve,
   onAutoSolveChange,
   onSolve,
@@ -76,20 +85,47 @@ export function Toolbar({
         : t('tools.safeTitle')
   const safeLabel = hunt ? t('tools.safeHunt') : t('tools.safe')
 
-  return (
-    <section className="flex min-w-0 flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-[0.45rem]">
-      <h2 className="m-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
-        {t('tools.title')}
-      </h2>
+  const foundLabel = (
+    <span
+      className="flex items-center gap-[0.3rem] whitespace-nowrap text-[0.72rem] font-semibold tracking-normal text-muted normal-case"
+      title={t(hunt ? 'tools.foundTipHunt' : 'tools.foundTipSafe')}
+      aria-label={
+        useTotal
+          ? t(hunt ? 'tools.foundAriaOfHunt' : 'tools.foundAriaOfSafe', {
+              found: knownFound,
+              total: totalTargets
+            })
+          : t(hunt ? 'tools.foundAriaHunt' : 'tools.foundAriaSafe', {
+              n: knownFound
+            })
+      }
+    >
+      {t(hunt ? 'tools.foundHunt' : 'tools.foundSafe')}
+      <span
+        className={cn(
+          'font-mono text-[0.78rem] font-medium text-ink',
+          useTotal && knownFound > totalTargets && 'text-[#ffb0b0]'
+        )}
+      >
+        {useTotal ? `${knownFound}/${totalTargets}` : knownFound}
+      </span>
+    </span>
+  )
 
-      {/* Row 1: mark modes left, solver options right */}
-      <div className="flex flex-nowrap items-center justify-between gap-3 overflow-x-auto">
-        <div className="flex shrink-0 flex-nowrap items-center gap-[0.35rem]">
+  return (
+    <GamePanel
+      title={t('tools.title')}
+      headerRight={foundLabel}
+      className="min-h-0"
+    >
+      {/* Row 1: mark modes + Total/Auto — wraps on narrow panels */}
+      <div className="flex flex-col gap-2 min-[640px]:flex-row min-[640px]:flex-wrap min-[640px]:items-center min-[640px]:justify-between">
+        <div className="grid w-full grid-cols-3 gap-[0.35rem] min-[640px]:flex min-[640px]:w-auto min-[640px]:flex-wrap">
           <button
             type="button"
             className={cn(
               btn,
-              'inline-flex items-center gap-1.5',
+              modeBtn,
               mode === 'number' &&
                 'border-mine bg-[color-mix(in_srgb,var(--color-mine)_28%,var(--color-cell))] text-[#c8d6ff]'
             )}
@@ -105,7 +141,9 @@ export function Toolbar({
             >
               #
             </span>
-            {numberLabel}
+            <span className="max-w-full whitespace-normal wrap-break-word">
+              {numberLabel}
+            </span>
           </button>
 
           {showInfoTool ? (
@@ -113,7 +151,7 @@ export function Toolbar({
               type="button"
               className={cn(
                 btn,
-                'inline-flex items-center gap-1.5',
+                modeBtn,
                 mode === 'info' &&
                   'border-info bg-[color-mix(in_srgb,var(--color-info)_28%,var(--color-cell))] text-[#bffaf5]'
               )}
@@ -129,7 +167,9 @@ export function Toolbar({
               >
                 #
               </span>
-              {t('tools.info')}
+              <span className="max-w-full whitespace-normal wrap-break-word">
+                {t('tools.info')}
+              </span>
             </button>
           ) : null}
 
@@ -138,7 +178,7 @@ export function Toolbar({
               type="button"
               className={cn(
                 btn,
-                'inline-flex items-center gap-1.5',
+                modeBtn,
                 mode === 'flag' &&
                   'border-[color-mix(in_srgb,var(--color-flag)_65%,var(--color-line))] bg-[color-mix(in_srgb,var(--color-flag)_22%,var(--color-cell))] text-flag'
               )}
@@ -151,7 +191,9 @@ export function Toolbar({
                 strokeWidth={1.5}
                 aria-hidden
               />
-              {t('tools.flag')}
+              <span className="max-w-full whitespace-normal wrap-break-word">
+                {t('tools.flag')}
+              </span>
             </button>
           ) : null}
 
@@ -160,7 +202,7 @@ export function Toolbar({
               type="button"
               className={cn(
                 btn,
-                'inline-flex items-center gap-1.5',
+                modeBtn,
                 mode === 'blank' &&
                   'border-[#6a7585] bg-[color-mix(in_srgb,#4a5360_55%,var(--color-cell))] text-[#c5ced8]'
               )}
@@ -180,12 +222,14 @@ export function Toolbar({
               ) : (
                 <Shield className={iconCls} aria-hidden />
               )}
-              {safeLabel}
+              <span className="max-w-full whitespace-normal wrap-break-word">
+                {safeLabel}
+              </span>
             </button>
           ) : null}
         </div>
 
-        <div className="flex shrink-0 flex-nowrap items-center gap-[0.45rem]">
+        <div className="flex min-w-0 flex-wrap items-center gap-x-[0.45rem] gap-y-1.5">
           <label className="flex cursor-pointer items-center gap-[0.35rem] whitespace-nowrap text-sm font-semibold text-muted max-[720px]:text-[0.9rem]">
             <input
               type="checkbox"
@@ -194,8 +238,12 @@ export function Toolbar({
               onChange={(e) => onUseTotalChange(e.target.checked)}
             />
             {t('tools.total')}
-            <HelpTip title={t('tools.totalTipTitle')}>
-              {t('tools.totalTipBody')}
+            <HelpTip
+              title={t(
+                hunt ? 'tools.totalTipTitleHunt' : 'tools.totalTipTitle'
+              )}
+            >
+              {t(hunt ? 'tools.totalTipBodyHunt' : 'tools.totalTipBody')}
             </HelpTip>
           </label>
           <input
@@ -204,7 +252,7 @@ export function Toolbar({
             min={0}
             value={totalTargets}
             disabled={!useTotal}
-            aria-label={t('tools.totalAria')}
+            aria-label={t(hunt ? 'tools.totalAriaHunt' : 'tools.totalAria')}
             onChange={(e) =>
               onTotalTargetsChange(Math.max(0, Number(e.target.value) || 0))
             }
@@ -224,9 +272,9 @@ export function Toolbar({
         </div>
       </div>
 
-      {/* Row 2: history left, actions right */}
-      <div className="flex flex-nowrap items-center justify-between gap-3 overflow-x-auto">
-        <div className="flex shrink-0 items-center gap-[0.35rem]">
+      {/* History left · actions right — one row with space between */}
+      <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <div className="flex min-w-0 items-center gap-[0.35rem]">
           <button
             type="button"
             className={cn(btn, 'inline-flex shrink-0 items-center gap-1.5')}
@@ -248,7 +296,7 @@ export function Toolbar({
             {t('tools.redo')}
           </button>
         </div>
-        <div className="flex shrink-0 items-center gap-[0.35rem]">
+        <div className="flex min-w-0 flex-wrap items-center justify-end gap-[0.35rem]">
           <button
             type="button"
             className={cn(
@@ -289,6 +337,6 @@ export function Toolbar({
           </button>
         </div>
       </div>
-    </section>
+    </GamePanel>
   )
 }

@@ -2,10 +2,12 @@ import { emptyNeighborsWord, targetsWord, t } from '../../../i18n'
 import { cellRef, neighborsOf } from './neighbors'
 import {
   MAX_ENUMERATION,
+  chanceTip,
   type GoalMode,
   type SolveInput,
   type UserCell
 } from './types'
+import { remainingTargetNeed } from './validate'
 
 export type WhyStep = {
   text: string
@@ -27,6 +29,7 @@ export type CellExplanation = {
   /** Solver marked this chance cell as Best / Safest */
   best?: boolean
   safest?: boolean
+  unclued?: boolean
   steps: WhyStep[]
   /** Number/info clue cells that drive this */
   clueCells: number[]
@@ -291,6 +294,31 @@ function toLocal(
     .filter((c) => c.cellIdxs.length > 0)
 }
 
+/** Empties on clues that actually touch this cell — not the whole overlapping chain. */
+function directCluePocket(
+  cellIndex: number,
+  constraints: Constraint[]
+): number[] {
+  const cells = new Set<number>([cellIndex])
+  for (const c of constraints) {
+    if (c.clueIndex == null) continue
+    if (!c.cellIdxs.includes(cellIndex)) continue
+    for (const i of c.cellIdxs) cells.add(i)
+  }
+  return [...cells]
+}
+
+function constraintsInside(
+  constraints: Constraint[],
+  component: number[]
+): Constraint[] {
+  const inComp = new Set(component)
+  return constraints.filter(
+    (c) =>
+      c.cellIdxs.length > 0 && c.cellIdxs.every((i) => inComp.has(i))
+  )
+}
+
 /** 100% / safe forced by a single clue (no full enumeration needed). */
 function tryExplainForcedByClue(
   width: number,
@@ -387,6 +415,107 @@ function tryExplainForcedByClue(
 }
 
 /**
+ * Why for empties with no local clue: leftover Total cards shared equally.
+ */
+function explainFromTotalRemainder(
+  width: number,
+  cells: UserCell[],
+  cellIndex: number,
+  totalTargets: number,
+  goalMode: GoalMode,
+  board?: import('./types').BoardCell[]
+): CellExplanation | null {
+  const totalRemaining = remainingTargetNeed(cells, totalTargets, goalMode)
+  if (!totalRemaining) return null
+
+  let accounted = 0
+  const unmarked: number[] = []
+  for (let i = 0; i < cells.length; i++) {
+    if (cells[i].type !== 'empty') continue
+    if (i === cellIndex) {
+      unmarked.push(i)
+      continue
+    }
+    const mark = board?.[i]?.solver
+    if (mark?.kind === 'target') accounted += 1
+    else if (mark?.kind === 'chance') accounted += mark.p ?? mark.percent / 100
+    else if (mark?.kind === 'flagged' || mark?.kind === 'conflict') {
+      /* not a remaining target */
+    } else {
+      unmarked.push(i)
+    }
+  }
+  if (unmarked.length === 0) return null
+
+  const leftover = totalRemaining.need - accounted
+  const eps = 1e-6
+  if (leftover < -eps || leftover > unmarked.length + eps) return null
+
+  const p = leftover / unmarked.length
+  const minePercent = Math.max(0, Math.min(100, Math.round(p * 100)))
+  const goalPercent =
+    goalMode === 'hunt' ? minePercent : Math.max(0, 100 - minePercent)
+  const certainMine = leftover >= unmarked.length - eps
+  const certainSafe = leftover <= eps
+  const peers = unmarked.filter((i) => i !== cellIndex)
+  const label = cellLabel(cellIndex, width)
+  const countShown = Math.round(leftover)
+
+  const steps: WhyStep[] = [
+    {
+      text: t(
+        goalMode === 'hunt' ? 'ex.totalKnownHunt' : 'ex.totalKnownSafe',
+        { known: totalRemaining.known, total: totalTargets }
+      )
+    },
+    {
+      text: t(goalMode === 'hunt' ? 'ex.totalShareHunt' : 'ex.totalShareSafe', {
+        count: countShown,
+        mines: targetsWord(countShown, goalMode),
+        n: unmarked.length,
+        percent: goalPercent
+      }),
+      cells: unmarked
+    }
+  ]
+
+  if (certainMine) {
+    steps.push({
+      text: t(
+        goalMode === 'hunt' ? 'ex.totalAllHunt' : 'ex.totalAllSafe',
+        { cell: label }
+      ),
+      cells: [cellIndex]
+    })
+  } else if (certainSafe) {
+    steps.push({
+      text: t(
+        goalMode === 'hunt' ? 'ex.totalNoneHunt' : 'ex.totalNoneSafe',
+        { cell: label }
+      ),
+      cells: [cellIndex]
+    })
+  }
+
+  return {
+    cellIndex,
+    resultLabel: certainMine
+      ? certainTargetLabel(goalMode)
+      : certainSafe
+        ? certainAvoidLabel(goalMode)
+        : `${goalPercent}%`,
+    meta: t('ex.meta.totalShare', { count: countShown, n: unmarked.length }),
+    percent: minePercent,
+    hits: certainMine ? 1 : certainSafe ? 0 : countShown,
+    total: certainMine || certainSafe ? 1 : unmarked.length,
+    isChance: true,
+    clueCells: [],
+    peerCells: peers,
+    steps
+  }
+}
+
+/**
  * Explain why an empty cell is certain (100%) or has a given chance %.
  * Works for both solver target and chance marks.
  */
@@ -416,18 +545,32 @@ export function explainChanceCell(
     goalMode
   )
 
+  const needAmongUnknowns =
+    totalTargets !== undefined ? totalTargets - knownTargetSet.size : undefined
   const useGlobal =
-    totalTargets !== undefined &&
-    totalTargets >= 0 &&
-    totalTargets <= unknowns.length &&
+    needAmongUnknowns !== undefined &&
+    needAmongUnknowns >= 0 &&
+    needAmongUnknowns <= unknowns.length &&
     unknowns.length <= MAX_ENUMERATION
 
   if (useGlobal) {
     constraints = [
       ...constraints,
-      { cellIdxs: [...unknowns], count: totalTargets!, clueIndex: null }
+      { cellIdxs: [...unknowns], count: needAmongUnknowns, clueIndex: null }
     ]
   }
+
+  const fromTotalRemainder = (): CellExplanation | null =>
+    totalTargets !== undefined
+      ? explainFromTotalRemainder(
+          width,
+          cells,
+          cellIndex,
+          totalTargets,
+          goalMode,
+          board
+        )
+      : null
 
   // Prefer a simple local forced explanation (covers most 100% / safe marks)
   const forced = tryExplainForcedByClue(
@@ -444,93 +587,138 @@ export function explainChanceCell(
     for (const i of c.cellIdxs) frontier.add(i)
   }
   if (!frontier.has(cellIndex)) {
-    return {
-      cellIndex,
-      resultLabel: t('ex.unknown'),
-      meta: t('ex.meta.noClue'),
-      percent: 0,
-      hits: 0,
-      total: 0,
-      isChance: true,
-      clueCells: [],
-      peerCells: [],
-      steps: [
-        {
-          text: t('ex.none', { cell: cellLabel(cellIndex, width) })
-        }
-      ]
-    }
+    return (
+      fromTotalRemainder() ?? {
+        cellIndex,
+        resultLabel: t('ex.unknown'),
+        meta: t('ex.meta.noClue'),
+        percent: 0,
+        hits: 0,
+        total: 0,
+        isChance: true,
+        clueCells: [],
+        peerCells: [],
+        steps: [
+          {
+            text: t('ex.none', { cell: cellLabel(cellIndex, width) })
+          }
+        ]
+      }
+    )
   }
 
   const components = connectedComponents([...frontier], constraints)
-  const component = components.find((comp) => comp.includes(cellIndex)) ?? null
+  let component = components.find((comp) => comp.includes(cellIndex)) ?? null
   if (!component) return null
 
+  const pocket = directCluePocket(cellIndex, constraints)
+  const hasDirectClue = constraints.some(
+    (c) => c.clueIndex != null && c.cellIdxs.includes(cellIndex)
+  )
+  let localWalk = false
+
   if (component.length > MAX_ENUMERATION) {
-    const label = cellLabel(cellIndex, width)
-    const nearClues = [
-      ...new Set(
-        constraints
-          .filter((c) => c.clueIndex != null && c.cellIdxs.includes(cellIndex))
-          .map((c) => c.clueIndex!)
+    if (hasDirectClue && pocket.length <= MAX_ENUMERATION) {
+      const pocketSet = new Set(pocket)
+      component = component.filter((i) => pocketSet.has(i))
+      if (!component.includes(cellIndex)) component = [...component, cellIndex]
+      localWalk = true
+    } else if (!hasDirectClue) {
+      return (
+        fromTotalRemainder() ?? {
+          cellIndex,
+          resultLabel: t('ex.unknown'),
+          meta: t('ex.meta.noClue'),
+          percent: 0,
+          hits: 0,
+          total: 0,
+          isChance: true,
+          clueCells: [],
+          peerCells: [],
+          steps: [
+            {
+              text: t('ex.none', { cell: cellLabel(cellIndex, width) })
+            }
+          ]
+        }
       )
-    ]
-    const mark = board?.[cellIndex]?.solver
-    const resultLabel =
-      mark?.kind === 'flagged'
-        ? certainAvoidLabel(goalMode)
-        : mark?.kind === 'target'
-          ? certainTargetLabel(goalMode)
-          : t('ex.unknown')
-    return {
-      cellIndex,
-      resultLabel,
-      meta: t('ex.meta.tooLarge'),
-      percent: mark?.kind === 'flagged' ? (goalMode === 'hunt' ? 0 : 100) : mark?.kind === 'target' ? (goalMode === 'hunt' ? 100 : 0) : 0,
-      hits: mark?.kind === 'target' ? 1 : 0,
-      total: mark?.kind === 'target' || mark?.kind === 'flagged' ? 1 : 0,
-      isChance: true,
-      clueCells: nearClues,
-      peerCells: component.filter((i) => i !== cellIndex).slice(0, 12),
-      steps: [
-        {
-          text:
-            mark?.kind === 'flagged'
-              ? t(
-                  goalMode === 'hunt' ? 'ex.largeSafeHunt' : 'ex.largeSafe',
-                  { cell: label, n: component.length }
-                )
-              : mark?.kind === 'target'
-                ? t(
-                    goalMode === 'hunt' ? 'ex.large100Hunt' : 'ex.large100',
-                    { cell: label, n: component.length }
-                  )
-                : t('ex.largeOther', {
-                    cell: label,
-                    n: component.length,
-                    max: MAX_ENUMERATION
-                  }),
-          cells: [cellIndex, ...nearClues]
-        },
-        ...(nearClues.length > 0
-          ? [
-              {
-                text: t('ex.nearby', {
-                  clues: nearClues
-                    .map((ci) => clueName(cells[ci], ci, width, goalMode))
-                    .join('; ')
-                }),
-                cells: nearClues
-              }
-            ]
-          : [])
+    } else {
+      const direct = constraints.filter(
+        (c) => c.clueIndex != null && c.cellIdxs.includes(cellIndex)
+      )
+      const nearClues = [
+        ...new Set(direct.map((c) => c.clueIndex!))
       ]
+      const mark = board?.[cellIndex]?.solver
+      const chancePercent =
+        mark?.kind === 'chance'
+          ? goalMode === 'hunt'
+            ? mark.percent
+            : Math.max(0, Math.min(100, 100 - mark.percent))
+          : null
+      const resultLabel =
+        chancePercent != null
+          ? `${chancePercent}%`
+          : mark?.kind === 'flagged'
+            ? certainAvoidLabel(goalMode)
+            : mark?.kind === 'target'
+              ? certainTargetLabel(goalMode)
+              : t('ex.unknown')
+      const peerCells = [
+        ...new Set(direct.flatMap((c) => c.cellIdxs))
+      ].filter((i) => i !== cellIndex)
+      const steps: WhyStep[] = []
+      if (nearClues.length > 0) {
+        steps.push({
+          text: t('ex.cluesMatter', {
+            clues: nearClues
+              .map((ci) => clueName(cells[ci], ci, width, goalMode))
+              .join('; ')
+          }),
+          cells: nearClues
+        })
+      }
+      let shown = 0
+      for (const c of direct) {
+        if (shown >= 3) break
+        const clue = cells[c.clueIndex!]
+        if (clue.type !== 'number') continue
+        steps.push({
+          text: t('ex.stillNeeds', {
+            clue: clueName(clue, c.clueIndex!, width, goalMode),
+            count: c.count,
+            open: listLabels(c.cellIdxs, width)
+          }),
+          cells: [c.clueIndex!, ...c.cellIdxs]
+        })
+        shown++
+      }
+      return {
+        cellIndex,
+        resultLabel,
+        meta: '',
+        percent:
+          chancePercent ??
+          (mark?.kind === 'flagged'
+            ? goalMode === 'hunt'
+              ? 0
+              : 100
+            : mark?.kind === 'target'
+              ? goalMode === 'hunt'
+                ? 100
+                : 0
+              : 0),
+        hits: mark?.kind === 'target' ? 1 : 0,
+        total: mark?.kind === 'target' || mark?.kind === 'flagged' ? 1 : 0,
+        isChance: true,
+        clueCells: nearClues,
+        peerCells,
+        steps
+      }
     }
   }
 
-  const touching = constraints.filter((c) =>
-    c.cellIdxs.some((i) => component.includes(i))
-  )
+  const touching = constraintsInside(constraints, component)
   const local = toLocal(touching, component).filter(
     (c) => c.count >= 0 && c.count <= c.cellIdxs.length
   )
@@ -644,40 +832,52 @@ export function explainChanceCell(
     shown++
   }
 
-  if (certain) {
-    steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.everyLayoutHunt' : 'ex.everyLayout',
-        { cell: label, total }
-      ),
-      cells: [cellIndex]
-    })
-  } else if (hits === 0) {
-    steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.neverLayoutHunt' : 'ex.neverLayout',
-        { cell: label, total }
-      ),
-      cells: [cellIndex]
-    })
-  } else {
-    const goalPercent =
-      goalMode === 'hunt'
-        ? Math.max(0, Math.min(100, percent))
-        : Math.max(0, Math.min(100, 100 - percent))
-    const goalHits = goalMode === 'hunt' ? hits : total - hits
-    steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.someLayoutHunt' : 'ex.someLayout',
-        {
-          cell: label,
-          hits: goalHits,
-          total,
-          percent: goalPercent
-        }
-      ),
-      cells: [cellIndex]
-    })
+  const mark = board?.[cellIndex]?.solver
+  const solverPercent =
+    mark?.kind === 'chance'
+      ? goalMode === 'hunt'
+        ? mark.percent
+        : Math.max(0, Math.min(100, 100 - mark.percent))
+      : null
+  const localPercent =
+    goalMode === 'hunt'
+      ? Math.max(0, Math.min(100, percent))
+      : Math.max(0, Math.min(100, 100 - percent))
+  const showLayoutTally =
+    !localWalk || solverPercent == null || solverPercent === localPercent
+
+  if (showLayoutTally) {
+    if (certain) {
+      steps.push({
+        text: t(
+          goalMode === 'hunt' ? 'ex.everyLayoutHunt' : 'ex.everyLayout',
+          { cell: label, total }
+        ),
+        cells: [cellIndex]
+      })
+    } else if (hits === 0) {
+      steps.push({
+        text: t(
+          goalMode === 'hunt' ? 'ex.neverLayoutHunt' : 'ex.neverLayout',
+          { cell: label, total }
+        ),
+        cells: [cellIndex]
+      })
+    } else {
+      const goalHits = goalMode === 'hunt' ? hits : total - hits
+      steps.push({
+        text: t(
+          goalMode === 'hunt' ? 'ex.someLayoutHunt' : 'ex.someLayout',
+          {
+            cell: label,
+            hits: goalHits,
+            total,
+            percent: localPercent
+          }
+        ),
+        cells: [cellIndex]
+      })
+    }
   }
 
   // One mutual-exclusion hint max (50/50-style pair involving this cell)
@@ -714,30 +914,35 @@ export function explainChanceCell(
 
   const certainMine = hits === total && total > 0
   const certainSafe = hits === 0 && total > 0
-  const goalPercent =
-    goalMode === 'hunt'
-      ? Math.max(0, Math.min(100, percent))
-      : Math.max(0, Math.min(100, 100 - percent))
+  const displayPercent =
+    localWalk && solverPercent != null ? solverPercent : localPercent
   const goalHits = goalMode === 'hunt' ? hits : total - hits
+  const useSolverHeader = localWalk && solverPercent != null
 
   return {
     cellIndex,
-    resultLabel: certainMine
-      ? certainTargetLabel(goalMode)
-      : certainSafe
-        ? certainAvoidLabel(goalMode)
-        : `${goalPercent}%`,
-    meta: certainMine || certainSafe
-      ? t(total === 1 ? 'ex.meta.certain1' : 'ex.meta.certainN', { n: total })
-      : t(
-          goalMode === 'hunt' ? 'ex.meta.layoutsHunt' : 'ex.meta.layoutsSafe',
-          {
-            hits: goalHits,
-            total,
-            percent: goalPercent
-          }
-        ),
-    percent: goalPercent,
+    resultLabel:
+      useSolverHeader
+        ? `${displayPercent}%`
+        : certainMine
+          ? certainTargetLabel(goalMode)
+          : certainSafe
+            ? certainAvoidLabel(goalMode)
+            : `${displayPercent}%`,
+    meta:
+      showLayoutTally && (certainMine || certainSafe) && !useSolverHeader
+        ? t(total === 1 ? 'ex.meta.certain1' : 'ex.meta.certainN', { n: total })
+        : showLayoutTally
+          ? t(
+              goalMode === 'hunt' ? 'ex.meta.layoutsHunt' : 'ex.meta.layoutsSafe',
+              {
+                hits: goalHits,
+                total,
+                percent: displayPercent
+              }
+            )
+          : '',
+    percent: displayPercent,
     hits,
     total,
     isChance: true,
@@ -1031,9 +1236,10 @@ export function explainCell(
 
   const steps = [...ex.steps]
   const peerCells = [...ex.peerCells]
-  const isBest = Boolean(mark.best)
-  // Prefer Interesting over Safest/Surest when both apply (same as grid tag).
-  const isSafest = Boolean(mark.safest) && !isBest
+  const tip = chanceTip(mark)
+  const isBest = tip === 'best'
+  const isSafest = tip === 'safest'
+  const isUnclued = tip === 'unclued'
 
   if (isBest) {
     const tip = explainBestPick(board, width, cellIndex)
@@ -1067,12 +1273,20 @@ export function explainCell(
         if (!peerCells.includes(i)) peerCells.push(i)
       }
     }
+  } else if (isUnclued) {
+    steps.push({
+      text: t(
+        goalMode === 'hunt' ? 'ex.uncluedWhyHunt' : 'ex.uncluedWhySafe'
+      ),
+      cells: [cellIndex]
+    })
   }
 
   return {
     ...ex,
     best: isBest,
     safest: isSafest,
+    unclued: isUnclued,
     steps,
     peerCells
   }
@@ -1152,12 +1366,12 @@ export function shortWhyHint(
             }
           )
   ]
-  if (explanation.best) parts.push(t('why.best'))
-  else if (explanation.safest) {
+  if (explanation.safest) {
     parts.push(
       goalMode === 'hunt' ? t('why.surestTarget') : t('why.safest')
     )
-  }
+  } else if (explanation.best) parts.push(t('why.best'))
+  else if (explanation.unclued) parts.push(t('why.unclued'))
   if (explanation.clueCells.length > 0) {
     const names = explanation.clueCells
       .slice(0, 2)

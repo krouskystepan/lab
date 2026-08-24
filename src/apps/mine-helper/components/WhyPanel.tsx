@@ -17,7 +17,7 @@ interface WhyPanelProps {
 }
 
 const panelShell =
-  'flex max-h-full max-w-64 min-w-50 flex-[0_0_14.5rem] flex-col gap-2 overflow-hidden rounded-sm border border-line bg-panel px-[0.7rem] py-2.5 max-[720px]:max-h-[38%] max-[720px]:min-w-0 max-[720px]:max-w-none max-[720px]:flex-[1_1_auto]'
+  'why-panel flex min-h-0 flex-col gap-2 overflow-hidden rounded-sm border border-line bg-panel px-[0.7rem] py-2.5'
 
 const navBtn =
   'cursor-pointer appearance-none inline-flex items-center gap-1 rounded-sm border border-line bg-cell px-[0.55rem] py-[0.3rem] text-[0.75rem] font-semibold text-ink disabled:cursor-default disabled:opacity-40'
@@ -31,8 +31,7 @@ export function WhyPanel({
   goalMode = 'safe'
 }: WhyPanelProps) {
   const { t } = useI18n()
-  const tipLabel =
-    goalMode === 'hunt' ? t('why.surestTarget') : t('why.safest')
+  const tipLabel = goalMode === 'hunt' ? t('why.surestTarget') : t('why.safest')
 
   if (!explanation) {
     return (
@@ -92,7 +91,7 @@ export function WhyPanel({
 
   return (
     <aside className={panelShell} aria-label={t('why.aria')}>
-      <div className="flex items-start gap-[0.35rem]">
+      <div className="flex shrink-0 items-start gap-[0.35rem]">
         <h2 className="m-0 flex flex-col gap-[0.15rem] text-[0.95rem] font-bold tracking-[-0.02em]">
           <span className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
             <span>
@@ -103,13 +102,17 @@ export function WhyPanel({
                     label: explanation.resultLabel
                   })}
             </span>
-            {explanation.best ? (
+            {explanation.safest ? (
+              <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-safest)_88%,white)]">
+                {tipLabel}
+              </span>
+            ) : explanation.best ? (
               <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-best)_88%,white)]">
                 {t('why.best')}
               </span>
-            ) : explanation.safest ? (
-              <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-safest)_88%,white)]">
-                {tipLabel}
+            ) : explanation.unclued ? (
+              <span className="font-extrabold tracking-[0.02em] text-[color-mix(in_srgb,var(--color-unclued)_88%,white)]">
+                {t('why.unclued')}
               </span>
             ) : null}
           </span>
@@ -150,7 +153,7 @@ export function WhyPanel({
         ))}
       </ol>
 
-      <div className="flex items-center justify-between gap-[0.35rem]">
+      <div className="flex shrink-0 items-center justify-between gap-[0.35rem]">
         <button
           type="button"
           className={navBtn}
@@ -174,7 +177,7 @@ export function WhyPanel({
         </button>
       </div>
 
-      <p className="m-0 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.68rem] leading-[1.35] text-muted">
+      <p className="m-0 mt-auto flex shrink-0 flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.68rem] leading-[1.35] text-muted">
         <span className="inline-flex items-center gap-1">
           <i
             className="inline-block h-2.5 w-2.5 rounded-xs shadow-[0_0_0_2px_#fff]"

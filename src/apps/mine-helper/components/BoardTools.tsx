@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { gameBtn, GamePanel } from '../../../shared/gameUi'
 import { MAX_GRID, MIN_GRID } from '../solver/types'
 import type { GridEdge } from './SizeBar'
 
@@ -33,13 +34,15 @@ interface BoardToolsProps {
 
 const EDGES = ['left', 'right', 'top', 'bottom'] as const
 
-const trigger =
-  'inline-flex cursor-pointer appearance-none items-center justify-center gap-1 whitespace-nowrap rounded-sm border border-line bg-cell px-[0.65rem] py-[0.35rem] text-[0.8rem] font-semibold text-ink transition-[background,border-color,color] duration-100 hover:bg-cell-hover'
+const trigger = cn(
+  gameBtn,
+  'inline-flex w-full min-w-0 items-center justify-center gap-1 whitespace-nowrap px-[0.65rem] py-[0.35rem] text-[0.8rem] text-ink max-[980px]:min-h-[2.45rem]'
+)
 
 const triggerOpen = 'border-accent bg-accent/25 text-on-accent'
 
 const menuPanel =
-  'absolute top-[calc(100%+0.35rem)] left-0 z-20 flex min-w-[9.5rem] flex-col gap-[0.3rem] rounded-sm border border-line bg-elevated px-[0.6rem] py-[0.55rem] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]'
+  'absolute bottom-[calc(100%+0.35rem)] left-0 z-20 flex min-w-[9.5rem] flex-col gap-[0.3rem] rounded-sm border border-line bg-elevated px-[0.6rem] py-[0.55rem] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]'
 
 const menuBtn =
   'inline-flex min-w-[1.7rem] cursor-pointer items-center justify-center rounded-md border border-line bg-cell px-1.5 py-[0.22rem] text-[0.78rem] font-semibold leading-[1.1] text-muted hover:bg-cell-hover hover:text-ink disabled:cursor-default disabled:opacity-35'
@@ -57,7 +60,7 @@ export function BoardTools({
 }: BoardToolsProps) {
   const { t } = useI18n()
   const [open, setOpen] = useState<MenuId>(null)
-  const rootRef = useRef<HTMLElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -97,16 +100,11 @@ export function BoardTools({
     )
 
   return (
-    <section
-      className="flex h-full w-fit max-w-full min-w-0 flex-row items-center gap-2 overflow-visible rounded-md border border-line bg-panel px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:w-full max-[720px]:px-2 max-[720px]:py-[0.45rem]"
-      ref={rootRef}
-    >
-      <h2 className="m-0 shrink-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden">
-        {t('board.title')}
-      </h2>
-      <div className="flex min-w-0 flex-nowrap items-center gap-2">
+    <div ref={rootRef} className="h-full w-fit max-w-full max-[980px]:w-full">
+      <GamePanel title={t('board.title')} className="h-full w-full">
+      <div className="grid w-full min-w-0 grid-cols-2 gap-1.5 min-[700px]:grid-cols-4">
         <div
-          className="relative"
+          className="relative min-w-0"
           data-menu-open={open === 'edges' ? '' : undefined}
         >
             <button
@@ -116,7 +114,7 @@ export function BoardTools({
               aria-haspopup="true"
               onClick={() => toggle('edges')}
             >
-              {t('board.addEdges')}
+              <span className="truncate">{t('board.addEdges')}</span>
               <ChevronDown className={chevron} aria-hidden />
             </button>
             {open === 'edges' && (
@@ -167,7 +165,7 @@ export function BoardTools({
           </div>
 
           <div
-            className="relative"
+            className="relative min-w-0"
             data-menu-open={open === 'shift' ? '' : undefined}
           >
             <button
@@ -177,7 +175,7 @@ export function BoardTools({
               aria-haspopup="true"
               onClick={() => toggle('shift')}
             >
-              {t('board.shift')}
+              <span className="truncate">{t('board.shift')}</span>
               <ChevronDown className={chevron} aria-hidden />
             </button>
             {open === 'shift' && (
@@ -225,7 +223,7 @@ export function BoardTools({
           </div>
 
           <div
-            className="relative"
+            className="relative min-w-0"
             data-menu-open={open === 'flip' ? '' : undefined}
           >
             <button
@@ -235,7 +233,7 @@ export function BoardTools({
               aria-haspopup="true"
               onClick={() => toggle('flip')}
             >
-              {t('board.flip')}
+              <span className="truncate">{t('board.flip')}</span>
               <ChevronDown className={chevron} aria-hidden />
             </button>
             {open === 'flip' && (
@@ -278,7 +276,7 @@ export function BoardTools({
 
         <button
           type="button"
-          className={cn(trigger, 'shrink-0 gap-1.5')}
+          className={cn(trigger, 'gap-1.5')}
           title={t('board.trimTitle')}
           onClick={() => {
             setOpen(null)
@@ -286,9 +284,10 @@ export function BoardTools({
           }}
         >
           <Scissors className="h-3.5 w-3.5 shrink-0" aria-hidden />
-          {t('board.trim')}
+          <span className="truncate">{t('board.trim')}</span>
         </button>
       </div>
-    </section>
+      </GamePanel>
+    </div>
   )
 }

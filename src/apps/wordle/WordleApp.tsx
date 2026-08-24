@@ -5,6 +5,7 @@ import { DiffBar } from './components/DiffBar'
 import { Grid } from './components/Grid'
 import { HotkeysBar } from './components/HotkeysBar'
 import { Keyboard } from './components/Keyboard'
+import { LenBar } from './components/LenBar'
 import { ToolsBar } from './components/ToolsBar'
 import { reduce } from './game/engine'
 import { findHint } from './game/hint'
@@ -14,6 +15,7 @@ import { hardModeViolation } from './game/score'
 import type { DiffId } from './game/types'
 import { isAllowedWord, type WordLen } from './game/words'
 import { useI18n } from '../../i18n'
+import { LangSwitch } from '../../shell/LangSwitch'
 import { showToast } from '../../shared/toast'
 import {
   ExportImportButtons,
@@ -22,9 +24,10 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
+import { MobileHelpCard, boardStage, gameShell, gameStickyControls } from '../../shared/gameUi'
 
 export default function WordleApp() {
-  const { t, locale, setLocale } = useI18n()
+  const { t, locale } = useI18n()
   const initial = useRef(loadGame()).current
   const [board, dispatch] = useReducer(reduce, initial.board)
   const [seconds, setSeconds] = useState(initial.seconds)
@@ -296,9 +299,9 @@ export default function WordleApp() {
   const hintAvailable = findHint(board) != null
 
   return (
-    <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
-        <div className="flex min-h-8 w-full flex-wrap items-center justify-between gap-2.5 max-[720px]:gap-[0.35rem]">
+        <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
             <Link
               to="/"
@@ -315,43 +318,14 @@ export default function WordleApp() {
               {t('wordle.langNote')}
             </span>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-[0.45rem]">
             <ExportImportButtons
               filename="wordle-board.json"
               family="wordle"
               onExport={onExportBoard}
               onImport={onImportBoard}
             />
-            <div
-              className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
-              role="group"
-              aria-label={t('lang.switch')}
-            >
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'en'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'en'}
-                onClick={() => setLocale('en')}
-              >
-                {t('lang.en')}
-              </button>
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'cs'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'cs'}
-                onClick={() => setLocale('cs')}
-              >
-                {t('lang.cs')}
-              </button>
-            </div>
+            <LangSwitch />
           </div>
         </div>
         <div className="flex w-full flex-wrap items-center justify-start gap-2.5 max-[720px]:hidden">
@@ -359,13 +333,37 @@ export default function WordleApp() {
         </div>
       </header>
 
-      <div className="board-frame order-1 rounded-md bg-elevated/40 p-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]">
-        <div className="board-stage">
+      <MobileHelpCard
+        sections={[
+          {
+            title: t('wordle.help.title'),
+            body: (
+              <>
+                <p className="m-0 mb-1.5">{t('wordle.help.body')}</p>
+                <p className="m-0 mb-1.5">{t('wordle.help.lang')}</p>
+                <p className="m-0 mb-1.5">{t('wordle.help.controls')}</p>
+                <p className="m-0">{t('wordle.help.hard')}</p>
+              </>
+            )
+          },
+          {
+            title: t('wordle.tools.hintTipTitle'),
+            body: <p className="m-0">{t('wordle.tools.hintTipBody')}</p>
+          },
+          {
+            title: t('wordle.diff.helpTitle'),
+            body: <p className="m-0">{t('wordle.diff.helpBody')}</p>
+          }
+        ]}
+      />
+
+      <div className="board-frame order-1 [--board-pad:0.25rem] rounded-md bg-elevated/40">
+        <div className={boardStage}>
           <Grid board={board} shake={shake} />
         </div>
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-col gap-[0.55rem]">
+      <div className={`${gameStickyControls} order-2 max-[980px]:order-2 min-[981px]:hidden`}>
         <Keyboard
           guesses={board.guesses}
           disabled={ended}
@@ -374,23 +372,22 @@ export default function WordleApp() {
           onEnter={onSubmit}
           onBackspace={onBackspace}
         />
-        <ToolsBar
-          seconds={seconds}
-          status={board.status}
-          answer={board.answer}
-          canHint={hintAvailable}
-          onHint={onHint}
-          onNew={onNew}
-        />
       </div>
 
-      <div className="relative z-5 order-3 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem]">
-        <DiffBar
-          diffId={board.diffId}
-          wordLen={board.wordLen}
-          onDiffChange={onDiff}
-          onWordLenChange={onWordLen}
-        />
+      {/* Tools | Letters side by side; Difficulty below */}
+      <div className="game-secondary relative z-5 order-3 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-3">
+        <div className="grid w-full grid-cols-1 items-stretch gap-[0.55rem] min-[720px]:grid-cols-2">
+          <ToolsBar
+            seconds={seconds}
+            status={board.status}
+            answer={board.answer}
+            canHint={hintAvailable}
+            onHint={onHint}
+            onNew={onNew}
+          />
+          <LenBar wordLen={board.wordLen} onWordLenChange={onWordLen} />
+        </div>
+        <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
       </div>
     </div>
   )

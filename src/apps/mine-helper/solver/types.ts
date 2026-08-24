@@ -46,9 +46,24 @@ export type SolverMark =
       p?: number
       best?: boolean
       safest?: boolean
+      /** Leftover empty with no local My/Info clue (Total remainder). */
+      unclued?: boolean
       /** Short hover/title text explaining the % */
       whyHint?: string
     }
+
+/** Exclusive ring on a chance cell. Clued tips: surest/safest → interesting. Unclued = Total-only. */
+export type ChanceTip = 'safest' | 'best' | 'unclued'
+
+export function chanceTip(
+  mark: Extract<SolverMark, { kind: 'chance' }>
+): ChanceTip | null {
+  // Unclued first: Total-only cells must never show as Surest/Interesting.
+  if (mark.unclued) return 'unclued'
+  if (mark.safest) return 'safest'
+  if (mark.best) return 'best'
+  return null
+}
 
 export interface BoardCell {
   user: UserCell
@@ -59,7 +74,11 @@ export interface SolveInput {
   width: number
   height: number
   cells: UserCell[]
-  /** When set, exactly this many targets among all unknown (empty) cells */
+  /**
+   * Whole-board target count when set (Hunt: all your cards, including My).
+   * Remaining after known targets are among empty cells only.
+   * Info, Ruled out, and Hunt Marked/× do not count.
+   */
   totalTargets?: number
   /** How to tag “safest” / tip rings among chance cells */
   goalMode?: GoalMode

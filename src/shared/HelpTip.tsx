@@ -16,6 +16,11 @@ type HelpTipProps = {
   children: ReactNode
   /** Align popover to the end (e.g. last control near the edge). */
   alignEnd?: boolean
+  /**
+   * `desktop` — hidden below 981px (default; mobile uses MobileHelpCard).
+   * `always` — show on all breakpoints (e.g. inside MobileHelpCard).
+   */
+  show?: 'desktop' | 'always'
 }
 
 type TipPos = { top: number; left: number }
@@ -24,7 +29,12 @@ type TipPos = { top: number; left: number }
  * Compact help popover. Portaled to document.body so parent
  * overflow-hidden panels (DiffBar, ToolsBar, app shell) never clip it.
  */
-export function HelpTip({ title, children, alignEnd = false }: HelpTipProps) {
+export function HelpTip({
+  title,
+  children,
+  alignEnd = false,
+  show = 'desktop'
+}: HelpTipProps) {
   const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const [pos, setPos] = useState<TipPos | null>(null)
@@ -96,6 +106,7 @@ export function HelpTip({ title, children, alignEnd = false }: HelpTipProps) {
     <span
       className={cn(
         'relative z-1 inline-flex h-[1.85rem] shrink-0 items-center self-center leading-none',
+        show === 'desktop' && 'max-[980px]:hidden',
         open && 'z-60'
       )}
       ref={rootRef}
@@ -127,7 +138,7 @@ export function HelpTip({ title, children, alignEnd = false }: HelpTipProps) {
           <div
             ref={tipRef}
             id={tipId}
-            className="fixed z-[9999] w-[min(18rem,75vw)] rounded-sm border border-line bg-elevated px-2.5 py-2 text-ink shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]"
+            className="fixed z-9999 w-[min(18rem,75vw)] rounded-sm border border-line bg-elevated px-2.5 py-2 text-ink shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]"
             style={{
               top: pos?.top ?? -9999,
               left: pos?.left ?? -9999,
@@ -136,7 +147,9 @@ export function HelpTip({ title, children, alignEnd = false }: HelpTipProps) {
             }}
             role="note"
           >
-            <strong className="mb-1 block text-[0.78rem] font-bold">{title}</strong>
+            <strong className="mb-1 block text-[0.78rem] font-bold">
+              {title}
+            </strong>
             <div className="m-0 text-[0.72rem] font-medium leading-[1.4] text-muted">
               {children}
             </div>

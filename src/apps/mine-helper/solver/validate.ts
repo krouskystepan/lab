@@ -135,7 +135,11 @@ function localForceConflict(
   return null
 }
 
-function countUserMines(cells: UserCell[], goalMode: GoalMode): number {
+/** User-placed targets: Hunt = My cards; Avoid = flags. */
+export function countKnownTargets(
+  cells: UserCell[],
+  goalMode: GoalMode
+): number {
   let n = 0
   for (const c of cells) if (isKnownTarget(c, goalMode)) n++
   return n
@@ -145,6 +149,22 @@ function countEmpties(cells: UserCell[]): number {
   let n = 0
   for (const c of cells) if (c.type === 'empty') n++
   return n
+}
+
+/**
+ * Total is the whole-board target count (Hunt: all your cards, including My).
+ * Remaining `need` must still be placed among empty cells.
+ * Info / Ruled out / Marked (hunt) are not targets and not empties.
+ */
+export function remainingTargetNeed(
+  cells: UserCell[],
+  totalTargets: number | undefined,
+  goalMode: GoalMode
+): { known: number; empties: number; need: number } | null {
+  if (totalTargets === undefined || totalTargets < 0) return null
+  const known = countKnownTargets(cells, goalMode)
+  const empties = countEmpties(cells)
+  return { known, empties, need: totalTargets - known }
 }
 
 export function validatePlacement(
@@ -209,7 +229,7 @@ export function validatePlacement(
   if (forced) return forced
 
   if (opts?.totalTargets !== undefined && opts.totalTargets >= 0) {
-    const mines = countUserMines(next, goalMode)
+    const mines = countKnownTargets(next, goalMode)
     const empties = countEmpties(next)
     if (mines > opts.totalTargets) {
       return t('val.totalOver', { mines, total: opts.totalTargets })

@@ -15,6 +15,7 @@ import {
   sudokuTheme,
   wordleTheme
 } from './shared/theme'
+import { gamePage, gamePageFit } from './shared/gameUi'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
 import { AppLayout } from './shell/AppLayout'
@@ -22,7 +23,7 @@ import { ThemeScope } from './shell/ThemeScope'
 
 function MineHelperRoute() {
   return (
-    <ThemeScope theme={mineHelperTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={mineHelperTheme} className={gamePage}>
       <MineHelperApp />
     </ThemeScope>
   )
@@ -30,7 +31,7 @@ function MineHelperRoute() {
 
 function MinesweeperRoute() {
   return (
-    <ThemeScope theme={minesweeperTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={minesweeperTheme} className={gamePage}>
       <MinesweeperApp />
     </ThemeScope>
   )
@@ -38,7 +39,7 @@ function MinesweeperRoute() {
 
 function SudokuRoute() {
   return (
-    <ThemeScope theme={sudokuTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={sudokuTheme} className={`${gamePage} ${gamePageFit}`}>
       <SudokuApp />
     </ThemeScope>
   )
@@ -46,7 +47,7 @@ function SudokuRoute() {
 
 function SudokuHelperRoute() {
   return (
-    <ThemeScope theme={sudokuTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={sudokuTheme} className={`${gamePage} ${gamePageFit}`}>
       <SudokuHelperApp />
     </ThemeScope>
   )
@@ -54,7 +55,7 @@ function SudokuHelperRoute() {
 
 function WordleRoute() {
   return (
-    <ThemeScope theme={wordleTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={wordleTheme} className={`${gamePage} ${gamePageFit}`}>
       <WordleApp />
     </ThemeScope>
   )
@@ -62,7 +63,7 @@ function WordleRoute() {
 
 function ChessMateRoute() {
   return (
-    <ThemeScope theme={chessMateTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={chessMateTheme} className={gamePage}>
       <ChessMateApp />
     </ThemeScope>
   )
@@ -70,7 +71,7 @@ function ChessMateRoute() {
 
 function RushHourRoute() {
   return (
-    <ThemeScope theme={rushHourTheme} className="flex h-full min-h-0 flex-col">
+    <ThemeScope theme={rushHourTheme} className={gamePage}>
       <RushHourApp />
     </ThemeScope>
   )

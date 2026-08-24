@@ -6,6 +6,7 @@ export type LegendMarkKind =
   | 'best'
   | 'safest'
   | 'surestTarget'
+  | 'unclued'
   | 'chance'
   | 'mine'
   | 'info'
@@ -18,6 +19,8 @@ const MARK_CLASS: Record<LegendMarkKind, string> = {
   safest: 'inline font-bold text-[color-mix(in_srgb,var(--color-safest)_88%,white)]',
   surestTarget:
     'inline font-bold text-[color-mix(in_srgb,var(--color-safest)_88%,white)]',
+  unclued:
+    'inline font-bold text-[color-mix(in_srgb,var(--color-unclued)_88%,white)]',
   chance: 'inline font-bold text-[color-mix(in_srgb,var(--color-accent)_70%,white)]',
   mine: 'inline font-bold text-[color-mix(in_srgb,var(--color-mine)_80%,white)]',
   info: 'inline font-bold text-[color-mix(in_srgb,var(--color-info)_80%,white)]',
@@ -45,5 +48,6 @@ export const LEGEND_TITLE_CLASS: Partial<Record<string, string>> = {
   chance: MARK_CLASS.chance,
   best: MARK_CLASS.best,
   safest: MARK_CLASS.safest,
-  surestTarget: MARK_CLASS.surestTarget
+  surestTarget: MARK_CLASS.surestTarget,
+  unclued: MARK_CLASS.unclued
 }

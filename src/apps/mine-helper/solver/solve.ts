@@ -1,5 +1,6 @@
 import { neighborsOf } from './neighbors'
 import { t } from '../../../i18n'
+import { remainingTargetNeed } from './validate'
 import {
   MAX_ENUMERATION,
   type GoalMode,
@@ -547,6 +548,79 @@ function recoverEpistemicChances(
   return true
 }
 
+function pocketHasUnmarked(
+  pocket: Constraint,
+  marks: Map<number, SolverMark>
+): boolean {
+  return pocket.cellIdxs.some((i) => !marks.has(i))
+}
+
+/**
+ * Pack overlapping pockets into one enum that still fits in MAX.
+ * Prefers adding the pocket that introduces the fewest new cells so more
+ * clues share one solve. Existing marks on the seed cells are kept.
+ */
+function packOverlappingPockets(
+  pockets: Constraint[],
+  marks: Map<number, SolverMark>
+): { cells: number[]; pockets: Constraint[] } | null {
+  const unused = pockets.filter((p) => pocketHasUnmarked(p, marks))
+  if (unused.length === 0) return null
+
+  unused.sort((a, b) => a.cellIdxs.length - b.cellIdxs.length)
+  const selected: Constraint[] = [unused[0]]
+  const cells = new Set(unused[0].cellIdxs)
+
+  let grew = true
+  while (grew) {
+    grew = false
+    let best: Constraint | null = null
+    let bestNew = Infinity
+    for (const p of unused) {
+      if (selected.includes(p)) continue
+      let overlap = false
+      let newCount = 0
+      for (const i of p.cellIdxs) {
+        if (cells.has(i)) overlap = true
+        else newCount++
+      }
+      if (!overlap || cells.size + newCount > MAX_ENUMERATION) continue
+      if (
+        newCount < bestNew ||
+        (newCount === bestNew &&
+          p.cellIdxs.length < (best?.cellIdxs.length ?? Infinity))
+      ) {
+        best = p
+        bestNew = newCount
+      }
+    }
+    if (!best) continue
+    selected.push(best)
+    for (const i of best.cellIdxs) cells.add(i)
+    grew = true
+  }
+
+  return { cells: [...cells], pockets: selected }
+}
+
+/** Enumerate a pocket subset; never replace marks already painted. */
+function solveComponentKeepExisting(
+  componentCells: number[],
+  constraints: Constraint[],
+  marks: Map<number, SolverMark>,
+  nextGroupId: { value: number }
+): boolean {
+  const snapshot = new Map<number, SolverMark>()
+  for (const i of componentCells) {
+    const m = marks.get(i)
+    if (m) snapshot.set(i, m)
+  }
+  const before = marks.size
+  const solved = solveComponent(componentCells, constraints, marks, nextGroupId)
+  for (const [i, m] of snapshot) marks.set(i, m)
+  return solved.ok && marks.size > before
+}
+
 /**
  * On oversized frontiers, still compute % for small local clue pockets.
  * Example: C1 needs 1 of {B1,D1,C2} → 33% even when the rest of the board
@@ -554,7 +628,9 @@ function recoverEpistemicChances(
  *
  * Strategy: build each clue’s remaining open set; if ≤ MAX, treat as a pocket.
  * Connected pocket clusters that fit in MAX are solved jointly; oversized
- * chains fall back to tightest pockets first (no overwrite of existing marks).
+ * chains pack as many overlapping pockets as fit, then paint leftover clues
+ * without overwriting cells already marked (skip-the-whole-pocket used to
+ * hide % on later clues that touched an earlier 1-of-n group).
  */
 function solveLocalPockets(
   remaining: number[],
@@ -605,16 +681,26 @@ function solveLocalPockets(
       continue
     }
 
-    // Chained too large: apply tightest pockets first, skip cells already marked.
-    const ordered = [...pockets]
-      .filter((p) => p.cellIdxs.some((i) => cluster.includes(i)))
-      .sort((a, b) => a.cellIdxs.length - b.cellIdxs.length)
-
-    for (const p of ordered) {
-      if (p.cellIdxs.some((i) => marks.has(i))) continue
-      const before = marks.size
-      const solved = solveComponent(p.cellIdxs, [p], marks, nextGroupId)
-      if (solved.ok && marks.size > before) painted = true
+    const clusterPockets = pockets.filter((p) =>
+      p.cellIdxs.some((i) => cluster.includes(i))
+    )
+    const dropped = new Set<Constraint>()
+    while (true) {
+      const available = clusterPockets.filter((p) => !dropped.has(p))
+      const packed = packOverlappingPockets(available, marks)
+      if (!packed) break
+      if (
+        solveComponentKeepExisting(
+          packed.cells,
+          packed.pockets,
+          marks,
+          nextGroupId
+        )
+      ) {
+        painted = true
+        continue
+      }
+      dropped.add(packed.pockets[0])
     }
   }
 
@@ -628,6 +714,53 @@ function contradictionResult(conflictCells?: number[]): SolveResult {
     message: t('solve.contradiction'),
     conflictCells:
       conflictCells && conflictCells.length > 0 ? conflictCells : undefined
+  }
+}
+
+/**
+ * After local clues have painted some empties, leftover Total cards are
+ * shared equally among empties that still have no %. Clues already counted
+ * (certain targets + expected mines from chance cells) are subtracted first.
+ * Example: 1 card left and 4 unclued empties → 25% each; 4 left in 4 → 100%.
+ */
+function applyTotalRemainder(
+  unknowns: number[],
+  need: number,
+  marks: Map<number, SolverMark>,
+  nextGroupId: { value: number }
+): void {
+  let accounted = 0
+  const unmarked: number[] = []
+  for (const i of unknowns) {
+    const m = marks.get(i)
+    if (m?.kind === 'target') accounted += 1
+    else if (m?.kind === 'chance') accounted += m.p ?? m.percent / 100
+    else if (m?.kind === 'flagged' || m?.kind === 'conflict') {
+      /* not a remaining target */
+    } else {
+      unmarked.push(i)
+    }
+  }
+  if (unmarked.length === 0) return
+
+  const leftover = need - accounted
+  const eps = 1e-6
+  if (leftover < -eps || leftover > unmarked.length + eps) return
+
+  if (leftover <= eps) {
+    for (const i of unmarked) marks.set(i, { kind: 'flagged' })
+    return
+  }
+  if (leftover >= unmarked.length - eps) {
+    for (const i of unmarked) marks.set(i, { kind: 'target' })
+    return
+  }
+
+  const p = leftover / unmarked.length
+  const percent = Math.max(1, Math.min(99, Math.round(p * 100)))
+  const groupId = nextGroupId.value++
+  for (const i of unmarked) {
+    marks.set(i, { kind: 'chance', percent, groupId, p, unclued: true })
   }
 }
 
@@ -662,17 +795,25 @@ export function solve(input: SolveInput): SolveResult {
 
   const marks = new Map<number, SolverMark>()
 
-  let constraints = localConstraints
-  const useGlobal =
-    totalTargets !== undefined &&
-    totalTargets >= 0 &&
-    totalTargets <= unknowns.length &&
-    unknowns.length <= MAX_ENUMERATION
+  const totalRemaining = remainingTargetNeed(cells, totalTargets, goalMode)
+  if (
+    totalRemaining &&
+    (totalRemaining.need < 0 || totalRemaining.need > totalRemaining.empties)
+  ) {
+    const conflictCells =
+      totalRemaining.need < 0
+        ? cells
+            .map((c, i) => (isKnownTarget(c, goalMode) ? i : -1))
+            .filter((i) => i >= 0)
+        : unknowns
+    return contradictionResult(conflictCells)
+  }
 
-  if (useGlobal) {
+  let constraints = localConstraints
+  if (totalRemaining && unknowns.length > 0) {
     constraints = [
       ...localConstraints,
-      { cellIdxs: [...unknowns], count: totalTargets! }
+      { cellIdxs: [...unknowns], count: totalRemaining.need }
     ]
   }
 
@@ -751,7 +892,19 @@ export function solve(input: SolveInput): SolveResult {
       // silently (e.g. 1-of-3 → 33%) so the user still sees useful %.
       solveLocalPockets(remaining, constraints, marks, nextGroupId)
     }
+    const afterPockets = applyTrivialDeductions(constraints, marks)
+    if (!afterPockets.ok) {
+      return contradictionResult(afterPockets.conflictCells)
+    }
   }
+
+  if (totalRemaining) {
+    applyTotalRemainder(unknowns, totalRemaining.need, marks, nextGroupId)
+  }
+
+  // Tag % cells that no My/Info number touches (Total-only leftovers).
+  // Enumeration may already have painted them without the unclued flag.
+  markUncluedChanceCells(marks, localConstraints)
 
   // Highlight most informative + goal tip among chance (%) cells
   markBestChanceMove(marks, localConstraints, goalMode)
@@ -766,13 +919,6 @@ export function solve(input: SolveInput): SolveResult {
     notice =
       localConstraints.length === 0 ? t('solve.nothing') : t('solve.noForced')
     noticeTone = 'info'
-  } else if (
-    totalTargets !== undefined &&
-    !useGlobal &&
-    unknowns.length > MAX_ENUMERATION
-  ) {
-    notice = t('solve.totalIgnored')
-    noticeTone = 'warn'
   }
 
   return { ok: true, marks, notice, noticeTone }
@@ -783,7 +929,27 @@ function entropy(p: number): number {
   return -p * Math.log2(p) - (1 - p) * Math.log2(1 - p)
 }
 
-/** Among chance cells, mark the most informative guess(es) - all ties. */
+/**
+ * Chance cells with no local number clue - only Total (or leftover fill).
+ * Purple “No clue” ring; Surest/Interesting tips skip these cells.
+ */
+function markUncluedChanceCells(
+  marks: Map<number, SolverMark>,
+  localConstraints: Constraint[]
+): void {
+  const touchedByClue = new Set<number>()
+  for (const c of localConstraints) {
+    for (const i of c.cellIdxs) touchedByClue.add(i)
+  }
+  for (const [index, mark] of marks) {
+    if (mark.kind !== 'chance') continue
+    if (touchedByClue.has(index)) continue
+    if (mark.unclued) continue
+    marks.set(index, { ...mark, unclued: true })
+  }
+}
+
+/** Among chance cells with a local clue, mark the most informative guess(es). */
 function markBestChanceMove(
   marks: Map<number, SolverMark>,
   constraints: Constraint[],
@@ -800,6 +966,8 @@ function markBestChanceMove(
 
   for (const [index, mark] of marks) {
     if (mark.kind !== 'chance') continue
+    // Total-only leftovers are “No clue” - not Interesting tips.
+    if (mark.unclued) continue
     const p = mark.p ?? mark.percent / 100
     const goalBoost = goalMode === 'hunt' ? p : 1 - p
     const deg = degree.get(index) ?? 0
@@ -825,10 +993,10 @@ function markBestChanceMove(
 }
 
 /**
- * Goal tip among chance cells:
+ * Goal tip among chance cells that have a local clue:
  * - safe: lowest mine % (safest click)
  * - hunt: highest mine % (surest target)
- * All cells tied for the top tip % are marked.
+ * Total-only “No clue” cells are skipped - they keep the purple ring.
  */
 function markGoalTipChanceMove(
   marks: Map<number, SolverMark>,
@@ -837,9 +1005,9 @@ function markGoalTipChanceMove(
   const chances: { index: number; percent: number }[] = []
 
   for (const [index, mark] of marks) {
-    if (mark.kind === 'chance') {
-      chances.push({ index, percent: mark.percent })
-    }
+    if (mark.kind !== 'chance') continue
+    if (mark.unclued) continue
+    chances.push({ index, percent: mark.percent })
   }
 
   if (chances.length === 0) return

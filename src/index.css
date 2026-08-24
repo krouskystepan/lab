@@ -21,6 +21,7 @@
   --color-info: #2ec8c0;
   --color-best: #ffe14a;
   --color-safest: #ff6a00;
+  --color-unclued: #c084fc;
   --color-why-clue: #ff00b4;
   --color-why-peer: #00ffbc;
   --color-line: #374554;
@@ -34,7 +35,7 @@
   html,
   body,
   #root {
-    @apply m-0 h-full;
+    @apply m-0 min-h-dvh;
   }
 
   body {
@@ -42,11 +43,69 @@
     color-scheme: dark;
   }
 
-  /* Hub scrolls; full-screen apps (e.g. Mine Helper) lock their own root.
-     Use clip (not hidden) so overflow-y stays visible - hidden forces
-     overflow-y:auto and creates a nested scrollport / paint seam. */
+  /* Hub scrolls; use clip so overflow-y stays visible */
   .hub-page {
     overflow-x: clip;
+  }
+
+  /*
+   * Height budget for phone boards — presentational chrome lives on
+   * gameShell / gameStickyControls Tailwind constants.
+   */
+  @media (max-width: 980px) {
+    .game-shell {
+      --board-max-h: min(
+        58dvh,
+        calc(100dvh - 12rem - env(safe-area-inset-bottom, 0px))
+      );
+    }
+
+    @media (orientation: landscape) {
+      .game-shell {
+        --board-max-h: min(
+          72dvh,
+          calc(100dvh - 7.5rem - env(safe-area-inset-bottom, 0px))
+        );
+      }
+
+      .game-shell > header {
+        gap: 0.35rem;
+      }
+    }
+
+    @media (max-height: 480px) and (orientation: portrait) {
+      .game-shell {
+        --board-max-h: min(
+          42dvh,
+          calc(100dvh - 10rem - env(safe-area-inset-bottom, 0px))
+        );
+      }
+    }
+
+    .game-page:not(.game-page--fit) {
+      flex: 1 0 auto;
+    }
+
+    .game-page--fit .game-shell {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .game-page--fit .game-sticky-controls {
+      position: relative;
+      bottom: auto;
+      z-index: 20;
+      border-top-width: 0;
+      background: transparent;
+      backdrop-filter: none;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .game-page--fit .game-shell {
+    @apply overflow-x-clip overflow-y-hidden;
   }
 
   button,
@@ -58,10 +117,18 @@
   }
 }
 
-/* Board grid: container-query sizing (hard in pure utility classes) */
+/* ——— Board geometry kernel (container-query sizing) ——— */
+
 .board-frame {
-  container-type: size;
-  @apply relative flex min-h-0 min-w-0 flex-1 items-center justify-center;
+  --board-radius: 12px;
+  --board-pad: 4px;
+  --board-inner-r: max(0px, calc(var(--board-radius) - var(--board-pad)));
+  --fit-h: min(70dvh, 36rem);
+  container-type: inline-size;
+  border-radius: var(--board-radius);
+  padding: var(--board-pad);
+  overflow: visible;
+  @apply relative flex min-h-0 min-w-0 w-full flex-none items-center justify-center;
 }
 
 .mine-grid {
@@ -70,99 +137,119 @@
   --cell-ar: 1;
   display: grid;
   grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
-  gap: clamp(1px, 0.35cqmin, 3px);
-  width: min(100cqw, calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows)));
+  gap: clamp(1px, 0.35cqw, 3px);
+  width: min(
+    100cqw,
+    calc(var(--fit-h) * var(--cols) * var(--cell-ar) / var(--rows))
+  );
   aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
-  max-height: 100%;
+  max-height: var(--fit-h);
+  height: auto;
+  border-radius: 0;
+  overflow: visible;
 }
 
-.mine-grid > .cell {
-  font-size: clamp(0.55rem, 4.2cqmin, 1.05rem);
-  border-radius: clamp(2px, 0.8cqmin, 6px);
-}
-
-/* Single digit / ? - kill line-box metrics so the glyph sits optically centered */
-.mine-grid > .cell .cell-glyph {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 0;
-  pointer-events: none;
-}
-
-.mine-grid > .cell .cell-glyph > span {
-  display: block;
-  line-height: 1;
-  /* Font glyphs sit slightly low in the em box */
-  transform: translateY(-0.08em);
-}
-
-.mine-grid .mark-chance,
-.mine-grid .mark-sure {
-  font-size: clamp(0.4rem, 2.8cqmin, 0.75rem);
-}
-
-.mine-grid > .cell.cell-best .mark-chance,
-.mine-grid > .cell.cell-safest .mark-chance {
-  font-size: clamp(0.48rem, 3.35cqmin, 0.9rem);
-}
-
-/* Sudoku: single outer frame + thin cells; box lines via cell classes */
 .sudoku-grid {
   gap: 0;
   border: 2px solid #5c6a7a;
-  border-radius: clamp(2px, 0.8cqmin, 6px);
+  border-radius: var(--board-inner-r);
+  clip-path: inset(0 round var(--board-inner-r));
   overflow: hidden;
   background: #5c6a7a;
 }
 
-.sudoku-grid > .cell {
+.chess-grid {
+  gap: 0;
+  border: 2px solid #5a6574;
+  border-radius: var(--board-inner-r);
+  clip-path: inset(0 round var(--board-inner-r));
+  overflow: hidden;
+}
+
+.chess-grid > .cell {
   border-radius: 0;
-  /* hairline only - box bands set thicker edges in the component */
-  border-width: 0.5px;
-  font-size: clamp(0.7rem, 5.5cqmin, 1.35rem);
 }
 
-.sudoku-grid > .cell .sudoku-notes {
-  position: absolute;
-  inset: 8%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  place-items: center;
-  font-size: clamp(0.28rem, 2.1cqmin, 0.55rem);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--color-muted);
-  pointer-events: none;
+/*
+ * Why open: row height comes from the grid only. The slot stretches to
+ * that height; the panel is pinned inside so steps scroll instead of
+ * stretching the board.
+ */
+.board-with-why {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
-.board-stage {
-  @apply flex h-full min-h-0 min-w-0 w-full items-stretch justify-center gap-2.5;
+.board-with-why .coord-board,
+.board-with-why > .mine-grid {
+  flex: 0 1 auto;
+  min-width: 0;
+  align-self: start;
+  width: min(
+    calc(100cqw - 16rem),
+    calc(
+      (var(--fit-h) - var(--coord-gutter-y, 0px)) * var(--cols) * var(--cell-ar) /
+        var(--rows) + var(--coord-gutter-x, 0px)
+    )
+  );
 }
 
-.board-stage.with-why {
-  @apply justify-start gap-2;
-}
-
-.board-stage.with-why > aside {
-  margin-left: auto;
+.why-slot {
+  position: relative;
+  flex: 0 0 14.5rem;
+  width: 14.5rem;
   align-self: stretch;
 }
 
-.board-stage.with-why .mine-grid {
-  width: min(
-    calc(100cqw - 15.5rem),
-    calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows))
-  );
-  max-height: 100%;
-  align-self: center;
+.why-slot .why-panel {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 980px) {
+  .board-with-why {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .board-with-why .coord-board,
+  .board-with-why > .mine-grid {
+    width: min(
+      100cqw,
+      calc(
+        (var(--fit-h) - var(--coord-gutter-y, 0px)) * var(--cols) *
+          var(--cell-ar) / var(--rows) + var(--coord-gutter-x, 0px)
+      )
+    );
+  }
+
+  .why-slot {
+    flex: 0 1 auto;
+    width: min(100%, 22rem);
+    align-self: stretch;
+    position: relative;
+  }
+
+  .why-slot .why-panel {
+    position: static;
+    width: 100%;
+    max-height: 12.5rem;
+  }
 }
 
 .coord-board {
-  /* Must match grid-template + gap below so fit math includes axis labels */
   --coord-label-x: 1.35rem;
   --coord-label-y: 1.15rem;
   --coord-gap-x: 0.2rem;
@@ -171,19 +258,21 @@
   --coord-gutter-y: calc(var(--coord-label-y) + var(--coord-gap-y));
   display: grid;
   grid-template-columns: var(--coord-label-x) minmax(0, 1fr);
-  grid-template-rows: var(--coord-label-y) minmax(0, 1fr);
+  grid-template-rows: var(--coord-label-y) auto;
   gap: var(--coord-gap-y) var(--coord-gap-x);
-  /* Fit cells+labels into the frame: gutters eat cqh/cqw, so shrink width */
   width: min(
     100cqw,
     calc(
-      (100cqh - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
+      (var(--fit-h) - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
         var(--rows) + var(--coord-gutter-x)
     )
   );
-  max-height: 100%;
+  max-height: var(--fit-h);
   align-self: center;
   min-height: 0;
+  height: auto;
+  border-radius: 0;
+  overflow: visible;
 }
 
 .coord-board .mine-grid {
@@ -193,217 +282,160 @@
   height: auto;
   max-height: none;
   aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
-}
-
-.board-stage.with-why .coord-board {
-  width: min(
-    calc(100cqw - 15.5rem),
-    calc(
-      (100cqh - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
-        var(--rows) + var(--coord-gutter-x)
-    )
-  );
-  align-self: center;
-}
-
-.board-frame.why-mode {
-  @apply border-best/40;
-}
-
-.board-frame.why-mode .mine-grid {
-  /* Room for thicker highlight rings between cells */
-  gap: clamp(5px, 1.4cqmin, 10px);
+  border-radius: 0;
 }
 
 .board-frame.why-mode .cell {
   overflow: visible;
 }
 
-/* Best / Safest: inset rings so neighbors don’t clip/overlap each other */
-.mine-grid > .cell.cell-best,
-.mine-grid > .cell.cell-safest {
-  z-index: 2;
-}
-
-.mine-grid > .cell.cell-best:not(.cell-safest) {
-  border-color: var(--color-best) !important;
-  border-width: 2px;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--color-best) 70%, #000),
-    0 0 8px color-mix(in srgb, var(--color-best) 35%, transparent);
-}
-
-.mine-grid > .cell.cell-safest:not(.cell-best) {
-  border-color: var(--color-safest) !important;
-  border-width: 2px;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--color-safest) 70%, #000),
-    0 0 8px color-mix(in srgb, var(--color-safest) 35%, transparent);
-}
-
-.mine-grid > .cell.cell-best.cell-safest {
-  border-color: var(--color-best) !important;
-  border-width: 2px;
-  box-shadow:
-    inset 0 0 0 1px var(--color-best),
-    inset 0 0 0 3px var(--color-safest),
-    0 0 8px color-mix(in srgb, var(--color-safest) 35%, transparent);
-}
-
-.mine-grid > .cell.cell-conflict {
-  z-index: 3;
-  border-color: var(--color-danger) !important;
-  border-width: 2px;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--color-danger) 55%, #000),
-    0 0 0 3px color-mix(in srgb, var(--color-danger) 85%, white),
-    0 0 14px color-mix(in srgb, var(--color-danger) 55%, transparent);
-}
-
-/* Hover + arrow: same slightly thicker white border (Best/Safest drop glow rings while active) */
+/* Hover: thicker white border (tip glow rings drop while active) */
 @media (hover: hover) and (pointer: fine) {
   .board-frame:not(.why-mode) .cell:hover {
     border-width: 2px !important;
     border-color: #fff !important;
     box-shadow: none !important;
   }
-}
 
-.why-hl {
-  position: relative;
-}
-
-.why-hl-focus {
-  z-index: 5;
-  box-shadow: 0 0 0 3px #fff !important;
-}
-
-.why-hl-clue {
-  z-index: 4;
-  box-shadow:
-    0 0 0 3px var(--color-why-clue),
-    0 0 12px color-mix(in srgb, var(--color-why-clue) 65%, transparent) !important;
-}
-
-.why-hl-step {
-  z-index: 3;
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--color-why-clue) 85%, white),
-    0 0 10px color-mix(in srgb, var(--color-why-clue) 50%, transparent) !important;
-  filter: brightness(1.12);
-}
-
-.why-hl-peer {
-  z-index: 2;
-  box-shadow:
-    0 0 0 3px var(--color-why-peer),
-    0 0 12px color-mix(in srgb, var(--color-why-peer) 65%, transparent) !important;
-}
-
-.why-hl-cursor {
-  z-index: 1;
-  border-width: 2px !important;
-  border-color: #fff !important;
-  box-shadow: none !important;
-}
-
-/* Arrow cursor on Best/Safest: match hover */
-.mine-grid > .cell.cell-best.why-hl-cursor,
-.mine-grid > .cell.cell-safest.why-hl-cursor {
-  border-width: 2px !important;
-  border-color: #fff !important;
-  box-shadow: none !important;
-}
-
-@media (max-width: 720px) {
-  .board-stage.with-why {
-    @apply flex-col items-stretch;
-  }
-
-  .board-stage.with-why > aside {
-    margin-left: 0;
-  }
-
-  .board-stage.with-why .mine-grid {
-    width: min(
-      100cqw,
-      calc(100cqh * 0.62 * var(--cols) * var(--cell-ar) / var(--rows))
-    );
-    max-height: 62%;
-  }
-
-  .board-stage.with-why .coord-board {
-    width: min(
-      100cqw,
-      calc(
-        (100cqh * 0.62 - var(--coord-gutter-y)) * var(--cols) * var(--cell-ar) /
-          var(--rows) + var(--coord-gutter-x)
-      )
-    );
-    max-height: 62%;
-  }
-}
-
-.wordle-grid {
-  --layout-rows: 6;
-  gap: clamp(4px, 1.2cqmin, 8px);
-  /* Size tiles as if the board always has 6 rows - Expert's 5 guesses
-     must not blow up letter height. */
-  width: min(
-    100cqw,
-    calc(100cqh * var(--cols) * var(--cell-ar) / var(--layout-rows))
-  );
-  aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
-  max-height: min(100%, calc(100cqh * var(--rows) / var(--layout-rows)));
-}
-
-.mine-grid.wordle-grid > .cell {
-  container-type: size;
-  font-size: clamp(0.7rem, 52cqmin, 1.85rem);
-}
-
-.wordle-mark-correct {
-  background: #4cbe6a;
-  border-color: #6ad184;
-  color: #f4fff6;
-}
-
-.wordle-mark-present {
-  background: #e0b03a;
-  border-color: #f0c45a;
-  color: #fff8e4;
-}
-
-.wordle-mark-absent {
-  background: #3a4450;
-  border-color: #4a5562;
-  color: #d5dde6;
-}
-
-.wordle-mark-tbd {
-  background: var(--color-cell-hover);
-  border-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
-  color: var(--color-ink);
-}
-
-.wordle-mark-hint {
-  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-cell));
-  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
-  color: color-mix(in srgb, var(--color-accent) 85%, white);
-}
-
-.wordle-mark-empty {
-  background: var(--color-cell);
-  border-color: var(--color-line);
-  color: var(--color-ink);
-}
-
-@media (hover: hover) and (pointer: fine) {
   .board-frame:not(.why-mode) .wordle-grid > .cell:hover {
     border-width: 2px !important;
     border-color: inherit !important;
     box-shadow: none !important;
   }
+}
+
+.wordle-grid {
+  --layout-rows: 6;
+  gap: clamp(4px, 1.2cqw, 8px);
+  width: min(
+    100cqw,
+    calc(var(--fit-h) * var(--cols) * var(--cell-ar) / var(--layout-rows))
+  );
+  aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
+  max-height: min(
+    var(--fit-h),
+    calc(var(--fit-h) * var(--rows) / var(--layout-rows))
+  );
+}
+
+@media (max-width: 980px) {
+  .board-frame {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    --fit-h: var(--board-max-h);
+    align-items: center;
+    justify-content: center;
+    container-type: inline-size;
+    overflow: visible;
+  }
+
+  .mine-grid,
+  .wordle-grid {
+    width: min(
+      100cqw,
+      calc(var(--board-max-h) * var(--cols) * var(--cell-ar) / var(--rows))
+    );
+    max-height: var(--board-max-h);
+    height: auto;
+  }
+
+  .wordle-grid {
+    width: min(
+      100cqw,
+      calc(
+        var(--board-max-h) * var(--cols) * var(--cell-ar) /
+          var(--layout-rows, 6)
+      )
+    );
+    max-height: min(
+      var(--board-max-h),
+      calc(var(--board-max-h) * var(--rows) / var(--layout-rows, 6))
+    );
+  }
+
+  .coord-board {
+    width: min(
+      100cqw,
+      calc(
+        (var(--board-max-h) - var(--coord-gutter-y)) * var(--cols) *
+          var(--cell-ar) / var(--rows) + var(--coord-gutter-x)
+      )
+    );
+    max-height: none;
+    height: auto;
+    grid-template-rows: var(--coord-label-y) auto;
+    overflow: visible;
+  }
+
+  .coord-board .mine-grid {
+    width: 100% !important;
+    height: auto;
+    max-height: none;
+    aspect-ratio: calc(var(--cols) * var(--cell-ar)) / var(--rows);
+  }
+
+  .game-page--fit .board-frame {
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+    align-items: center;
+    justify-content: center;
+    container-type: size;
+    overflow: hidden;
+  }
+
+  .game-page--fit .board-stage {
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .game-page--fit .mine-grid,
+  .game-page--fit .wordle-grid {
+    width: min(
+      100cqw,
+      calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows))
+    );
+    max-height: 100%;
+  }
+
+  .game-page--fit .wordle-grid {
+    width: min(
+      100cqw,
+      calc(100cqh * var(--cols) * var(--cell-ar) / var(--layout-rows, 6))
+    );
+    max-height: min(100%, calc(100cqh * var(--rows) / var(--layout-rows, 6)));
+  }
+}
+
+.game-page--fit .board-frame {
+  flex: 1 1 0;
+  min-height: 0;
+  container-type: size;
+}
+
+.game-page--fit .board-stage {
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+.game-page--fit .mine-grid,
+.game-page--fit .wordle-grid {
+  width: min(100cqw, calc(100cqh * var(--cols) * var(--cell-ar) / var(--rows)));
+  max-height: 100%;
+}
+
+.game-page--fit .wordle-grid {
+  width: min(
+    100cqw,
+    calc(100cqh * var(--cols) * var(--cell-ar) / var(--layout-rows, 6))
+  );
+  max-height: min(100%, calc(100cqh * var(--rows) / var(--layout-rows, 6)));
 }
 
 @keyframes wordle-shake {
@@ -443,53 +475,6 @@
 
 .wordle-key-press {
   animation: wordle-key-press 0.16s ease-out;
-}
-
-.chess-grid {
-  gap: 0;
-  border: 2px solid #5a6574;
-  border-radius: clamp(2px, 0.8cqmin, 6px);
-  overflow: hidden;
-}
-
-.chess-grid > .cell {
-  border-radius: 0;
-}
-
-.chess-sq-light {
-  background: #c5cdd8;
-}
-
-.chess-sq-dark {
-  background: #4a5568;
-}
-
-.chess-sq-from {
-  box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--color-accent) 80%, white);
-}
-
-.chess-sq-to {
-  box-shadow: inset 0 0 0 3px var(--color-accent);
-}
-
-.chess-sq-check {
-  background: color-mix(in srgb, var(--color-danger) 45%, #4a5568);
-}
-
-.chess-glyph {
-  line-height: 1;
-}
-
-.chess-move-flyer {
-  pointer-events: none;
-  position: absolute;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 12.5%;
-  height: 12.5%;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .rush-grid-building {

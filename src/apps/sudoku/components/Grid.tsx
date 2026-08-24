@@ -4,6 +4,12 @@ import { cellConflicts } from '../game/engine'
 import type { BoardState, Cell } from '../game/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import {
+  CELL_GLYPH,
+  CELL_GLYPH_INNER,
+  SUDOKU_CELL,
+  SUDOKU_NOTES
+} from '../../../shared/lib/cellChrome'
 
 type GridProps = {
   board: BoardState
@@ -104,6 +110,7 @@ function CellButton({
       type="button"
       className={cn(
         'cell relative flex h-full w-full min-h-0 min-w-0 cursor-pointer items-center justify-center overflow-hidden border border-line bg-cell p-0 font-mono font-semibold leading-none touch-manipulation select-none focus:outline-none focus-visible:outline-none',
+        SUDOKU_CELL,
         // Internal 3×3 band lines only (outer edge is .sudoku-grid border)
         r > 0 && r % 3 === 0 && 'border-t-2 border-t-[#5c6a7a]',
         c > 0 && c % 3 === 0 && 'border-l-2 border-l-[#5c6a7a]',
@@ -133,12 +140,16 @@ function CellButton({
 
 function cellContent(cell: Cell): ReactNode {
   if (cell.value !== 0) {
-    return <span className="cell-glyph">{cell.value}</span>
+    return (
+      <span className={CELL_GLYPH}>
+        <span className={CELL_GLYPH_INNER}>{cell.value}</span>
+      </span>
+    )
   }
   if (cell.notes === 0) return null
   const notes = notesFromMask(cell.notes)
   return (
-    <span className="sudoku-notes" aria-hidden>
+    <span className={SUDOKU_NOTES} aria-hidden>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d) => (
         <span key={d} className={cn(!notes.includes(d) && 'invisible')}>
           {d}

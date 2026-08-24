@@ -36,8 +36,10 @@ const SWATCH_VARIANTS: Record<string, string> = {
   best: 'bg-[rgba(45,180,110,0.7)] border border-best shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-best)_55%,transparent)]',
   safest:
     'bg-[rgba(45,180,110,0.7)] border border-safest shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-safest)_55%,transparent)]',
-  /** Half yellow / half orange - Interesting vs Safest */
-  vs: '!h-[0.7rem] !w-[0.7rem] !border-0 !shadow-none overflow-hidden bg-[linear-gradient(90deg,var(--color-best)_0_50%,var(--color-safest)_50%_100%)]'
+  unclued:
+    'bg-[rgba(45,180,110,0.7)] border border-unclued shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--color-unclued)_55%,transparent)]',
+  /** Orange / yellow / cyan - pick order of the three rings */
+  vs: '!h-[0.7rem] !w-[0.7rem] !border-0 !shadow-none overflow-hidden bg-[linear-gradient(90deg,var(--color-safest)_0_33%,var(--color-best)_33%_66%,var(--color-unclued)_66%_100%)]'
 }
 
 const EDGE_PAD = 8

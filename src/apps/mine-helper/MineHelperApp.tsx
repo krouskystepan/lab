@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Bomb, Flag, X } from 'lucide-react'
+import { Bomb } from 'lucide-react'
 import { BoardTools } from './components/BoardTools'
 import { GoalModeToggle } from './components/GoalModeToggle'
 import { Grid } from './components/Grid'
 import { HotkeysBar } from './components/HotkeysBar'
-import { LegendTip } from './components/LegendTip'
-import { LegendMark } from './components/LegendMark'
-import { legendRichText } from './components/legendRichText'
+import { LegendMenu } from './components/LegendMenu'
+import { LegendStrip } from './components/LegendStrip'
 import { SizeBar, type GridEdge } from './components/SizeBar'
 import { NumberPad } from './components/NumberPad'
 import { Toolbar } from './components/Toolbar'
@@ -15,7 +14,7 @@ import { WhyPanel } from './components/WhyPanel'
 import { PlaceBlockedDialog } from './components/PlaceBlockedDialog'
 import { attachWhyHints, explainCell } from './solver/explain'
 import { solve } from './solver/solve'
-import { validatePlacement } from './solver/validate'
+import { countKnownTargets, validatePlacement } from './solver/validate'
 import type {
   BoardCell,
   CellAspect,
@@ -40,6 +39,13 @@ import {
   type BoardImportResult
 } from '../../shared/boardTransfer'
 import {
+  MobileHelpCard,
+  boardStage,
+  boardStageWhy,
+  gameShell,
+  gameStickyControls
+} from '../../shared/gameUi'
+import {
   flipBoardHorizontal,
   flipBoardVertical,
   padBoard,
@@ -48,9 +54,15 @@ import {
   shiftBoard,
   trimEmptyEdges
 } from './storage/resizeBoard'
-import { loadGoalMode, loadWhyMode, saveGoalMode, saveWhyMode } from './storage/prefs'
+import {
+  loadGoalMode,
+  loadWhyMode,
+  saveGoalMode,
+  saveWhyMode
+} from './storage/prefs'
 import type { Placement } from './solver/validate'
 import { useI18n } from '../../i18n'
+import { LangSwitch } from '../../shell/LangSwitch'
 
 function clearSolverOnBoard(board: BoardCell[]): BoardCell[] {
   return board.map((c) => ({ user: c.user }))
@@ -98,7 +110,7 @@ function paintSolveMarks(
 }
 
 export default function MineHelperApp() {
-  const { t, locale, setLocale } = useI18n()
+  const { t, locale } = useI18n()
   const [saved] = useState<SavedBoard>(() => loadBoard())
 
   const [width, setWidth] = useState(saved.width)
@@ -596,7 +608,16 @@ export default function MineHelperApp() {
       explainIndex,
       cells
     )
-  }, [explainIndex, cells, width, height, useTotal, totalTargets, goalMode, locale])
+  }, [
+    explainIndex,
+    cells,
+    width,
+    height,
+    useTotal,
+    totalTargets,
+    goalMode,
+    locale
+  ])
 
   // Re-localize why hints when language changes
   useEffect(() => {
@@ -711,6 +732,22 @@ export default function MineHelperApp() {
     },
     [cellAspect, pushHistory]
   )
+
+  const onGoalModeChange = useCallback((next: GoalMode) => {
+    setGoalMode(next)
+    const m = modeRef.current
+    // Avoid tools: Safe # + Flag + Safe. Hunt: Moje # + Info + Vyřazené.
+    if (next === 'safe' && m === 'info') {
+      setMode('number')
+    }
+    if (next === 'hunt' && m === 'flag') {
+      setMode('number')
+    }
+    // Avoid has no ? number
+    if (next === 'safe' && numberValueRef.current == null) {
+      setNumberValue(1)
+    }
+  }, [])
 
   const onPadEdge = useCallback(
     (edge: GridEdge, delta: 1 | -1) => {
@@ -831,73 +868,27 @@ export default function MineHelperApp() {
     }
     setExplainIndex(null)
     setWhyMode(true)
-  }, [whyMode, cells, width, height, useTotal, totalTargets, goalMode, pushHistory])
+  }, [
+    whyMode,
+    cells,
+    width,
+    height,
+    useTotal,
+    totalTargets,
+    goalMode,
+    pushHistory
+  ])
 
   onWhyModeRef.current = onWhyMode
   onSolveRef.current = onSolve
 
-  const huntGoal = goalMode === 'hunt'
-  const tipLabel = huntGoal ? t('legend.surestTarget') : t('legend.safest')
-
-  const legendMarks = useMemo(
-    () => ({
-      sure: <LegendMark kind="sure">{t('legend.sure')}</LegendMark>,
-      best: <LegendMark kind="best">{t('legend.best')}</LegendMark>,
-      safest: (
-        <LegendMark kind="safest">
-          {huntGoal ? t('legend.surestTarget') : t('legend.safest')}
-        </LegendMark>
+  const knownFound = useMemo(
+    () =>
+      countKnownTargets(
+        cells.map((c) => c.user),
+        goalMode
       ),
-      surestTarget: (
-        <LegendMark kind="surestTarget">{t('legend.surestTarget')}</LegendMark>
-      ),
-      chance: <LegendMark kind="chance">{t('legend.chance')}</LegendMark>,
-      flag: (
-        <LegendMark kind="flag">
-          {huntGoal ? t('legend.flagHunt') : t('legend.flag')}
-        </LegendMark>
-      ),
-      safe: (
-        <LegendMark kind="safe">
-          {huntGoal ? t('legend.safeTitleHunt') : t('legend.safe')}
-        </LegendMark>
-      ),
-      mine: (
-        <LegendMark kind="mine">
-          {huntGoal ? t('legend.numberHunt') : t('legend.numberSafe')}
-        </LegendMark>
-      ),
-      info: <LegendMark kind="info">{t('legend.info')}</LegendMark>,
-      entropy: (
-        <a
-          href={`https://www.google.com/search?q=${encodeURIComponent(t('legend.entropySearch'))}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-accent underline decoration-accent/55 underline-offset-2 hover:decoration-accent"
-        >
-          {t('legend.entropy')}
-        </a>
-      )
-    }),
-    [t, huntGoal]
-  )
-
-  const legendSureFirstSection = (
-    <div className="flex flex-col gap-1">
-      <strong className="text-[0.78rem] font-bold leading-[1.3]">
-        <LegendMark kind="sure">{t('legend.pickWhenSureTitle')}</LegendMark>
-      </strong>
-      <p className="m-0">
-        {legendRichText(
-          t(
-            huntGoal
-              ? 'legend.pickWhenSureBodyHunt'
-              : 'legend.pickWhenSureBodySafe'
-          ),
-          legendMarks
-        )}
-      </p>
-    </div>
+    [cells, goalMode]
   )
 
   const onClearBoard = useCallback(() => {
@@ -913,9 +904,7 @@ export default function MineHelperApp() {
         width: widthRef.current,
         height: heightRef.current,
         cells: cellsRef.current.map((c) => c.user),
-        totalTargets: useTotalRef.current
-          ? totalTargetsRef.current
-          : undefined
+        totalTargets: useTotalRef.current ? totalTargetsRef.current : undefined
       }),
     []
   )
@@ -948,344 +937,167 @@ export default function MineHelperApp() {
   )
 
   return (
-    <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
-        <div className="flex min-h-8 w-full flex-wrap items-center justify-between gap-2.5 max-[720px]:gap-[0.35rem]">
-          <div className="flex shrink-0 items-center gap-[0.55rem]">
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+          <div className="flex min-w-0 items-center gap-[0.55rem]">
             <Link
               to="/"
-              className="inline-flex h-[1.35rem] w-[1.35rem] items-center justify-center rounded-full bg-accent text-ink no-underline shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-accent)_35%,transparent),0_0_12px_color-mix(in_srgb,var(--color-accent)_40%,transparent)]"
+              className="inline-flex h-[1.35rem] w-[1.35rem] shrink-0 items-center justify-center rounded-full bg-accent text-ink no-underline shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-accent)_35%,transparent),0_0_12px_color-mix(in_srgb,var(--color-accent)_40%,transparent)]"
               aria-label={t('hub.backHome')}
               title={t('hub.backHome')}
             >
               <Bomb className="h-[0.85rem] w-[0.85rem]" strokeWidth={2.25} />
             </Link>
-            <h1 className="m-0 text-[1.15rem] font-bold tracking-[-0.03em] max-[720px]:text-base [@media(max-height:700px)]:text-base">
+            <h1 className="m-0 truncate text-[1.15rem] font-bold tracking-[-0.03em] max-[720px]:text-base [@media(max-height:700px)]:text-base">
               {t('appName')}
             </h1>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+          <div className="ml-auto flex min-w-0 max-w-full flex-wrap items-center justify-end gap-[0.45rem]">
             <ExportImportButtons
               filename="minesweeper-board.json"
               family="minesweeper"
               onExport={onExportBoard}
               onImport={onImportBoard}
             />
-            <div
-              className="inline-flex overflow-hidden rounded-sm border border-line bg-cell"
-              role="group"
-              aria-label={t('lang.switch')}
-            >
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'en'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'en'}
-                onClick={() => setLocale('en')}
-              >
-                {t('lang.en')}
-              </button>
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'cs'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'cs'}
-                onClick={() => setLocale('cs')}
-              >
-                {t('lang.cs')}
-              </button>
+            <LangSwitch />
+            <div className="flex min-[981px]:hidden items-center gap-[0.45rem]">
+              <MobileHelpCard
+                variant="inline"
+                sections={[
+                  {
+                    title: t(
+                      goalMode === 'hunt'
+                        ? 'tools.totalTipTitleHunt'
+                        : 'tools.totalTipTitle'
+                    ),
+                    body: (
+                      <p className="m-0">
+                        {t(
+                          goalMode === 'hunt'
+                            ? 'tools.totalTipBodyHunt'
+                            : 'tools.totalTipBody'
+                        )}
+                      </p>
+                    )
+                  },
+                  {
+                    title: t('tools.autoTipTitle'),
+                    body: <p className="m-0">{t('tools.autoTipBody')}</p>
+                  }
+                ]}
+              />
+              <LegendMenu goalMode={goalMode} />
             </div>
-            <GoalModeToggle
-              value={goalMode}
-              onChange={(next) => {
-                setGoalMode(next)
-                const m = modeRef.current
-                // Avoid tools: Safe # + Flag + Safe. Hunt: Moje # + Info + Vyřazené.
-                if (next === 'safe' && m === 'info') {
-                  setMode('number')
-                }
-                if (next === 'hunt' && m === 'flag') {
-                  setMode('number')
-                }
-                // Avoid has no ? number
-                if (next === 'safe' && numberValueRef.current == null) {
-                  setNumberValue(1)
-                }
-              }}
-            />
+            <div className="hidden min-[981px]:block">
+              <GoalModeToggle value={goalMode} onChange={onGoalModeChange} />
+            </div>
           </div>
         </div>
-        <div className="flex w-full flex-wrap items-center justify-start gap-2.5 max-[720px]:hidden">
-          <div className="flex flex-wrap justify-start gap-x-[0.85rem] gap-y-[0.55rem] text-[0.75rem] font-medium text-muted">
-            <LegendTip
-              label={t(huntGoal ? 'legend.numberHunt' : 'legend.numberSafe')}
-              swatchClass="mine"
-              swatchContent="3"
-              title={t(huntGoal ? 'legend.numberTitleHunt' : 'legend.numberTitleSafe')}
-            >
-              {t(huntGoal ? 'legend.numberBodyHunt' : 'legend.numberBodySafe')}
-            </LegendTip>
-            {huntGoal ? (
-              <LegendTip
-                label={t('legend.info')}
-                swatchClass="info"
-                swatchContent="3"
-                title={t('legend.infoTitleHunt')}
-              >
-                {t('legend.infoBodyHunt')}
-              </LegendTip>
-            ) : null}
-            <LegendTip
-              label={t(huntGoal ? 'legend.flagHunt' : 'legend.flag')}
-              swatchClass="flag"
-              swatchContent={
-                huntGoal ? (
-                  <X
-                    className="h-[0.7rem] w-[0.7rem] text-flag"
-                    strokeWidth={3}
-                    aria-hidden
-                  />
-                ) : (
-                  <Flag
-                    className="h-[0.7rem] w-[0.7rem] text-flag"
-                    fill="currentColor"
-                    strokeWidth={1.5}
-                    aria-hidden
-                  />
-                )
-              }
-              title={t(huntGoal ? 'legend.flagTitleHunt' : 'legend.flagTitle')}
-            >
-              {legendRichText(t(huntGoal ? 'legend.flagBodyHunt' : 'legend.flagBodySafe'), legendMarks)}
-            </LegendTip>
-            {huntGoal ? (
-              <LegendTip
-                label={t('legend.safeTitleHunt')}
-                swatchClass="blank"
-                swatchContent={
-                  <span
-                    className="flex h-[0.7rem] w-[0.7rem] items-center justify-center text-[0.7rem] font-bold leading-none text-[#c5ced8]"
-                    aria-hidden
-                  >
-                    ?
-                  </span>
-                }
-                title={t('legend.safeTitleHunt')}
-              >
-                {legendRichText(t('legend.safeBodyHunt'), legendMarks)}
-              </LegendTip>
-            ) : (
-              <LegendTip
-                label={t('legend.safe')}
-                swatchClass="blank"
-                title={t('legend.safeTitle')}
-              >
-                {legendRichText(t('legend.safeBody'), legendMarks)}
-              </LegendTip>
-            )}
-            <span
-              className="mx-[0.15rem] min-h-[0.9rem] w-px shrink-0 self-stretch bg-line"
-              aria-hidden
-            />
-            <LegendTip
-              label={t('legend.sure')}
-              swatchClass="sure"
-              title={t(huntGoal ? 'legend.sureTitleHunt' : 'legend.sureTitleSafe')}
-            >
-              {legendRichText(t(huntGoal ? 'legend.sureBodyHunt' : 'legend.sureBodySafe'), legendMarks)}
-            </LegendTip>
-            <LegendTip
-              label={t('legend.chance')}
-              swatchClass="chance"
-              title={t(huntGoal ? 'legend.chanceTitleHunt' : 'legend.chanceTitleSafe')}
-            >
-              {legendRichText(t(huntGoal ? 'legend.chanceBodyHunt' : 'legend.chanceBodySafe'), legendMarks)}
-            </LegendTip>
-            <LegendTip
-              label={t('legend.best')}
-              swatchClass="best"
-              title={t(huntGoal ? 'legend.bestTitleHunt' : 'legend.bestTitleSafe')}
-              stacked
-            >
-              {legendSureFirstSection}
-              <div className="flex flex-col gap-1">
-                <strong className="text-[0.78rem] font-bold leading-[1.3]">
-                  <LegendMark kind="best">{t('legend.best')}</LegendMark>
-                </strong>
-                <p className="m-0">
-                  {legendRichText(
-                    t(huntGoal ? 'legend.bestBodyHunt' : 'legend.bestBodySafe'),
-                    legendMarks
-                  )}
-                </p>
-              </div>
-            </LegendTip>
-            <LegendTip
-              label={t('legend.pickWhen')}
-              swatchClass="vs"
-              title={
-                <>
-                  <LegendMark kind="best">
-                    {t(huntGoal ? 'legend.pickWhenLeftHunt' : 'legend.pickWhenLeftSafe')}
-                  </LegendMark>
-                  {' vs '}
-                  <LegendMark kind="safest">
-                    {t(
-                      huntGoal
-                        ? 'legend.pickWhenRightHunt'
-                        : 'legend.pickWhenRightSafe'
-                    )}
-                  </LegendMark>
-                </>
-              }
-              titleClassName="text-ink"
-              wide
-              stacked
-            >
-              {legendSureFirstSection}
-              <div className="flex flex-col gap-1">
-                <strong className="text-[0.78rem] font-bold leading-[1.3]">
-                  <LegendMark kind="safest">{tipLabel}</LegendMark>
-                </strong>
-                <p className="m-0">
-                  {legendRichText(
-                    t(
-                      huntGoal
-                        ? 'legend.pickWhenSafestBodyHunt'
-                        : 'legend.pickWhenSafestBodySafe'
-                    ),
-                    legendMarks
-                  )}
-                </p>
-              </div>
-              <div className="flex flex-col gap-1">
-                <strong className="text-[0.78rem] font-bold leading-[1.3]">
-                  <LegendMark kind="best">{t('legend.best')}</LegendMark>
-                </strong>
-                <p className="m-0">
-                  {legendRichText(
-                    t(
-                      huntGoal
-                        ? 'legend.pickWhenBestBodyHunt'
-                        : 'legend.pickWhenBestBodySafe'
-                    ),
-                    legendMarks
-                  )}
-                </p>
-              </div>
-            </LegendTip>
-            <LegendTip
-              label={tipLabel}
-              swatchClass="safest"
-              title={t(huntGoal ? 'legend.safestTitleHunt' : 'legend.safestTitleSafe')}
-              stacked
-            >
-              {legendSureFirstSection}
-              <div className="flex flex-col gap-1">
-                <strong className="text-[0.78rem] font-bold leading-[1.3]">
-                  <LegendMark kind="safest">{tipLabel}</LegendMark>
-                </strong>
-                <p className="m-0">
-                  {legendRichText(
-                    t(
-                      huntGoal
-                        ? 'legend.safestBodyHunt'
-                        : 'legend.safestBodySafe'
-                    ),
-                    legendMarks
-                  )}
-                </p>
-              </div>
-            </LegendTip>
-          </div>
+        <div className="game-secondary w-full min-[981px]:hidden">
+          <GoalModeToggle value={goalMode} onChange={onGoalModeChange} />
+        </div>
+        <div className="hidden w-full flex-wrap items-center justify-start gap-2.5 min-[981px]:flex">
+          <LegendStrip goalMode={goalMode} />
           <HotkeysBar goalMode={goalMode} />
         </div>
       </header>
 
       <div
-        className={`board-frame order-3 rounded-md border border-line bg-elevated p-[0.15rem] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:order-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto] ${whyMode ? 'why-mode' : ''}`}
+        className={`board-frame order-1 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] ${whyMode ? 'why-mode border-best/40' : ''}`}
       >
-        <div className={`board-stage ${whyMode ? 'with-why' : ''}`}>
-          <Grid
-            width={width}
-            height={height}
-            cellAspect={cellAspect}
-            cells={cells}
-            goalMode={goalMode}
-            onCellClick={onCellClick}
-            onCellClear={onCellClear}
-            cursorIndex={cursorIndex}
-            keyboardCursor={keyboardCursor}
-            showCoords
-            whyFocus={explainIndex}
-            whyClues={whyClues}
-            whyPeers={whyPeers}
-          />
-          {whyMode ? (
-            <WhyPanel
-              explanation={explanation}
-              hasSelection={explainIndex != null}
+        <div className={whyMode ? boardStageWhy : boardStage}>
+          <div className={whyMode ? 'board-with-why' : 'contents'}>
+            <Grid
               width={width}
-              activeStep={whyStep}
-              onStepChange={setWhyStep}
+              height={height}
+              cellAspect={cellAspect}
+              cells={cells}
               goalMode={goalMode}
+              onCellClick={onCellClick}
+              onCellClear={onCellClear}
+              cursorIndex={cursorIndex}
+              keyboardCursor={keyboardCursor}
+              showCoords
+              whyFocus={explainIndex}
+              whyClues={whyClues}
+              whyPeers={whyPeers}
             />
-          ) : null}
+            {whyMode ? (
+              <div className="why-slot">
+                <WhyPanel
+                  explanation={explanation}
+                  hasSelection={explainIndex != null}
+                  width={width}
+                  activeStep={whyStep}
+                  onStepChange={setWhyStep}
+                  goalMode={goalMode}
+                />
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 
-      <div className="relative z-5 order-1 grid shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-[0.55rem] max-[720px]:order-2 max-[720px]:grid-cols-1">
-        <SizeBar
-          width={width}
-          height={height}
-          cellAspect={cellAspect}
-          onSizeChange={onSizeChange}
-          onCellAspectChange={onCellAspectChange}
-        />
-        <Toolbar
-          mode={mode}
-          onModeChange={setMode}
-          useTotal={useTotal}
-          onUseTotalChange={setUseTotal}
-          totalTargets={totalTargets}
-          onTotalTargetsChange={setTotalTargets}
-          autoSolve={autoSolve}
-          onAutoSolveChange={setAutoSolve}
-          onSolve={onSolve}
-          onClearBoard={onClearBoard}
-          onUndo={onUndo}
-          onRedo={onRedo}
-          canUndo={canUndo}
-          canRedo={canRedo}
-          whyMode={whyMode}
-          onWhyMode={onWhyMode}
-          goalMode={goalMode}
-        />
+      {/* Size | Tools — under the board so the grid stays visible */}
+      <div className="game-secondary relative z-5 order-3 flex w-full shrink-0 flex-col gap-[0.55rem] min-[981px]:order-2 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] min-[981px]:items-stretch">
+        <div className="min-[981px]:order-2 min-[981px]:h-full">
+          <Toolbar
+            mode={mode}
+            onModeChange={setMode}
+            useTotal={useTotal}
+            onUseTotalChange={setUseTotal}
+            totalTargets={totalTargets}
+            onTotalTargetsChange={setTotalTargets}
+            knownFound={knownFound}
+            autoSolve={autoSolve}
+            onAutoSolveChange={setAutoSolve}
+            onSolve={onSolve}
+            onClearBoard={onClearBoard}
+            onUndo={onUndo}
+            onRedo={onRedo}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            whyMode={whyMode}
+            onWhyMode={onWhyMode}
+            goalMode={goalMode}
+          />
+        </div>
+        <div className="min-[981px]:order-1 min-[981px]:h-full">
+          <SizeBar
+            width={width}
+            height={height}
+            cellAspect={cellAspect}
+            onSizeChange={onSizeChange}
+            onCellAspectChange={onCellAspectChange}
+          />
+        </div>
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[720px]:order-3">
-        <BoardTools
-          width={width}
-          height={height}
-          onPadEdge={onPadEdge}
-          onShift={onShift}
-          onFlipHorizontal={onFlipHorizontal}
-          onFlipVertical={onFlipVertical}
-          onTrimEmpty={onTrimEmpty}
-        />
-        <NumberPad
-          mode={mode}
-          numberValue={numberValue}
-          onNumberValueChange={setNumberValue}
-          onModeChange={setMode}
-          goalMode={goalMode}
-        />
+      {/* Number pad sticky on phone; board tools last */}
+      <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-start gap-[0.55rem] max-[980px]:contents min-[981px]:order-3">
+        <div className="game-secondary max-[980px]:order-5 max-[980px]:w-full min-[981px]:w-fit">
+          <BoardTools
+            width={width}
+            height={height}
+            onPadEdge={onPadEdge}
+            onShift={onShift}
+            onFlipHorizontal={onFlipHorizontal}
+            onFlipVertical={onFlipVertical}
+            onTrimEmpty={onTrimEmpty}
+          />
+        </div>
+        <div
+          className={`${gameStickyControls} min-w-0 flex-1 max-[980px]:order-2`}
+        >
+          <NumberPad
+            mode={mode}
+            numberValue={numberValue}
+            onNumberValueChange={setNumberValue}
+            onModeChange={setMode}
+            goalMode={goalMode}
+          />
+        </div>
       </div>
 
       {placeBlocked ? (

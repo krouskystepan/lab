@@ -1,6 +1,7 @@
 import { CELL_ASPECTS, MAX_GRID, MIN_GRID, PRESETS, type CellAspect } from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import { gameBtn, GamePanel } from '../../../shared/gameUi'
 
 export type GridEdge = 'left' | 'right' | 'top' | 'bottom'
 
@@ -15,14 +16,10 @@ interface SizeBarProps {
 const MIN = MIN_GRID
 const MAX = MAX_GRID
 
-const panel =
-  'flex min-w-0 flex-col gap-2 rounded-md border border-line bg-panel px-3 py-2.5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:px-2 max-[720px]:py-[0.45rem]'
-
-const panelTitle =
-  'm-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[720px]:hidden [@media(max-height:700px)]:hidden'
-
-const btn =
-  'cursor-pointer appearance-none rounded-sm border border-line bg-cell px-2 py-1.5 text-sm font-semibold transition-[background,border-color,color,transform] duration-100 hover:bg-cell-hover active:scale-[0.97] max-[720px]:min-h-[2.35rem] max-[720px]:px-[0.55rem] max-[720px]:py-1.5 max-[720px]:text-[0.9rem]'
+const btn = cn(
+  gameBtn,
+  'px-2 py-1.5 text-sm max-[720px]:min-h-[2.35rem] max-[720px]:px-[0.55rem] max-[720px]:py-1.5 max-[720px]:text-[0.9rem]'
+)
 
 const btnActive = 'border-accent bg-accent/25 text-on-accent'
 
@@ -36,17 +33,16 @@ export function SizeBar({
   const { t } = useI18n()
 
   return (
-    <section className={panel}>
-      <h2 className={panelTitle}>{t('size.title')}</h2>
-      {/* Row 1: presets stretch full width */}
-      <div className="flex flex-nowrap items-center gap-[0.35rem]">
+    <GamePanel title={t('size.title')} className="h-full">
+      {/* Row 1: presets stretch / wrap */}
+      <div className="flex flex-wrap items-center gap-[0.35rem]">
         {PRESETS.map((p) => (
           <button
             key={p.label}
             type="button"
             className={cn(
               btn,
-              'min-w-0 flex-1',
+              'min-w-0 flex-1 basis-18',
               width === p.width && height === p.height && btnActive
             )}
             onClick={() => onSizeChange(p.width, p.height)}
@@ -55,9 +51,9 @@ export function SizeBar({
           </button>
         ))}
       </div>
-      {/* Row 2: custom size left, field aspect right */}
-      <div className="flex flex-nowrap items-center justify-between gap-3">
-        <div className="flex shrink-0 items-center gap-[0.45rem]">
+      {/* Row 2: custom size + field aspect — wraps when tight */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <div className="flex flex-wrap items-center gap-[0.45rem]">
           <label className="flex items-center gap-[0.3rem] text-[0.8rem] font-semibold text-muted">
             <span>{t('size.w')}</span>
             <input
@@ -89,7 +85,7 @@ export function SizeBar({
           </label>
         </div>
 
-        <div className="flex shrink-0 flex-nowrap items-center gap-[0.35rem]">
+        <div className="flex flex-wrap items-center gap-[0.35rem]">
           <span className="whitespace-nowrap text-[0.75rem] font-semibold text-muted">
             {t('size.field')}
           </span>
@@ -108,7 +104,7 @@ export function SizeBar({
           ))}
         </div>
       </div>
-    </section>
+    </GamePanel>
   )
 }
 

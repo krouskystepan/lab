@@ -12,6 +12,7 @@ import { PlayHistory, snapshotOf } from './game/history'
 import { loadGame, saveGame } from './game/prefs'
 import type { DiffId, PointerMode } from './game/types'
 import { useI18n } from '../../i18n'
+import { LangSwitch } from '../../shell/LangSwitch'
 import {
   ExportImportButtons,
   exportMinesweeperGame,
@@ -19,9 +20,10 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
+import { MobileHelpCard, boardStage, gameShell } from '../../shared/gameUi'
 
 export default function MinesweeperApp() {
-  const { t, locale, setLocale } = useI18n()
+  const { t, locale } = useI18n()
   const initial = useRef(loadGame()).current
   const [board, dispatch] = useReducer(reduce, initial.board)
   const [mode, setMode] = useState<PointerMode>('dig')
@@ -270,9 +272,9 @@ export default function MinesweeperApp() {
   const hintAvailable = findHint(board) != null
 
   return (
-    <div className="mx-auto flex h-full min-h-0 max-w-275 flex-col gap-[0.55rem] overflow-hidden px-[0.85rem] pt-[0.65rem] pb-3 max-[720px]:gap-[0.35rem] max-[720px]:px-[0.45rem] max-[720px]:pt-1.5 max-[720px]:pb-[0.45rem]">
+    <div className={gameShell}>
       <header className="order-0 flex shrink-0 flex-col gap-1.5">
-        <div className="flex min-h-8 w-full flex-wrap items-center justify-between gap-2.5 max-[720px]:gap-[0.35rem]">
+        <div className="flex min-h-8 w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
           <div className="flex shrink-0 items-center gap-[0.55rem]">
             <Link
               to="/"
@@ -286,43 +288,14 @@ export default function MinesweeperApp() {
               {t('minesweeper.appName')}
             </h1>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-[0.45rem]">
+          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-[0.45rem]">
             <ExportImportButtons
               filename="minesweeper-board.json"
               family="minesweeper"
               onExport={onExportBoard}
               onImport={onImportBoard}
             />
-            <div
-              className="inline-flex shrink-0 overflow-hidden rounded-sm border border-line bg-cell"
-              role="group"
-              aria-label={t('lang.switch')}
-            >
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'en'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'en'}
-                onClick={() => setLocale('en')}
-              >
-                {t('lang.en')}
-              </button>
-              <button
-                type="button"
-                className={`cursor-pointer appearance-none rounded-none border-0 px-[0.45rem] py-[0.28rem] text-[0.68rem] font-bold tracking-[0.04em] ${
-                  locale === 'cs'
-                    ? 'bg-accent/30 text-on-accent'
-                    : 'bg-transparent text-muted hover:bg-cell-hover hover:text-ink'
-                }`}
-                aria-pressed={locale === 'cs'}
-                onClick={() => setLocale('cs')}
-              >
-                {t('lang.cs')}
-              </button>
-            </div>
+            <LangSwitch />
           </div>
         </div>
         <div className="flex w-full flex-wrap items-center justify-start gap-2.5 max-[720px]:hidden">
@@ -330,8 +303,36 @@ export default function MinesweeperApp() {
         </div>
       </header>
 
-      <div className="board-frame order-3 rounded-md border border-line bg-elevated p-[0.15rem] shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[720px]:order-1 max-[720px]:min-h-[42dvh] max-[720px]:flex-[1_1_auto]">
-        <div className="board-stage">
+      <MobileHelpCard
+        sections={[
+          {
+            title: t('minesweeper.help.title'),
+            body: (
+              <>
+                <p className="m-0 mb-1.5">{t('minesweeper.help.body')}</p>
+                <p className="m-0 mb-1.5">{t('minesweeper.help.controls')}</p>
+                <p className="m-0 mb-1.5">{t('minesweeper.help.chord')}</p>
+                <p className="m-0">{t('minesweeper.help.firstClick')}</p>
+              </>
+            )
+          },
+          {
+            title: t('minesweeper.tools.hintTipTitle'),
+            body: <p className="m-0">{t('minesweeper.tools.hintTipBody')}</p>
+          },
+          {
+            title: t('minesweeper.size.helpTitle'),
+            body: <p className="m-0">{t('minesweeper.size.helpBody')}</p>
+          },
+          {
+            title: t('minesweeper.diff.helpTitle'),
+            body: <p className="m-0">{t('minesweeper.diff.helpBody')}</p>
+          }
+        ]}
+      />
+
+      <div className="board-frame order-3 rounded-md border border-line bg-elevated shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)] max-[980px]:order-1">
+        <div className={boardStage}>
           <Grid
             width={board.width}
             height={board.height}
@@ -346,7 +347,7 @@ export default function MinesweeperApp() {
         </div>
       </div>
 
-      <div className="relative z-5 order-1 grid shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-[0.55rem] max-[720px]:order-2 max-[720px]:grid-cols-1">
+      <div className="game-secondary relative z-5 order-1 grid shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-[0.55rem] max-[980px]:order-2 max-[980px]:grid-cols-1">
         <SizeBar
           width={board.width}
           height={board.height}
@@ -373,7 +374,7 @@ export default function MinesweeperApp() {
         />
       </div>
 
-      <div className="relative z-5 order-2 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[720px]:order-3">
+      <div className="game-secondary relative z-5 order-2 flex w-full shrink-0 flex-wrap items-stretch gap-[0.55rem] max-[980px]:order-3">
         <DiffBar
           width={board.width}
           height={board.height}

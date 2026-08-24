@@ -3,6 +3,12 @@ import type { BoardState, TileMark } from '../game/types'
 import { LAYOUT_ROWS } from '../game/words'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
+import {
+  CELL_GLYPH,
+  CELL_GLYPH_INNER,
+  WORDLE_CELL,
+  WORDLE_MARK
+} from '../../../shared/lib/cellChrome'
 
 type GridProps = {
   board: BoardState
@@ -86,12 +92,13 @@ function Tile({
     <div
       className={cn(
         'cell relative flex h-full w-full min-h-0 min-w-0 items-center justify-center overflow-hidden border p-0 font-bold uppercase leading-none select-none',
-        mark === 'correct' && 'wordle-mark-correct',
-        mark === 'present' && 'wordle-mark-present',
-        mark === 'absent' && 'wordle-mark-absent',
-        mark === 'tbd' && 'wordle-mark-tbd',
-        mark === 'hint' && 'wordle-mark-hint',
-        mark === 'empty' && 'wordle-mark-empty',
+        WORDLE_CELL,
+        mark === 'correct' && WORDLE_MARK.correct,
+        mark === 'present' && WORDLE_MARK.present,
+        mark === 'absent' && WORDLE_MARK.absent,
+        mark === 'tbd' && WORDLE_MARK.tbd,
+        mark === 'hint' && WORDLE_MARK.hint,
+        mark === 'empty' && WORDLE_MARK.empty,
         shake && 'wordle-row-shake'
       )}
       role="gridcell"
@@ -99,8 +106,8 @@ function Tile({
       aria-colindex={col + 1}
     >
       {filled ? (
-        <span className="cell-glyph">
-          <span>{letter}</span>
+        <span className={CELL_GLYPH}>
+          <span className={CELL_GLYPH_INNER}>{letter}</span>
         </span>
       ) : null}
     </div>
