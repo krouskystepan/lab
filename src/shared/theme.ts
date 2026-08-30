@@ -64,6 +64,14 @@ export const rushHourTheme: AppTheme = {
   glow: '#e24a4a'
 }
 
+/** Lights Out - warm bulb. */
+export const lightsOutTheme: AppTheme = {
+  accent: '#e8c84a',
+  accentHover: '#f0d45e',
+  onAccent: '#fff6dc',
+  glow: '#e8c84a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }
