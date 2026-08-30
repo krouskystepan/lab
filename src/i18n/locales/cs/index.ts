@@ -8,6 +8,7 @@ import { sudokuHelperCs } from './sudoku-helper'
 import { wordleCs } from './wordle'
 import { chessMateCs } from './chess-mate'
 import { rushHourCs } from './rush-hour'
+import { lightsOutCs } from './lights-out'
 
 /** Czech - must cover every English key. */
 export const cs: Record<keyof typeof en, string> = {
@@ -19,5 +20,6 @@ export const cs: Record<keyof typeof en, string> = {
   ...sudokuHelperCs,
   ...wordleCs,
   ...chessMateCs,
-  ...rushHourCs
+  ...rushHourCs,
+  ...lightsOutCs
 }
