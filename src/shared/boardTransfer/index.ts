@@ -12,6 +12,7 @@ export {
   type WordleBoardFile,
   type ChessBoardFile,
   type RushHourBoardFile,
+  type LightsOutBoardFile,
   type MineTransferCell
 } from './types'
 
@@ -34,6 +35,8 @@ export { exportWordleGame, importWordleToGame } from './wordle'
 export { exportChessMateBoard, importChessMateBoard } from './chess'
 
 export { exportRushHourGame, importRushHourToGame } from './rushhour'
+
+export { exportLightsOutGame, importLightsOutToGame } from './lightsout'
 
 export {
   ExportImportButtons,
