@@ -26,7 +26,8 @@ import {
   sudokuTheme,
   wordleTheme,
   chessMateTheme,
-  rushHourTheme
+  rushHourTheme,
+  lightsOutTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -148,12 +149,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.lightsOut.title',
     blurbKey: 'catalog.lightsOut.blurb',
     icon: Lightbulb,
-    theme: {
-      accent: '#e8c84a',
-      accentHover: '#f0d45e',
-      onAccent: '#1a1808'
-    },
-    status: 'soon'
+    theme: lightsOutTheme,
+    status: 'live'
   },
   {
     id: 'geo-quiz',
