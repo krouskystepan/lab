@@ -7,7 +7,8 @@ export type GroupId =
   | 'africa'
   | 'oceania'
 export type AnswerId = 'choice' | 'type'
-export type GameStatus = 'ready' | 'playing' | 'revealed' | 'won'
+export type PaceId = 'train' | 'timed'
+export type GameStatus = 'ready' | 'playing' | 'revealed' | 'won' | 'lost'
 export type QuestionKind =
   | 'flagToCountry'
   | 'countryToCapital'
@@ -38,6 +39,8 @@ export type BoardState = {
   modeId: ModeId
   groupId: GroupId
   answerId: AnswerId
+  paceId: PaceId
+  timeLimit: number
   roundId: string
   total: number
   index: number
@@ -53,6 +56,7 @@ export type Action =
   | { type: 'importBoard'; board: BoardState }
   | { type: 'pick'; code: string; fromType?: boolean; typed?: string }
   | { type: 'goto'; index: number }
+  | { type: 'timeUp' }
 
 export const MODE_IDS: ModeId[] = ['mix', 'flags', 'capitals']
 export const GROUP_IDS: GroupId[] = [
@@ -90,12 +94,21 @@ export function isAnswerId(v: unknown): v is AnswerId {
   return v === 'choice' || v === 'type'
 }
 
+export function isPaceId(v: unknown): v is PaceId {
+  return v === 'train' || v === 'timed'
+}
+
+export function isOver(status: GameStatus): boolean {
+  return status === 'won' || status === 'lost'
+}
+
 export function isStatus(v: unknown): v is GameStatus {
   return (
     v === 'ready' ||
     v === 'playing' ||
     v === 'revealed' ||
-    v === 'won'
+    v === 'won' ||
+    v === 'lost'
   )
 }
 

@@ -1,4 +1,4 @@
-import type { Action, BoardState, GameStatus } from './types'
+import { isOver, type Action, type BoardState, type GameStatus } from './types'
 
 function cloneMisses(misses: string[][]): string[][] {
   return misses.map((row) => row.slice())
@@ -29,10 +29,19 @@ export function reduce(state: BoardState, action: Action): BoardState {
     case 'newGame':
     case 'importBoard':
       return cloneBoard(action.board)
+    case 'timeUp': {
+      if (state.paceId !== 'timed') return state
+      if (isOver(state.status) || state.status === 'ready') return state
+      if (state.questions.length === 0) return state
+      return { ...state, status: 'lost' }
+    }
     case 'goto': {
       if (state.questions.length === 0) return state
       if (action.index < 0 || action.index >= state.total) return state
       if (action.index === state.index) return state
+      if (state.status === 'lost') {
+        return { ...state, index: action.index }
+      }
       return {
         ...state,
         index: action.index,
@@ -40,7 +49,7 @@ export function reduce(state: BoardState, action: Action): BoardState {
       }
     }
     case 'pick': {
-      if (state.status === 'won' || state.status === 'revealed') return state
+      if (isOver(state.status) || state.status === 'revealed') return state
       if (state.questions.length === 0) return state
       const q = state.questions[state.index]
       if (state.picked[state.index] != null) return state

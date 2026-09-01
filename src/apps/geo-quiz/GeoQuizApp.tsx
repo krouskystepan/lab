@@ -10,14 +10,15 @@ import { Link } from 'react-router-dom'
 import { Globe2 } from 'lucide-react'
 import { HotkeysBar } from './components/HotkeysBar'
 import { ProgressStrip } from './components/ProgressStrip'
-import { StageGuess, StagePrompt } from './components/Stage'
-import { AnswerBar, GroupBar, ModeBar, ToolsBar } from './components/ToolsBar'
+import { StageGuess, StagePrompt, StageStart } from './components/Stage'
+import { AnswerBar, GroupBar, ModeBar, PaceBar, ToolsBar } from './components/ToolsBar'
 import { byCode, loadCatalog } from './game/catalog'
 import { reduce } from './game/engine'
 import { createRound, nextUnanswered } from './game/generate'
 import { typedIsCorrect } from './game/match'
 import { loadAutoNext, loadGame, saveAutoNext, saveGame } from './game/prefs'
-import type { AnswerId, Country, GroupId, ModeId } from './game/types'
+import type { AnswerId, BoardState, Country, GroupId, ModeId, PaceId } from './game/types'
+import { isOver } from './game/types'
 import { useI18n } from '../../i18n'
 import { LangSwitch } from '../../shell/LangSwitch'
 import { showToast } from '../../shared/toast'
@@ -32,6 +33,39 @@ import { MobileHelpCard, boardStage, gameShell } from '../../shared/gameUi'
 
 const CHOICE_ADVANCE_MS = 220
 
+type Setup = {
+  modeId: ModeId
+  groupId: GroupId
+  answerId: AnswerId
+  paceId: PaceId
+}
+
+function setupFrom(board: BoardState): Setup {
+  return {
+    modeId: board.modeId,
+    groupId: board.groupId,
+    answerId: board.answerId,
+    paceId: board.paceId
+  }
+}
+
+const GROUP_NAME: Record<
+  GroupId,
+  | 'geoQuiz.group.world'
+  | 'geoQuiz.group.europe'
+  | 'geoQuiz.group.americas'
+  | 'geoQuiz.group.asia'
+  | 'geoQuiz.group.africa'
+  | 'geoQuiz.group.oceania'
+> = {
+  world: 'geoQuiz.group.world',
+  europe: 'geoQuiz.group.europe',
+  americas: 'geoQuiz.group.americas',
+  asia: 'geoQuiz.group.asia',
+  africa: 'geoQuiz.group.africa',
+  oceania: 'geoQuiz.group.oceania'
+}
+
 export default function GeoQuizApp() {
   const { t, locale } = useI18n()
   const initial = useRef(loadGame()).current
@@ -42,6 +76,7 @@ export default function GeoQuizApp() {
   const [selected, setSelected] = useState<number | null>(null)
   const [hydrated, setHydrated] = useState(false)
   const [autoNext, setAutoNext] = useState(() => loadAutoNext())
+  const [setup, setSetup] = useState<Setup | null>(null)
   const tickRef = useRef<number | null>(null)
   const boardRef = useRef(board)
   boardRef.current = board
@@ -51,6 +86,8 @@ export default function GeoQuizApp() {
   countriesRef.current = countries
   const selectedRef = useRef(selected)
   selectedRef.current = selected
+  const setupRef = useRef(setup)
+  setupRef.current = setup
   const prevStatus = useRef(board.status)
   const autoDelayRef = useRef(CHOICE_ADVANCE_MS)
   const pendingAdvanceRef = useRef(false)
@@ -61,12 +98,26 @@ export default function GeoQuizApp() {
   )
 
   const startRound = useCallback(
-    (modeId: ModeId, groupId: GroupId, answerId: AnswerId, list: Country[]) => {
+    (
+      modeId: ModeId,
+      groupId: GroupId,
+      answerId: AnswerId,
+      list: Country[],
+      paceId?: PaceId
+    ) => {
       setSelected(null)
+      setSetup(null)
       setSeconds(0)
+      const cur = boardRef.current
       dispatch({
         type: 'newGame',
-        board: createRound(list, modeId, groupId, answerId)
+        board: createRound(
+          list,
+          modeId,
+          groupId,
+          answerId,
+          paceId ?? cur.paceId
+        )
       })
     },
     []
@@ -114,6 +165,10 @@ export default function GeoQuizApp() {
   }, [autoNext])
 
   useEffect(() => {
+    if (setup != null) {
+      stopTimer()
+      return stopTimer
+    }
     if (board.status === 'playing' || board.status === 'revealed') {
       if (tickRef.current == null) {
         tickRef.current = window.setInterval(() => {
@@ -127,7 +182,16 @@ export default function GeoQuizApp() {
       stopTimer()
     }
     return stopTimer
-  }, [board.status, stopTimer])
+  }, [board.status, setup, stopTimer])
+
+  useEffect(() => {
+    if (setup != null) return
+    if (board.paceId !== 'timed' || board.timeLimit <= 0) return
+    if (board.status !== 'playing' && board.status !== 'revealed') return
+    if (seconds < board.timeLimit) return
+    setSeconds(board.timeLimit)
+    dispatch({ type: 'timeUp' })
+  }, [seconds, board.paceId, board.timeLimit, board.status, setup])
 
   useEffect(() => {
     document.title = `${t('geoQuiz.appName')} · ${t('hub.brand')}`
@@ -138,6 +202,12 @@ export default function GeoQuizApp() {
       showToast(
         t('geoQuiz.toast.done', { score: board.score, n: board.total }),
         'success'
+      )
+    }
+    if (prevStatus.current !== board.status && board.status === 'lost') {
+      showToast(
+        t('geoQuiz.toast.timesUp', { score: board.score, n: board.total }),
+        'warn'
       )
     }
     prevStatus.current = board.status
@@ -162,7 +232,7 @@ export default function GeoQuizApp() {
   const onType = useCallback(
     (text: string) => {
       const state = boardRef.current
-      if (state.status === 'won' || state.status === 'revealed') return
+      if (isOver(state.status) || state.status === 'revealed') return
       const q = state.questions[state.index]
       if (!q) return
       if (!text.trim()) {
@@ -193,7 +263,7 @@ export default function GeoQuizApp() {
 
   const onPick = useCallback((code: string) => {
     const state = boardRef.current
-    if (state.status === 'won' || state.status === 'revealed') return
+    if (isOver(state.status) || state.status === 'revealed') return
     const q = state.questions[state.index]
     if (!q) return
     if ((state.misses[state.index] ?? []).includes(code)) return
@@ -237,42 +307,40 @@ export default function GeoQuizApp() {
     return () => window.clearTimeout(id)
   }, [autoNext, board.status, board.index, onSkip])
 
+  const armStart = useCallback((patch: Partial<Setup>) => {
+    const base = setupRef.current ?? setupFrom(boardRef.current)
+    setSetup({ ...base, ...patch })
+  }, [])
+
   const onNew = useCallback(() => {
     const list = countriesRef.current
     if (!list) return
-    const state = boardRef.current
-    startRound(state.modeId, state.groupId, state.answerId, list)
+    const d = setupRef.current ?? setupFrom(boardRef.current)
+    startRound(d.modeId, d.groupId, d.answerId, list, d.paceId)
   }, [startRound])
 
-  const onMode = useCallback(
-    (id: ModeId) => {
-      const list = countriesRef.current
-      if (!list) return
-      const s = boardRef.current
-      startRound(id, s.groupId, s.answerId, list)
-    },
-    [startRound]
-  )
+  const onMode = useCallback((id: ModeId) => {
+    armStart({ modeId: id })
+  }, [armStart])
 
-  const onGroup = useCallback(
-    (id: GroupId) => {
-      const list = countriesRef.current
-      if (!list) return
-      const s = boardRef.current
-      startRound(s.modeId, id, s.answerId, list)
-    },
-    [startRound]
-  )
+  const onGroup = useCallback((id: GroupId) => {
+    armStart({ groupId: id })
+  }, [armStart])
 
-  const onAnswer = useCallback(
-    (id: AnswerId) => {
-      const list = countriesRef.current
-      if (!list) return
-      const s = boardRef.current
-      startRound(s.modeId, s.groupId, id, list)
-    },
-    [startRound]
-  )
+  const onStartQuiz = useCallback(() => {
+    const list = countriesRef.current
+    if (!list) return
+    const d = setupRef.current ?? setupFrom(boardRef.current)
+    startRound(d.modeId, d.groupId, d.answerId, list, d.paceId)
+  }, [startRound])
+
+  const onAnswer = useCallback((id: AnswerId) => {
+    armStart({ answerId: id })
+  }, [armStart])
+
+  const onPace = useCallback((paceId: PaceId) => {
+    armStart({ paceId })
+  }, [armStart])
 
   const onExportBoard = useCallback(
     () => exportGeoQuizGame(boardRef.current, secondsRef.current),
@@ -293,6 +361,7 @@ export default function GeoQuizApp() {
       }
       setSeconds(s)
       setSelected(null)
+      setSetup(null)
       dispatch({ type: 'importBoard', board: next })
       return { ok: true }
     } catch {
@@ -317,6 +386,13 @@ export default function GeoQuizApp() {
         onNew()
         return
       }
+      if (setupRef.current != null) {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          onStartQuiz()
+        }
+        return
+      }
       if (e.key === 'Enter') {
         e.preventDefault()
         if (boardRef.current.status === 'revealed') onSkip()
@@ -331,8 +407,8 @@ export default function GeoQuizApp() {
       }
       if (typing) return
       const locked =
-        boardRef.current.status === 'revealed' ||
-        boardRef.current.status === 'won'
+        isOver(boardRef.current.status) ||
+        boardRef.current.status === 'revealed'
       if (locked) return
       if (
         e.key === 'ArrowRight' ||
@@ -371,10 +447,13 @@ export default function GeoQuizApp() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onNew, onPick, onSkip])
+  }, [onNew, onPick, onSkip, onStartQuiz])
 
   const q = board.questions[board.index] ?? null
-  const stageError = loadError || (countries != null && !q)
+  const waiting = setup != null
+  const view = setup ?? setupFrom(board)
+  const stageError =
+    !waiting && (loadError || (countries != null && !q))
 
   return (
     <div className={gameShell}>
@@ -429,6 +508,10 @@ export default function GeoQuizApp() {
             body: <p className="m-0">{t('geoQuiz.answer.helpBody')}</p>
           },
           {
+            title: t('geoQuiz.timer.helpTitle'),
+            body: <p className="m-0">{t('geoQuiz.timer.helpBody')}</p>
+          },
+          {
             title: t('geoQuiz.group.helpTitle'),
             body: <p className="m-0">{t('geoQuiz.group.helpBody')}</p>
           }
@@ -441,21 +524,37 @@ export default function GeoQuizApp() {
           index={board.index}
           total={board.total}
           score={board.score}
+          paceId={board.paceId}
+          timeLimit={board.timeLimit}
+          status={board.status}
           onNew={onNew}
           autoNext={autoNext}
           onToggleAutoNext={() => setAutoNext((v) => !v)}
         />
-        <div className="grid w-full grid-cols-1 items-stretch gap-[0.55rem] min-[720px]:grid-cols-2">
-          <ModeBar modeId={board.modeId} onModeChange={onMode} />
-          <AnswerBar answerId={board.answerId} onAnswerChange={onAnswer} />
+        <div className="grid w-full grid-cols-1 items-stretch gap-[0.55rem] min-[720px]:grid-cols-3">
+          <ModeBar modeId={view.modeId} onModeChange={onMode} />
+          <AnswerBar answerId={view.answerId} onAnswerChange={onAnswer} />
+          <PaceBar
+            paceId={view.paceId}
+            groupId={view.groupId}
+            answerId={view.answerId}
+            onPaceChange={onPace}
+          />
         </div>
-        <GroupBar groupId={board.groupId} onGroupChange={onGroup} />
+        <GroupBar groupId={view.groupId} onGroupChange={onGroup} />
       </div>
 
       <div className="board-frame order-2 flex! min-h-0 w-full flex-1 flex-col! items-stretch! justify-start! gap-2 overflow-hidden [--board-pad:0.25rem] rounded-md bg-elevated/40">
         <div
           className={`${boardStage} min-h-0 flex-1 flex-col justify-center gap-3 overflow-auto`}
         >
+          {waiting ? (
+            <StageStart
+              groupLabel={t(GROUP_NAME[view.groupId])}
+              onStart={onStartQuiz}
+            />
+          ) : (
+            <>
           <StagePrompt
             loading={countries == null && !loadError}
             error={stageError}
@@ -463,6 +562,16 @@ export default function GeoQuizApp() {
             question={q}
             lookup={lookup}
           />
+          {board.status === 'lost' ? (
+            <p className="m-0 text-center text-[0.95rem] font-semibold text-danger">
+              {t('geoQuiz.status.timesUp')}
+            </p>
+          ) : null}
+          {board.status === 'won' ? (
+            <p className="m-0 text-center text-[0.95rem] font-semibold text-[#4cbe6a]">
+              {t('geoQuiz.status.done')}
+            </p>
+          ) : null}
           <StageGuess
             question={q}
             lookup={lookup}
@@ -475,15 +584,20 @@ export default function GeoQuizApp() {
             onType={onType}
             onClearSelect={() => setSelected(null)}
           />
+            </>
+          )}
         </div>
+        {waiting ? null : (
         <ProgressStrip
           questions={board.questions}
           lookup={lookup}
           index={board.index}
           picked={board.picked}
           misses={board.misses}
+          roundId={board.roundId}
           onGoto={goTo}
         />
+        )}
       </div>
     </div>
   )

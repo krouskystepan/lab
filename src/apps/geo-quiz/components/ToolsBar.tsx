@@ -1,6 +1,13 @@
 import { RotateCcw } from 'lucide-react'
 import { ANSWER_IDS, GROUP_IDS, MODE_IDS } from '../game/types'
-import type { AnswerId, GroupId, ModeId } from '../game/types'
+import type {
+  AnswerId,
+  GameStatus,
+  GroupId,
+  ModeId,
+  PaceId
+} from '../game/types'
+import { timedSecondsFor } from '../game/generate'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import {
@@ -59,6 +66,9 @@ type ToolsBarProps = {
   index: number
   total: number
   score: number
+  paceId: PaceId
+  timeLimit: number
+  status: GameStatus
   onNew: () => void
   autoNext: boolean
   onToggleAutoNext: () => void
@@ -69,12 +79,21 @@ export function ToolsBar({
   index,
   total,
   score,
+  paceId,
+  timeLimit,
+  status,
   onNew,
   autoNext,
   onToggleAutoNext
 }: ToolsBarProps) {
   const { t } = useI18n()
   const qn = total === 0 ? 0 : Math.min(index + 1, total)
+  const timed = paceId === 'timed' && timeLimit > 0
+  const shown = timed ? Math.max(0, timeLimit - seconds) : seconds
+  const low =
+    timed &&
+    shown <= 10 &&
+    (status === 'playing' || status === 'revealed' || status === 'lost')
 
   return (
     <GamePanel
@@ -100,9 +119,15 @@ export function ToolsBar({
             <span className="text-muted">{t('geoQuiz.round')}</span> {qn}
             <span className="text-muted">/{total || '—'}</span>
           </span>
-          <span title={t('geoQuiz.timer')} aria-label={t('geoQuiz.timer')}>
-            <span className="text-muted">{t('geoQuiz.time')}</span>{' '}
-            {formatTime(seconds)}
+          <span
+            title={timed ? t('geoQuiz.timerLeft') : t('geoQuiz.timer')}
+            aria-label={timed ? t('geoQuiz.timerLeft') : t('geoQuiz.timer')}
+            className={low ? 'text-danger' : undefined}
+          >
+            <span className={low ? 'text-danger' : 'text-muted'}>
+              {t('geoQuiz.time')}
+            </span>{' '}
+            {formatTime(shown)}
           </span>
           <button
             type="button"
@@ -198,6 +223,53 @@ export function AnswerBar({ answerId, onAnswerChange }: AnswerBarProps) {
             {t(ANSWER_LABEL[id])}
           </button>
         ))}
+      </ToolRow>
+    </GamePanel>
+  )
+}
+
+type PaceBarProps = {
+  paceId: PaceId
+  groupId: GroupId
+  answerId: AnswerId
+  onPaceChange: (paceId: PaceId) => void
+}
+
+export function PaceBar({
+  paceId,
+  groupId,
+  answerId,
+  onPaceChange
+}: PaceBarProps) {
+  const { t } = useI18n()
+  const limit = timedSecondsFor(groupId, answerId)
+  return (
+    <GamePanel
+      title={t('geoQuiz.timer.title')}
+      className="h-full"
+      headerRight={
+        <HelpTip title={t('geoQuiz.timer.helpTitle')}>
+          <p className="m-0">{t('geoQuiz.timer.helpBody')}</p>
+        </HelpTip>
+      }
+    >
+      <ToolRow mobileCols={2} desktopCols={2}>
+        <button
+          type="button"
+          className={cn(chip, paceId !== 'timed' && gameBtnActive)}
+          title={t('geoQuiz.timer.trainTitle')}
+          onClick={() => onPaceChange('train')}
+        >
+          {t('geoQuiz.timer.train')}
+        </button>
+        <button
+          type="button"
+          className={cn(chip, paceId === 'timed' && gameBtnActive)}
+          title={t('geoQuiz.timer.timedTitle', { time: formatTime(limit) })}
+          onClick={() => onPaceChange('timed')}
+        >
+          {t('geoQuiz.timer.timed')} {formatTime(limit)}
+        </button>
       </ToolRow>
     </GamePanel>
   )

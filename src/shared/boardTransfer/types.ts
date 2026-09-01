@@ -132,6 +132,8 @@ export type GeoQuizBoardFile = {
   modeId: 'mix' | 'flags' | 'capitals' | 'countries'
   groupId?: 'world' | 'europe' | 'americas' | 'asia' | 'africa' | 'oceania'
   answerId?: 'choice' | 'type'
+  paceId?: 'train' | 'timed'
+  timeLimit?: number
   questions: {
     kind:
       | 'flagToCountry'
@@ -148,7 +150,7 @@ export type GeoQuizBoardFile = {
     picked?: (string | null)[]
     hinted?: boolean[]
     misses?: string[][]
-    status?: 'ready' | 'playing' | 'revealed' | 'won'
+    status?: 'ready' | 'playing' | 'revealed' | 'won' | 'lost'
     seconds?: number
   }
 }

@@ -1,12 +1,14 @@
-import { emptyBoard } from './generate'
+import { emptyBoard, timedSecondsFor } from './generate'
 import { cloneBoard } from './engine'
 import {
   isAnswerId,
   isGroupId,
+  isPaceId,
   isQuestionKind,
   isStatus,
   parseModeId,
   type BoardState,
+  type PaceId,
   type Question
 } from './types'
 
@@ -54,10 +56,25 @@ export function parseBoard(raw: unknown): BoardState | null {
   if (o.picked.length !== questions.length) return null
   const picked = o.picked.map((p) => (typeof p === 'string' ? p : null))
   const misses = parseMisses(o.misses, questions.length)
+  const groupId = isGroupId(o.groupId) ? o.groupId : 'world'
+  const answerId = isAnswerId(o.answerId) ? o.answerId : 'choice'
+  const paceId: PaceId = isPaceId(o.paceId) ? o.paceId : 'train'
+  const storedLimit =
+    typeof o.timeLimit === 'number' && Number.isFinite(o.timeLimit)
+      ? Math.max(0, Math.floor(o.timeLimit))
+      : 0
+  const timeLimit =
+    paceId === 'timed'
+      ? storedLimit > 0
+        ? storedLimit
+        : timedSecondsFor(groupId, answerId)
+      : 0
   return {
     modeId,
-    groupId: isGroupId(o.groupId) ? o.groupId : 'world',
-    answerId: isAnswerId(o.answerId) ? o.answerId : 'choice',
+    groupId,
+    answerId,
+    paceId,
+    timeLimit,
     roundId: o.roundId,
     total: questions.length,
     index: Math.floor(o.index),

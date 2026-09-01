@@ -10,6 +10,7 @@ type ProgressStripProps = {
   index: number
   picked: (string | null)[]
   misses: string[][]
+  roundId: string
   onGoto: (index: number) => void
 }
 
@@ -19,19 +20,30 @@ export function ProgressStrip({
   index,
   picked,
   misses,
+  roundId,
   onGoto
 }: ProgressStripProps) {
   const { t, locale } = useI18n()
+  const listRef = useRef<HTMLDivElement>(null)
   const currentRef = useRef<HTMLButtonElement>(null)
   const done = picked.filter((p) => p != null).length
   const open = questions.length - done
 
   useEffect(() => {
-    currentRef.current?.scrollIntoView({
-      block: 'nearest',
-      inline: 'nearest'
-    })
-  }, [index])
+    const root = listRef.current
+    const el = currentRef.current
+    if (!root) return
+    root.scrollLeft = 0
+    if (!el) return
+    const rootRect = root.getBoundingClientRect()
+    const elRect = el.getBoundingClientRect()
+    const top = elRect.top - rootRect.top + root.scrollTop
+    const bottom = top + elRect.height
+    if (top < root.scrollTop) root.scrollTop = top
+    else if (bottom > root.scrollTop + root.clientHeight) {
+      root.scrollTop = bottom - root.clientHeight
+    }
+  }, [index, roundId])
 
   if (questions.length === 0) return null
 
@@ -41,7 +53,9 @@ export function ProgressStrip({
         {t('geoQuiz.progress.summary', { done, open, n: questions.length })}
       </p>
       <div
-        className="grid max-h-36 grid-cols-[repeat(auto-fill,minmax(2.35rem,1fr))] items-start gap-1 overflow-y-auto p-0.5 min-[520px]:max-h-40"
+        key={roundId}
+        ref={listRef}
+        className="grid max-h-36 grid-cols-[repeat(auto-fill,minmax(2.35rem,1fr))] items-start gap-1 overflow-x-hidden overflow-y-auto p-0.5 min-[520px]:max-h-40"
         role="list"
         aria-label={t('geoQuiz.progress.aria')}
       >

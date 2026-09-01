@@ -27,6 +27,40 @@ type StageGuessProps = {
   onClearSelect: () => void
 }
 
+export function StageStart({
+  groupLabel,
+  onStart
+}: {
+  groupLabel: string
+  onStart: () => void
+}) {
+  const { t } = useI18n()
+  return (
+    <div
+      className="flex w-full max-w-xl flex-col items-center gap-4 px-4 py-10"
+      role="group"
+      aria-label={t('geoQuiz.stageAria')}
+    >
+      <p className="m-0 text-center text-[1.15rem] font-bold tracking-[-0.03em] text-ink">
+        {groupLabel}
+      </p>
+      <p className="m-0 text-center text-[0.9rem] text-muted">
+        {t('geoQuiz.startHint')}
+      </p>
+      <button
+        type="button"
+        className={cn(
+          gameBtn,
+          'h-11 px-5 text-[0.95rem] border-accent bg-accent font-bold text-on-accent hover:border-accent-hover hover:bg-accent-hover'
+        )}
+        onClick={onStart}
+      >
+        {t('geoQuiz.start')}
+      </button>
+    </div>
+  )
+}
+
 export function StagePrompt({
   loading,
   error,
@@ -115,7 +149,8 @@ export function StageGuess({
   if (!question) return null
 
   const subject = lookup.get(question.subject)
-  const revealed = status === 'revealed' || status === 'won'
+  const showAnswer = status === 'revealed' || status === 'won'
+  const locked = showAnswer || status === 'lost'
   const capitalKind = isCapitalQuestion(question.kind)
   const okCls =
     'border-[#4cbe6a] bg-[#4cbe6a]/30 text-[#c8f5d4] shadow-[0_0_12px_color-mix(in_srgb,#4cbe6a_35%,transparent)]'
@@ -128,12 +163,10 @@ export function StageGuess({
         <TypeField
           key={`${question.subject}-${question.kind}`}
           questionKey={`${question.subject}-${question.kind}`}
-          revealed={revealed}
+          revealed={locked}
           missCount={misses.length}
           capitalKind={capitalKind}
-          matches={(text) =>
-            typedIsCorrect(question, text, locale, subject, true)
-          }
+          matches={(text) => typedIsCorrect(question, text, locale, subject)}
           onType={onType}
         />
       ) : (
@@ -146,7 +179,7 @@ export function StageGuess({
             const isAnswer = code === question.subject
             const isMiss = misses.includes(code)
             const isPicked = picked === code
-            const locked = revealed || isMiss
+            const lockedChoice = locked || isMiss
             const label = country
               ? capitalKind
                 ? country.capital
@@ -156,16 +189,16 @@ export function StageGuess({
               <button
                 key={code}
                 type="button"
-                disabled={locked}
+                disabled={lockedChoice}
                 tabIndex={isMiss ? -1 : selected === i ? 0 : -1}
                 className={cn(
                   gameBtn,
                   'min-h-11 px-3 py-2 text-left text-[0.92rem] leading-snug max-[980px]:min-h-12',
-                  !revealed &&
+                  !locked &&
                     !isMiss &&
                     'hover:border-accent hover:bg-accent/25 hover:text-on-accent',
-                  selected === i && !revealed && !isMiss && gameBtnActive,
-                  (revealed && isAnswer) || (isPicked && isAnswer)
+                  selected === i && !locked && !isMiss && gameBtnActive,
+                  (showAnswer && isAnswer) || (isPicked && isAnswer)
                     ? okCls
                     : null,
                   isMiss && badCls

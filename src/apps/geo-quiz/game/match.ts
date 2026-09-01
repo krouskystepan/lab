@@ -2,7 +2,7 @@ import type { Country, Question } from './types'
 
 /**
  * Strict 1:1 match after NFC + trim + collapse spaces + case fold.
- * Periods dropped so `U.K.` / `U.S.A.` still hit ISO-style shortcuts.
+ * Periods dropped so `U.K.` / `U.S.` still hit two-word shortcuts.
  * Diacritics stay (`Cesko` ≠ `Česko`).
  */
 export function normalizeAnswer(value: string): string {
@@ -18,50 +18,73 @@ export function isCapitalQuestion(kind: Question['kind']): boolean {
   return kind === 'countryToCapital' || kind === 'flagToCapital'
 }
 
-/** ISO 3166-1 exceptionally reserved codes that map to a real alpha-2. */
-const ISO_RESERVED: Record<string, string[]> = {
-  GB: ['UK'],
-  GR: ['EL']
-}
-
-/** Extra locale names / abbreviations that are not in the English dataset. */
+/** Extra locale names that are not in the English dataset. */
 const EN_EXTRAS: Record<string, string[]> = {
   GB: ['Great Britain']
 }
 
 const CS_EXTRAS: Record<string, string[]> = {
-  CZ: ['ČR', 'Česko', 'Cesko'],
+  CZ: ['Česko', 'Cesko'],
   GB: ['Velká Británie'],
-  US: ['Spojené státy americké']
+  US: ['Spojené státy americké', 'Spojené státy']
 }
 
-function isShortCode(value: string): boolean {
+function isShortToken(value: string): boolean {
   const n = normalizeAnswer(value)
   return n.length === 2 || n.length === 3
 }
 
-function countryAcceptedNames(country: Country, locale: string): string[] {
-  const raw =
-    locale === 'cs'
-      ? [country.nameCs, country.officialCs, ...(CS_EXTRAS[country.code] ?? [])]
-      : [
-          country.nameEn,
-          country.officialEn,
-          ...country.altSpellings,
-          ...(EN_EXTRAS[country.code] ?? [])
-        ]
-  return unique(raw.filter((s) => !isShortCode(s)))
+function wordsOf(value: string): string[] {
+  return normalizeAnswer(value)
+    .split(' ')
+    .filter(Boolean)
+}
+
+/** Initials only when the name is exactly two words (`United Kingdom` → `uk`). */
+function twoWordShortcut(value: string): string | null {
+  const words = wordsOf(value)
+  if (words.length !== 2) return null
+  const a = words[0]?.[0]
+  const b = words[1]?.[0]
+  if (!a || !b) return null
+  return `${a}${b}`
+}
+
+function longNames(country: Country, locale: string): string[] {
+  const en = [
+    country.nameEn,
+    country.officialEn,
+    ...country.altSpellings,
+    ...(EN_EXTRAS[country.code] ?? [])
+  ]
+  const cs = [
+    country.nameCs,
+    country.officialCs,
+    ...(CS_EXTRAS[country.code] ?? [])
+  ]
+  const raw = locale === 'cs' ? [...cs, ...en] : en
+  return unique(raw.filter((s) => !isShortToken(s)))
+}
+
+function countryShortcuts(country: Country, locale: string): string[] {
+  const fromLocale = longNames(country, locale)
+  const fromEn = longNames(country, 'en')
+  const out: string[] = []
+  for (const name of [...fromLocale, ...fromEn]) {
+    const short = twoWordShortcut(name)
+    if (short) out.push(short)
+  }
+  return unique(out)
+}
+
+export function countryAcceptedNames(country: Country, locale: string): string[] {
+  return longNames(country, locale)
 }
 
 export function countryAccepted(country: Country, locale: string): string[] {
-  const codes = [country.code, ...(ISO_RESERVED[country.code] ?? [])]
-  const shortExtras = (
-    locale === 'cs' ? (CS_EXTRAS[country.code] ?? []) : []
-  ).filter(isShortCode)
   return unique([
     ...countryAcceptedNames(country, locale),
-    ...codes,
-    ...shortExtras
+    ...countryShortcuts(country, locale)
   ])
 }
 
@@ -73,17 +96,14 @@ export function typedIsCorrect(
   question: Question,
   typed: string,
   locale: string,
-  country: Country | undefined,
-  live = false
+  country: Country | undefined
 ): boolean {
   if (!country) return false
   const got = normalizeAnswer(typed)
   if (!got) return false
   const pool = isCapitalQuestion(question.kind)
     ? capitalAccepted(country)
-    : live
-      ? countryAcceptedNames(country, locale)
-      : countryAccepted(country, locale)
+    : countryAccepted(country, locale)
   return pool.some((item) => normalizeAnswer(item) === got)
 }
 
