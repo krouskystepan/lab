@@ -7,7 +7,7 @@ type ToolRowProps = {
   /** Default / phone columns. */
   mobileCols?: 2 | 3 | 4 | 5
   /** Desktop columns from 981px up. */
-  desktopCols?: 4 | 5 | 6 | 8 | 10
+  desktopCols?: 2 | 3 | 4 | 5 | 6 | 8 | 10
 }
 
 /**
@@ -28,6 +28,8 @@ export function ToolRow({
         mobileCols === 3 && 'grid-cols-3',
         mobileCols === 4 && 'grid-cols-4',
         mobileCols === 5 && 'grid-cols-5',
+        desktopCols === 2 && 'min-[981px]:grid-cols-2',
+        desktopCols === 3 && 'min-[981px]:grid-cols-3',
         desktopCols === 4 && 'min-[981px]:grid-cols-4',
         desktopCols === 5 && 'min-[981px]:grid-cols-5',
         desktopCols === 6 && 'min-[981px]:grid-cols-6',

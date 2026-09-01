@@ -39,7 +39,7 @@ export const gameDigitBtn = cn(
 )
 
 type GamePanelProps = {
-  children: ReactNode
+  children?: ReactNode
   className?: string
   title?: string
   /** Extra header content (help, stats) beside optional title */
