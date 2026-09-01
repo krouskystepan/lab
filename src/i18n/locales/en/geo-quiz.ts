@@ -64,7 +64,18 @@ export const geoQuizEn = {
   'geoQuiz.timer.helpBody':
     'Train has no limit; the clock counts up. Timed is a fixed countdown per group. Type gets more time (Oceania 2:00, Europe and Americas 8:00, Asia and Africa 10:00, World 22:00). When it hits zero the test ends.',
   'geoQuiz.score': 'Score',
-  'geoQuiz.scoreTitle': 'First-try correct in this test',
+  'geoQuiz.scoreTitle': 'Correct in this test',
+  'geoQuiz.success': 'Success',
+  'geoQuiz.successPct': '{pct}% success',
+  'geoQuiz.stats.first': '1st try',
+  'geoQuiz.stats.second': '2nd try',
+  'geoQuiz.stats.third': '3rd try',
+  'geoQuiz.stats.last': 'Last try',
+  'geoQuiz.stats.open': 'Open',
+  'geoQuiz.stats.correct': 'Correct',
+  'geoQuiz.stats.wrong': 'Wrong',
+  'geoQuiz.stats.summary': '{solved}/{n}',
+  'geoQuiz.stats.total': '{solved}/{n} correct · {guesses} guesses',
   'geoQuiz.round': 'Q',
   'geoQuiz.roundTitle': 'Current item in this test',
   'geoQuiz.new': 'New',
@@ -73,17 +84,17 @@ export const geoQuizEn = {
   'geoQuiz.autoNextTitle': 'After a correct answer, jump to the next open item',
   'geoQuiz.status.done': 'Done',
   'geoQuiz.status.timesUp': 'Time’s up',
-  'geoQuiz.toast.done': '{score}/{n} first-try in this test.',
-  'geoQuiz.toast.timesUp': 'Time’s up — {score}/{n} first-try.',
+  'geoQuiz.toast.done': '{score}/{n} · {pct}%.',
+  'geoQuiz.toast.timesUp': 'Time’s up — {score}/{n} · {pct}%.',
   'geoQuiz.tools.title': 'Tools',
 
   'geoQuiz.help.title': 'How to play',
   'geoQuiz.help.body':
-    'A test of the whole group. Click a flag in the list at the bottom to jump there. Green = guessed, red bar = tried, faded = still open. Score is first try. Auto jumps to the next open item after a hit. Train lets the clock run; Timed ends the test when the countdown hits zero.',
+    'A test of the whole group. Click a flag in the list at the bottom to jump there. Green = guessed, red bar = tried, faded = still open. Score is how many you finished. Success is correct answers over every guess — a second try is not 100%. Auto jumps to the next open item after a hit. Train lets the clock run; Timed ends the test when the countdown hits zero.',
   'geoQuiz.help.data':
     'Country names follow the UI language. Capitals keep the dataset spelling. Flags and names come from a public list plus Flagpedia (network on first load, then cached).',
   'geoQuiz.help.controls':
-    'Choice: click or 1–4. Type: name, two-word initials (UK), or a code in Codes. Enter checks. Click a flag in the list to jump. New (N).',
+    'Choice: click or 1–4. Type: the name (or two-word initials, or a code in Codes) — it accepts as soon as it’s right. Click a flag in the list to jump. New (N).',
 
   'geoQuiz.hotkeys.title': 'Controls',
   'geoQuiz.hotkeys.answer': 'answer',

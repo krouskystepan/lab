@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AnswerId, Country, GameStatus, Question } from '../game/types'
 import { countryName, flagEmoji, flagPng } from '../game/catalog'
-import { isCapitalQuestion, isCodeQuestion, typedIsCorrect } from '../game/match'
+import {
+  isCapitalQuestion,
+  isCodeQuestion,
+  typedIsCorrect
+} from '../game/match'
+import { resultStats } from '../game/resultStats'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { gameBtn, gameBtnActive } from '../../../shared/gameUi'
@@ -57,6 +62,77 @@ export function StageStart({
       >
         {t('geoQuiz.start')}
       </button>
+    </div>
+  )
+}
+
+export function StageResult({
+  status,
+  answerId,
+  picked,
+  misses
+}: {
+  status: 'won' | 'lost'
+  answerId: AnswerId
+  picked: readonly (string | null)[]
+  misses: readonly string[][]
+}) {
+  const { t } = useI18n()
+  const lost = status === 'lost'
+  const stats = resultStats(picked, misses)
+  const typing = answerId === 'type'
+  const rows = typing
+    ? [
+        { n: stats.solved, label: t('geoQuiz.stats.correct') },
+        ...(stats.open > 0
+          ? [{ n: stats.open, label: t('geoQuiz.stats.open') }]
+          : [])
+      ]
+    : [
+        { n: stats.first, label: t('geoQuiz.stats.first') },
+        { n: stats.second, label: t('geoQuiz.stats.second') },
+        { n: stats.third, label: t('geoQuiz.stats.third') },
+        { n: stats.last, label: t('geoQuiz.stats.last') },
+        ...(stats.open > 0
+          ? [{ n: stats.open, label: t('geoQuiz.stats.open') }]
+          : [])
+      ]
+  return (
+    <div
+      className="flex w-full max-w-[16rem] flex-col items-center gap-6 px-4 py-10"
+      role="status"
+      aria-label={t('geoQuiz.score')}
+    >
+      <div className="flex flex-col items-center gap-2">
+        <p
+          className={cn(
+            'm-0 text-center text-[0.95rem] font-semibold',
+            lost ? 'text-danger' : 'text-[#4cbe6a]'
+          )}
+        >
+          {lost ? t('geoQuiz.status.timesUp') : t('geoQuiz.status.done')}
+        </p>
+        <p className="m-0 text-center text-[2.6rem] font-bold tabular-nums leading-none tracking-[-0.04em] text-ink">
+          {stats.pct}%
+        </p>
+        <p className="m-0 text-center text-[0.9rem] tabular-nums text-muted">
+          {t('geoQuiz.stats.summary', {
+            solved: stats.solved,
+            n: stats.total
+          })}
+        </p>
+      </div>
+      <ul className="m-0 flex w-full list-none flex-col gap-1.5 p-0">
+        {rows.map((row) => (
+          <li
+            key={row.label}
+            className="flex items-baseline justify-between gap-4 text-[0.9rem]"
+          >
+            <span className="text-muted">{row.label}</span>
+            <span className="font-semibold tabular-nums text-ink">{row.n}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
@@ -175,7 +251,6 @@ export function StageGuess({
           key={`${question.subject}-${question.kind}`}
           questionKey={`${question.subject}-${question.kind}`}
           revealed={locked}
-          missCount={misses.length}
           capitalKind={capitalKind}
           codeKind={codeKind}
           matches={(text) => typedIsCorrect(question, text, locale, subject)}
@@ -240,7 +315,6 @@ export function StageGuess({
 function TypeField({
   questionKey,
   revealed,
-  missCount,
   capitalKind,
   codeKind,
   matches,
@@ -248,7 +322,6 @@ function TypeField({
 }: {
   questionKey: string
   revealed: boolean
-  missCount: number
   capitalKind: boolean
   codeKind: boolean
   matches: (text: string) => boolean
@@ -256,110 +329,58 @@ function TypeField({
 }) {
   const { t } = useI18n()
   const [draft, setDraft] = useState('')
-  const [flashBad, setFlashBad] = useState(false)
   const [lockAutoFill, setLockAutoFill] = useState(true)
   const inputRef = useRef<HTMLInputElement>(null)
-  const missRef = useRef(missCount)
 
   useEffect(() => {
     setDraft('')
-    setFlashBad(false)
     setLockAutoFill(true)
-    missRef.current = missCount
     const id = window.requestAnimationFrame(() => {
       inputRef.current?.focus()
     })
     return () => window.cancelAnimationFrame(id)
   }, [questionKey])
 
-  useEffect(() => {
-    if (missCount <= missRef.current) {
-      missRef.current = missCount
-      return
-    }
-    missRef.current = missCount
-    setFlashBad(true)
-    setDraft('')
-    setLockAutoFill(true)
-    const id = window.setTimeout(() => {
-      setFlashBad(false)
-      inputRef.current?.focus()
-    }, 1600)
-    return () => window.clearTimeout(id)
-  }, [missCount])
-
   return (
-    <div className="flex w-full flex-col gap-2">
-      <div className="flex w-full items-stretch gap-1.5">
-        <input
-          ref={inputRef}
-          type="text"
-          inputMode="text"
-          value={draft}
-          disabled={revealed}
-          readOnly={lockAutoFill}
-          autoCapitalize="off"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck={false}
-          aria-autocomplete="none"
-          data-1p-ignore="true"
-          data-lpignore="true"
-          className={cn(
-            'box-border h-11 min-h-11 min-w-0 flex-1 cursor-text appearance-none rounded-(--panel-btn-r) border border-line bg-cell px-3 text-left text-[0.95rem] font-semibold leading-none outline-none focus:border-accent disabled:cursor-text disabled:opacity-100',
-            codeKind && 'font-mono uppercase tracking-[0.12em]',
-            flashBad &&
-              !revealed &&
-              'border-danger/80 bg-danger/30 text-[#ffb0b0]'
-          )}
-          placeholder={
-            codeKind
-              ? t('geoQuiz.type.placeholderCode')
-              : capitalKind
-                ? t('geoQuiz.type.placeholderCapital')
-                : t('geoQuiz.type.placeholderCountry')
-          }
-          aria-label={t('geoQuiz.type.aria')}
-          onFocus={(e) => {
-            window.requestAnimationFrame(() => {
-              setLockAutoFill(false)
-              e.currentTarget.removeAttribute('readonly')
-            })
-          }}
-          onChange={(e) => {
-            const value = e.target.value
-            setDraft(value)
-            if (revealed) return
-            if (matches(value)) onType(value)
-          }}
-          onKeyDown={(e) => {
-            if (e.key !== 'Enter') return
-            e.preventDefault()
-            if (revealed) return
-            onType(draft)
-          }}
-        />
-        <button
-          type="button"
-          disabled={revealed}
-          className={cn(
-            gameBtn,
-            'h-11 shrink-0 px-3 text-[0.85rem] border-accent bg-accent font-bold text-on-accent hover:border-accent-hover hover:bg-accent-hover'
-          )}
-          onClick={() => {
-            if (revealed) return
-            onType(draft)
-          }}
-        >
-          {t('geoQuiz.type.submit')}
-        </button>
-      </div>
-      {flashBad ? (
-        <p className="m-0 text-center text-[0.85rem] font-semibold text-[#ffb0b0]">
-          {t('geoQuiz.type.tryAgain')}
-        </p>
-      ) : null}
-    </div>
+    <input
+      ref={inputRef}
+      type="text"
+      inputMode="text"
+      value={draft}
+      disabled={revealed}
+      readOnly={lockAutoFill}
+      autoCapitalize="off"
+      autoComplete="off"
+      autoCorrect="off"
+      spellCheck={false}
+      aria-autocomplete="none"
+      data-1p-ignore="true"
+      data-lpignore="true"
+      className={cn(
+        'box-border mx-auto block h-10 min-h-10 w-full max-w-88 min-w-0 cursor-text appearance-none rounded-(--panel-btn-r) border border-line bg-cell px-3 text-left text-[0.9rem] font-semibold leading-none outline-none focus:border-accent disabled:cursor-text disabled:opacity-100',
+        codeKind && 'font-mono uppercase tracking-[0.12em]'
+      )}
+      placeholder={
+        codeKind
+          ? t('geoQuiz.type.placeholderCode')
+          : capitalKind
+            ? t('geoQuiz.type.placeholderCapital')
+            : t('geoQuiz.type.placeholderCountry')
+      }
+      aria-label={t('geoQuiz.type.aria')}
+      onFocus={(e) => {
+        window.requestAnimationFrame(() => {
+          setLockAutoFill(false)
+          e.currentTarget.removeAttribute('readonly')
+        })
+      }}
+      onChange={(e) => {
+        const value = e.target.value
+        setDraft(value)
+        if (revealed) return
+        if (matches(value)) onType(value)
+      }}
+    />
   )
 }
 

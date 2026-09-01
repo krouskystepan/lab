@@ -10,13 +10,14 @@ import { Link } from 'react-router-dom'
 import { Globe2 } from 'lucide-react'
 import { HotkeysBar } from './components/HotkeysBar'
 import { ProgressStrip } from './components/ProgressStrip'
-import { StageGuess, StagePrompt, StageStart } from './components/Stage'
+import { StageGuess, StagePrompt, StageResult, StageStart } from './components/Stage'
 import { AnswerBar, GroupBar, ModeBar, PaceBar, ToolsBar } from './components/ToolsBar'
 import { byCode, loadCatalog } from './game/catalog'
 import { reduce } from './game/engine'
 import { createRound, nextUnanswered } from './game/generate'
 import { typedIsCorrect } from './game/match'
 import { loadAutoNext, loadGame, saveAutoNext, saveGame } from './game/prefs'
+import { resultStats } from './game/resultStats'
 import type { AnswerId, BoardState, Country, GroupId, ModeId, PaceId } from './game/types'
 import { isOver } from './game/types'
 import { useI18n } from '../../i18n'
@@ -198,20 +199,29 @@ export default function GeoQuizApp() {
   }, [t, locale])
 
   useEffect(() => {
+    const stats = resultStats(board.picked, board.misses)
     if (prevStatus.current !== board.status && board.status === 'won') {
       showToast(
-        t('geoQuiz.toast.done', { score: board.score, n: board.total }),
+        t('geoQuiz.toast.done', {
+          score: stats.solved,
+          n: stats.total,
+          pct: stats.pct
+        }),
         'success'
       )
     }
     if (prevStatus.current !== board.status && board.status === 'lost') {
       showToast(
-        t('geoQuiz.toast.timesUp', { score: board.score, n: board.total }),
+        t('geoQuiz.toast.timesUp', {
+          score: stats.solved,
+          n: stats.total,
+          pct: stats.pct
+        }),
         'warn'
       )
     }
     prevStatus.current = board.status
-  }, [board.status, board.score, board.total, t])
+  }, [board.status, board.picked, board.misses, t])
 
   useEffect(() => {
     setSelected(null)
@@ -553,6 +563,13 @@ export default function GeoQuizApp() {
               groupLabel={t(GROUP_NAME[view.groupId])}
               onStart={onStartQuiz}
             />
+          ) : isOver(board.status) ? (
+            <StageResult
+              status={board.status === 'lost' ? 'lost' : 'won'}
+              answerId={board.answerId}
+              picked={board.picked}
+              misses={board.misses}
+            />
           ) : (
             <>
           <StagePrompt
@@ -562,16 +579,6 @@ export default function GeoQuizApp() {
             question={q}
             lookup={lookup}
           />
-          {board.status === 'lost' ? (
-            <p className="m-0 text-center text-[0.95rem] font-semibold text-danger">
-              {t('geoQuiz.status.timesUp')}
-            </p>
-          ) : null}
-          {board.status === 'won' ? (
-            <p className="m-0 text-center text-[0.95rem] font-semibold text-[#4cbe6a]">
-              {t('geoQuiz.status.done')}
-            </p>
-          ) : null}
           <StageGuess
             question={q}
             lookup={lookup}

@@ -78,11 +78,10 @@ export function reduce(state: BoardState, action: Action): BoardState {
       }
       const picked = state.picked.slice()
       picked[state.index] = q.subject
-      const firstTry = row.length === 0
       return {
         ...state,
         picked,
-        score: state.score + (firstTry ? 1 : 0),
+        score: state.score + 1,
         status: statusAt(picked, state.index)
       }
     }
