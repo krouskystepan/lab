@@ -13,6 +13,7 @@ export {
   type ChessBoardFile,
   type RushHourBoardFile,
   type LightsOutBoardFile,
+  type GeoQuizBoardFile,
   type MineTransferCell
 } from './types'
 
@@ -37,6 +38,8 @@ export { exportChessMateBoard, importChessMateBoard } from './chess'
 export { exportRushHourGame, importRushHourToGame } from './rushhour'
 
 export { exportLightsOutGame, importLightsOutToGame } from './lightsout'
+
+export { exportGeoQuizGame, importGeoQuizToGame } from './geoquiz'
 
 export {
   ExportImportButtons,
