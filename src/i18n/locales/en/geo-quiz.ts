@@ -9,10 +9,11 @@ export const geoQuizEn = {
   'geoQuiz.mode.mix': 'Mix',
   'geoQuiz.mode.flags': 'Flags',
   'geoQuiz.mode.capitals': 'Capitals',
-  'geoQuiz.mode.applyTitle': 'Start a new test with this topic mix',
+  'geoQuiz.mode.codes': 'Codes',
+  'geoQuiz.mode.applyTitle': 'Choose this topic, then Start Quiz',
   'geoQuiz.mode.helpTitle': 'Topics',
   'geoQuiz.mode.helpBody':
-    'Flags: name the country from its flag. Capitals: country ↔ capital. Mix rotates those plus flag → capital.',
+    'Flags: name the country from its flag. Capitals: country ↔ capital. Codes: flag and name → ISO country code (CZ, GB; UK also counts for the UK). Mix rotates all of those.',
   'geoQuiz.group.title': 'Group',
   'geoQuiz.group.world': 'World',
   'geoQuiz.group.europe': 'Europe',
@@ -32,17 +33,19 @@ export const geoQuizEn = {
   'geoQuiz.answer.applyTitle': 'Switch how you answer',
   'geoQuiz.answer.helpTitle': 'Answer',
   'geoQuiz.answer.helpBody':
-    'Choice is four options. Type is exact: the name in the current UI language. Two-word names also accept initials (UK for United Kingdom, US for United States) — not ISO codes (CZ is not Czechia). English also accepts dataset alt spellings (Great Britain). Czech uses Czech names (Česko). No fuzzy matching.',
+    'Choice is four options. Type is exact: the name in the current UI language. Two-word names also accept initials (UK for United Kingdom, US for United States) — not ISO codes (CZ is not Czechia), except in Codes, where the answer is the code. English also accepts dataset alt spellings (Great Britain). Czech uses Czech names (Česko). No fuzzy matching.',
   'geoQuiz.type.aria': 'Type your answer',
   'geoQuiz.type.submit': 'Check',
   'geoQuiz.type.placeholderCountry': 'Answer',
   'geoQuiz.type.placeholderCapital': 'Answer',
+  'geoQuiz.type.placeholderCode': 'Code',
   'geoQuiz.type.blank': 'Type an answer first.',
   'geoQuiz.type.tryAgain': 'Wrong — try again.',
   'geoQuiz.prompt.flagToCountry': 'Which country is this flag?',
   'geoQuiz.prompt.countryToCapital': 'What is the capital of {country}?',
   'geoQuiz.prompt.capitalToCountry': 'Which country has this capital?',
   'geoQuiz.prompt.flagToCapital': 'What is the capital of this country?',
+  'geoQuiz.prompt.countryToCode': 'What is this country’s code?',
   'geoQuiz.progress.aria': 'Test progress',
   'geoQuiz.progress.summary': '{done}/{n} done · {open} left',
   'geoQuiz.progress.itemTitle': '{country} — {state}',
@@ -80,7 +83,7 @@ export const geoQuizEn = {
   'geoQuiz.help.data':
     'Country names follow the UI language. Capitals keep the dataset spelling. Flags and names come from a public list plus Flagpedia (network on first load, then cached).',
   'geoQuiz.help.controls':
-    'Choice: click or 1–4. Type: name, or initials of a two-word name (UK). Enter checks. Click a flag in the list to jump. New (N).',
+    'Choice: click or 1–4. Type: name, two-word initials (UK), or a code in Codes. Enter checks. Click a flag in the list to jump. New (N).',
 
   'geoQuiz.hotkeys.title': 'Controls',
   'geoQuiz.hotkeys.answer': 'answer',

@@ -11,10 +11,11 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.mode.mix': 'Mix',
   'geoQuiz.mode.flags': 'Vlajky',
   'geoQuiz.mode.capitals': 'Hlavní města',
-  'geoQuiz.mode.applyTitle': 'Nový test s tímto mixem témat',
+  'geoQuiz.mode.codes': 'Kódy',
+  'geoQuiz.mode.applyTitle': 'Vyber téma a pak Start Quiz',
   'geoQuiz.mode.helpTitle': 'Témata',
   'geoQuiz.mode.helpBody':
-    'Vlajky: stát podle vlajky. Hlavní města: stát ↔ hlavní město. Mix to střídá včetně vlajka → hlavní město.',
+    'Vlajky: stát podle vlajky. Hlavní města: stát ↔ hlavní město. Kódy: vlajka a název → kód státu (CZ, GB; UK platí pro Británii). Mix to všechno střídá.',
   'geoQuiz.group.title': 'Skupina',
   'geoQuiz.group.world': 'Svět',
   'geoQuiz.group.europe': 'Evropa',
@@ -34,17 +35,19 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.answer.applyTitle': 'Přepnout způsob odpovědi',
   'geoQuiz.answer.helpTitle': 'Odpověď',
   'geoQuiz.answer.helpBody':
-    'Výběr jsou čtyři možnosti. Psát je přesné: název v jazyce rozhraní. Dvouslovné názvy berou i iniciály (UK = United Kingdom, US = United States) — ne ISO kódy (CZ není Česko). Anglicky bereme i alt. názvy (Great Britain). Česky české názvy (Česko). Bez fuzzy.',
+    'Výběr jsou čtyři možnosti. Psát je přesné: název v jazyce rozhraní. Dvouslovné názvy berou i iniciály (UK = United Kingdom, US = United States) — ne ISO kódy (CZ není Česko), kromě tématu Kódy, kde je kód odpověď. Anglicky bereme i alt. názvy (Great Britain). Česky české názvy (Česko). Bez fuzzy.',
   'geoQuiz.type.aria': 'Napiš odpověď',
   'geoQuiz.type.submit': 'Zkontrolovat',
   'geoQuiz.type.placeholderCountry': 'Odpověď',
   'geoQuiz.type.placeholderCapital': 'Odpověď',
+  'geoQuiz.type.placeholderCode': 'Kód',
   'geoQuiz.type.blank': 'Nejdřív něco napiš.',
   'geoQuiz.type.tryAgain': 'Špatně — zkus jinak.',
   'geoQuiz.prompt.flagToCountry': 'Který stát má tuhle vlajku?',
   'geoQuiz.prompt.countryToCapital': 'Jaké je hlavní město státu {country}?',
   'geoQuiz.prompt.capitalToCountry': 'Který stát má tohle hlavní město?',
   'geoQuiz.prompt.flagToCapital': 'Jaké je hlavní město tohoto státu?',
+  'geoQuiz.prompt.countryToCode': 'Jaký je kód tohoto státu?',
   'geoQuiz.progress.aria': 'Průběh testu',
   'geoQuiz.progress.summary': '{done}/{n} hotovo · zbývá {open}',
   'geoQuiz.progress.itemTitle': '{country} — {state}',
@@ -82,7 +85,7 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.help.data':
     'Názvy států jdou s jazykem rozhraní. Hlavní města necháváme v podobě z datasetu. Vlajky a názvy z veřejného seznamu a Flagpedia (první načtení potřebuje síť).',
   'geoQuiz.help.controls':
-    'Výběr: klik nebo 1–4. Psát: název, nebo iniciály dvouslovného názvu (UK), Enter zkontroluje. Klik na vlajku v seznamu skočí. Nové (N).',
+    'Výběr: klik nebo 1–4. Psát: název, iniciály dvouslovného názvu (UK), nebo kód v Kódech. Enter zkontroluje. Klik na vlajku v seznamu skočí. Nové (N).',
 
   'geoQuiz.hotkeys.title': 'Ovládání',
   'geoQuiz.hotkeys.answer': 'odpověď',

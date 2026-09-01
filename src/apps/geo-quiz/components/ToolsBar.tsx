@@ -30,10 +30,12 @@ const MODE_LABEL: Record<
   | 'geoQuiz.mode.mix'
   | 'geoQuiz.mode.flags'
   | 'geoQuiz.mode.capitals'
+  | 'geoQuiz.mode.codes'
 > = {
   mix: 'geoQuiz.mode.mix',
   flags: 'geoQuiz.mode.flags',
-  capitals: 'geoQuiz.mode.capitals'
+  capitals: 'geoQuiz.mode.capitals',
+  codes: 'geoQuiz.mode.codes'
 }
 
 const ANSWER_LABEL: Record<
@@ -177,7 +179,7 @@ export function ModeBar({ modeId, onModeChange }: ModeBarProps) {
         </HelpTip>
       }
     >
-      <ToolRow mobileCols={3} desktopCols={3}>
+      <ToolRow mobileCols={4} desktopCols={4}>
         {MODE_IDS.map((id) => (
           <button
             key={id}

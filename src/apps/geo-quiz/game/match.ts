@@ -18,6 +18,16 @@ export function isCapitalQuestion(kind: Question['kind']): boolean {
   return kind === 'countryToCapital' || kind === 'flagToCapital'
 }
 
+export function isCodeQuestion(kind: Question['kind']): boolean {
+  return kind === 'countryToCode'
+}
+
+/** ISO 3166-1 exceptionally reserved codes that map to a real alpha-2. */
+const ISO_RESERVED: Record<string, string[]> = {
+  GB: ['UK'],
+  GR: ['EL']
+}
+
 /** Extra locale names that are not in the English dataset. */
 const EN_EXTRAS: Record<string, string[]> = {
   GB: ['Great Britain']
@@ -92,6 +102,14 @@ export function capitalAccepted(country: Country): string[] {
   return unique([country.capital])
 }
 
+export function codeAccepted(country: Country): string[] {
+  return unique([
+    country.code,
+    country.cca3,
+    ...(ISO_RESERVED[country.code] ?? [])
+  ])
+}
+
 export function typedIsCorrect(
   question: Question,
   typed: string,
@@ -101,9 +119,11 @@ export function typedIsCorrect(
   if (!country) return false
   const got = normalizeAnswer(typed)
   if (!got) return false
-  const pool = isCapitalQuestion(question.kind)
-    ? capitalAccepted(country)
-    : countryAccepted(country, locale)
+  const pool = isCodeQuestion(question.kind)
+    ? codeAccepted(country)
+    : isCapitalQuestion(question.kind)
+      ? capitalAccepted(country)
+      : countryAccepted(country, locale)
   return pool.some((item) => normalizeAnswer(item) === got)
 }
 

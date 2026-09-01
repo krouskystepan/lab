@@ -129,7 +129,7 @@ export type GeoQuizBoardFile = {
   format: typeof BOARD_FORMAT
   version: typeof BOARD_VERSION
   family: 'geoquiz'
-  modeId: 'mix' | 'flags' | 'capitals' | 'countries'
+  modeId: 'mix' | 'flags' | 'capitals' | 'codes' | 'countries'
   groupId?: 'world' | 'europe' | 'americas' | 'asia' | 'africa' | 'oceania'
   answerId?: 'choice' | 'type'
   paceId?: 'train' | 'timed'
@@ -140,6 +140,7 @@ export type GeoQuizBoardFile = {
       | 'countryToCapital'
       | 'capitalToCountry'
       | 'flagToCapital'
+      | 'countryToCode'
     subject: string
     choices: string[]
   }[]

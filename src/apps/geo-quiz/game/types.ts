@@ -1,4 +1,4 @@
-export type ModeId = 'mix' | 'flags' | 'capitals'
+export type ModeId = 'mix' | 'flags' | 'capitals' | 'codes'
 export type GroupId =
   | 'world'
   | 'europe'
@@ -14,6 +14,7 @@ export type QuestionKind =
   | 'countryToCapital'
   | 'capitalToCountry'
   | 'flagToCapital'
+  | 'countryToCode'
 
 export type Country = {
   code: string
@@ -58,7 +59,7 @@ export type Action =
   | { type: 'goto'; index: number }
   | { type: 'timeUp' }
 
-export const MODE_IDS: ModeId[] = ['mix', 'flags', 'capitals']
+export const MODE_IDS: ModeId[] = ['mix', 'flags', 'capitals', 'codes']
 export const GROUP_IDS: GroupId[] = [
   'world',
   'europe',
@@ -70,7 +71,7 @@ export const GROUP_IDS: GroupId[] = [
 export const ANSWER_IDS: AnswerId[] = ['choice', 'type']
 
 export function isModeId(v: unknown): v is ModeId {
-  return v === 'mix' || v === 'flags' || v === 'capitals'
+  return v === 'mix' || v === 'flags' || v === 'capitals' || v === 'codes'
 }
 
 /** Old saves used a redundant `countries` topic (flag/capital → country). */
@@ -117,6 +118,7 @@ export function isQuestionKind(v: unknown): v is QuestionKind {
     v === 'flagToCountry' ||
     v === 'countryToCapital' ||
     v === 'capitalToCountry' ||
-    v === 'flagToCapital'
+    v === 'flagToCapital' ||
+    v === 'countryToCode'
   )
 }

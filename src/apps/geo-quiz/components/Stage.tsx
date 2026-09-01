@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AnswerId, Country, GameStatus, Question } from '../game/types'
 import { countryName, flagEmoji, flagPng } from '../game/catalog'
-import { isCapitalQuestion, typedIsCorrect } from '../game/match'
+import { isCapitalQuestion, isCodeQuestion, typedIsCorrect } from '../game/match'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { gameBtn, gameBtnActive } from '../../../shared/gameUi'
@@ -96,8 +96,13 @@ export function StagePrompt({
   }
 
   const subject = lookup.get(question.subject)
+  const promptName = subject ? countryName(subject, locale) : question.subject
+  const promptCapital = subject?.capital ?? ''
+  const codeKind = question.kind === 'countryToCode'
   const showFlag =
-    question.kind === 'flagToCountry' || question.kind === 'flagToCapital'
+    question.kind === 'flagToCountry' ||
+    question.kind === 'flagToCapital' ||
+    codeKind
   const promptKey =
     question.kind === 'flagToCountry'
       ? 'geoQuiz.prompt.flagToCountry'
@@ -105,9 +110,9 @@ export function StagePrompt({
         ? 'geoQuiz.prompt.countryToCapital'
         : question.kind === 'capitalToCountry'
           ? 'geoQuiz.prompt.capitalToCountry'
-          : 'geoQuiz.prompt.flagToCapital'
-  const promptName = subject ? countryName(subject, locale) : question.subject
-  const promptCapital = subject?.capital ?? ''
+          : question.kind === 'countryToCode'
+            ? 'geoQuiz.prompt.countryToCode'
+            : 'geoQuiz.prompt.flagToCapital'
 
   return (
     <div
@@ -129,6 +134,11 @@ export function StagePrompt({
           {promptName}
         </p>
       )}
+      {codeKind ? (
+        <p className="m-0 text-center text-[1.35rem] font-bold tracking-[-0.03em] text-ink">
+          {promptName}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -152,6 +162,7 @@ export function StageGuess({
   const showAnswer = status === 'revealed' || status === 'won'
   const locked = showAnswer || status === 'lost'
   const capitalKind = isCapitalQuestion(question.kind)
+  const codeKind = isCodeQuestion(question.kind)
   const okCls =
     'border-[#4cbe6a] bg-[#4cbe6a]/30 text-[#c8f5d4] shadow-[0_0_12px_color-mix(in_srgb,#4cbe6a_35%,transparent)]'
   const badCls =
@@ -166,6 +177,7 @@ export function StageGuess({
           revealed={locked}
           missCount={misses.length}
           capitalKind={capitalKind}
+          codeKind={codeKind}
           matches={(text) => typedIsCorrect(question, text, locale, subject)}
           onType={onType}
         />
@@ -181,9 +193,11 @@ export function StageGuess({
             const isPicked = picked === code
             const lockedChoice = locked || isMiss
             const label = country
-              ? capitalKind
-                ? country.capital
-                : countryName(country, locale)
+              ? codeKind
+                ? country.code
+                : capitalKind
+                  ? country.capital
+                  : countryName(country, locale)
               : code
             return (
               <button
@@ -194,6 +208,7 @@ export function StageGuess({
                 className={cn(
                   gameBtn,
                   'min-h-11 px-3 py-2 text-left text-[0.92rem] leading-snug max-[980px]:min-h-12',
+                  codeKind && 'font-mono font-bold tracking-[0.08em]',
                   !locked &&
                     !isMiss &&
                     'hover:border-accent hover:bg-accent/25 hover:text-on-accent',
@@ -227,6 +242,7 @@ function TypeField({
   revealed,
   missCount,
   capitalKind,
+  codeKind,
   matches,
   onType
 }: {
@@ -234,6 +250,7 @@ function TypeField({
   revealed: boolean
   missCount: number
   capitalKind: boolean
+  codeKind: boolean
   matches: (text: string) => boolean
   onType: (text: string) => void
 }) {
@@ -290,14 +307,17 @@ function TypeField({
           data-lpignore="true"
           className={cn(
             'box-border h-11 min-h-11 min-w-0 flex-1 cursor-text appearance-none rounded-(--panel-btn-r) border border-line bg-cell px-3 text-left text-[0.95rem] font-semibold leading-none outline-none focus:border-accent disabled:cursor-text disabled:opacity-100',
+            codeKind && 'font-mono uppercase tracking-[0.12em]',
             flashBad &&
               !revealed &&
               'border-danger/80 bg-danger/30 text-[#ffb0b0]'
           )}
           placeholder={
-            capitalKind
-              ? t('geoQuiz.type.placeholderCapital')
-              : t('geoQuiz.type.placeholderCountry')
+            codeKind
+              ? t('geoQuiz.type.placeholderCode')
+              : capitalKind
+                ? t('geoQuiz.type.placeholderCapital')
+                : t('geoQuiz.type.placeholderCountry')
           }
           aria-label={t('geoQuiz.type.aria')}
           onFocus={(e) => {

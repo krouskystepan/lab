@@ -164,11 +164,13 @@ function buildQuestions(pool: Country[], modeId: ModeId): Question[] {
 function kindsFor(modeId: ModeId): QuestionKind[] {
   if (modeId === 'flags') return ['flagToCountry']
   if (modeId === 'capitals') return ['countryToCapital', 'capitalToCountry']
+  if (modeId === 'codes') return ['countryToCode']
   return [
     'flagToCountry',
     'countryToCapital',
     'capitalToCountry',
-    'flagToCapital'
+    'flagToCapital',
+    'countryToCode'
   ]
 }
 
