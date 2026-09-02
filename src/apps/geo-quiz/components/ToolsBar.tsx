@@ -22,7 +22,7 @@ const iconCls = 'h-[0.95em] w-[0.95em] shrink-0 block'
 
 const chip = cn(
   gameBtn,
-  'min-w-0 truncate px-1 py-[0.4rem] text-center text-[0.8rem] max-[980px]:min-h-[2.35rem] max-[980px]:text-[0.9rem]'
+  'inline-flex min-w-0 items-center justify-center px-2 py-[0.4rem] text-center text-[0.8rem] leading-tight max-[980px]:min-h-[2.35rem] max-[980px]:text-[0.9rem]'
 )
 
 const MODE_LABEL: Record<
@@ -112,14 +112,14 @@ export function ToolsBar({
             aria-label={t('geoQuiz.scoreTitle')}
           >
             <span className="text-muted">{t('geoQuiz.score')}</span> {score}
-            <span className="text-muted">/{total || '—'}</span>
+            <span className="text-muted">/{total || '-'}</span>
           </span>
           <span
             title={t('geoQuiz.roundTitle')}
             aria-label={t('geoQuiz.roundTitle')}
           >
             <span className="text-muted">{t('geoQuiz.round')}</span> {qn}
-            <span className="text-muted">/{total || '—'}</span>
+            <span className="text-muted">/{total || '-'}</span>
           </span>
           <span
             title={timed ? t('geoQuiz.timerLeft') : t('geoQuiz.timer')}

@@ -1,6 +1,6 @@
 import { cn } from '../lib/cn'
 
-/** Outer game layout chrome — height budget vars stay in index.css on `.game-shell`. */
+/** Outer game layout chrome - height budget vars stay in index.css on `.game-shell`. */
 export const gameShell = cn(
   'game-shell',
   'mx-auto flex min-h-0 w-full max-w-275 flex-1 flex-col gap-[0.55rem] overflow-x-clip px-[0.85rem] pt-[0.65rem] pb-3',
@@ -14,7 +14,7 @@ export const gamePage =
 
 export const gamePageFit = 'game-page--fit overflow-hidden'
 
-/** Board wrapper flex — keep `.board-stage` / `.with-why` hooks for CQ fit math in CSS. */
+/** Board wrapper flex - keep `.board-stage` / `.with-why` hooks for CQ fit math in CSS. */
 export const boardStage = cn(
   'board-stage',
   'flex h-auto min-h-0 min-w-0 w-full items-center justify-center gap-2.5 self-stretch',

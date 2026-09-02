@@ -3,7 +3,8 @@ export const geoQuizEn = {
   'geoQuiz.stageAria': 'Quiz question',
   'geoQuiz.flagAlt': 'Flag of {country}',
   'geoQuiz.loading': 'Loading countries…',
-  'geoQuiz.loadFailed': 'Could not load country data. Check the network and retry.',
+  'geoQuiz.loadFailed':
+    'Could not load country data. Check the network and retry.',
   'geoQuiz.retry': 'Retry',
   'geoQuiz.mode.title': 'Topics',
   'geoQuiz.mode.mix': 'Mix',
@@ -24,7 +25,7 @@ export const geoQuizEn = {
   'geoQuiz.group.applyTitle': 'Choose this group, then Start Quiz',
   'geoQuiz.group.helpTitle': 'Group',
   'geoQuiz.group.helpBody':
-    'Pick a group, then Start Quiz. The test is every independent country in the group — Europe is all of Europe, not a sample of ten. Wrong answers stay inside the group. Click a flag in the list at the bottom to jump back.',
+    'Pick a group, then Start Quiz. The test is every independent country in the group - Europe is all of Europe, not a sample of ten. Wrong answers stay inside the group. Click a flag in the list at the bottom to jump back.',
   'geoQuiz.start': 'Start Quiz',
   'geoQuiz.startHint': 'Starts a new test of this group.',
   'geoQuiz.answer.title': 'Answer',
@@ -33,14 +34,14 @@ export const geoQuizEn = {
   'geoQuiz.answer.applyTitle': 'Switch how you answer',
   'geoQuiz.answer.helpTitle': 'Answer',
   'geoQuiz.answer.helpBody':
-    'Choice is four options. Type is exact: the name in the current UI language. Two-word names also accept initials (UK for United Kingdom, US for United States) — not ISO codes (CZ is not Czechia), except in Codes, where the answer is the code. English also accepts dataset alt spellings (Great Britain). Czech uses Czech names (Česko). No fuzzy matching.',
+    'Choice is four options. Type is exact: the name in the current UI language. Two-word names also accept initials (UK for United Kingdom, US for United States) - not ISO codes (CZ is not Czechia), except in Codes, where the answer is the code. English also accepts dataset alt spellings (Great Britain). Czech uses Czech names (Česko). No fuzzy matching.',
   'geoQuiz.type.aria': 'Type your answer',
   'geoQuiz.type.submit': 'Check',
   'geoQuiz.type.placeholderCountry': 'Answer',
   'geoQuiz.type.placeholderCapital': 'Answer',
   'geoQuiz.type.placeholderCode': 'Code',
   'geoQuiz.type.blank': 'Type an answer first.',
-  'geoQuiz.type.tryAgain': 'Wrong — try again.',
+  'geoQuiz.type.tryAgain': 'Wrong - try again.',
   'geoQuiz.prompt.flagToCountry': 'Which country is this flag?',
   'geoQuiz.prompt.countryToCapital': 'What is the capital of {country}?',
   'geoQuiz.prompt.capitalToCountry': 'Which country has this capital?',
@@ -48,7 +49,7 @@ export const geoQuizEn = {
   'geoQuiz.prompt.countryToCode': 'What is this country’s code?',
   'geoQuiz.progress.aria': 'Test progress',
   'geoQuiz.progress.summary': '{done}/{n} done · {open} left',
-  'geoQuiz.progress.itemTitle': '{country} — {state}',
+  'geoQuiz.progress.itemTitle': '{country} - {state}',
   'geoQuiz.progress.done': 'guessed',
   'geoQuiz.progress.tried': 'tried, still open',
   'geoQuiz.progress.open': 'not yet',
@@ -56,7 +57,7 @@ export const geoQuizEn = {
   'geoQuiz.timer': 'Elapsed time',
   'geoQuiz.timerLeft': 'Time left',
   'geoQuiz.timer.train': 'Train',
-  'geoQuiz.timer.trainTitle': 'No limit — the clock counts up',
+  'geoQuiz.timer.trainTitle': 'No limit - the clock counts up',
   'geoQuiz.timer.timed': 'Timed',
   'geoQuiz.timer.timedTitle': 'Countdown for this group ({time})',
   'geoQuiz.timer.title': 'Timer',
@@ -85,16 +86,16 @@ export const geoQuizEn = {
   'geoQuiz.status.done': 'Done',
   'geoQuiz.status.timesUp': 'Time’s up',
   'geoQuiz.toast.done': '{score}/{n} · {pct}%.',
-  'geoQuiz.toast.timesUp': 'Time’s up — {score}/{n} · {pct}%.',
+  'geoQuiz.toast.timesUp': 'Time’s up - {score}/{n} · {pct}%.',
   'geoQuiz.tools.title': 'Tools',
 
   'geoQuiz.help.title': 'How to play',
   'geoQuiz.help.body':
-    'A test of the whole group. Click a flag in the list at the bottom to jump there. Green = guessed, red bar = tried, faded = still open. Score is how many you finished. Success is correct answers over every guess — a second try is not 100%. Auto jumps to the next open item after a hit. Train lets the clock run; Timed ends the test when the countdown hits zero.',
+    'A test of the whole group. Click a flag in the list at the bottom to jump there. Green = guessed, red bar = tried, faded = still open. Score is how many you finished. Success is correct answers over every guess - a second try is not 100%. Auto jumps to the next open item after a hit. Train lets the clock run; Timed ends the test when the countdown hits zero.',
   'geoQuiz.help.data':
     'Country names follow the UI language. Capitals keep the dataset spelling. Flags and names come from a public list plus Flagpedia (network on first load, then cached).',
   'geoQuiz.help.controls':
-    'Choice: click or 1–4. Type: the name (or two-word initials, or a code in Codes) — it accepts as soon as it’s right. Click a flag in the list to jump. New (N).',
+    'Choice: click or 1–4. Type: the name (or two-word initials, or a code in Codes) - it accepts as soon as it’s right. Click a flag in the list to jump. New (N).',
 
   'geoQuiz.hotkeys.title': 'Controls',
   'geoQuiz.hotkeys.answer': 'answer',

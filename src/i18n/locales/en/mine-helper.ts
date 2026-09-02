@@ -89,18 +89,17 @@ export const mineHelperEn = {
     'Only one color per cell. If several tips apply, the highest on this list wins:',
   'legend.pickWhenIntroHunt':
     'Only one color per cell. If several tips apply, the highest on this list wins:',
-  'legend.pickWhenPrio1Safe': '1. {sure} — certain safe. Click these first.',
-  'legend.pickWhenPrio1Hunt': '1. {sure} — certain target. Take these first.',
-  'legend.pickWhenPrio2Safe':
-    '2. {safest} (orange) — highest leftover safe %.',
+  'legend.pickWhenPrio1Safe': '1. {sure} - certain safe. Click these first.',
+  'legend.pickWhenPrio1Hunt': '1. {sure} - certain target. Take these first.',
+  'legend.pickWhenPrio2Safe': '2. {safest} (orange) - highest leftover safe %.',
   'legend.pickWhenPrio2Hunt':
-    '2. {surestTarget} (orange) — highest leftover target %.',
+    '2. {surestTarget} (orange) - highest leftover target %.',
   'legend.pickWhenPrio3':
-    '3. {best} (yellow) — the reveal that teaches you the most.',
+    '3. {best} (yellow) - the reveal that teaches you the most.',
   'legend.pickWhenPrio4Safe':
-    '4. {unclued} (purple) — leftover empties with no nearby number.',
+    '4. {unclued} (purple) - leftover empties with no nearby number.',
   'legend.pickWhenPrio4Hunt':
-    '4. {unclued} (purple) — leftover empties with no My/Info number.',
+    '4. {unclued} (purple) - leftover empties with no My/Info number.',
   'legend.pickWhenSureTitle': '100% first',
   'legend.pickWhenSureBodySafe':
     'Green {sure} cells are certain safe. Click those before any ringed tip.',

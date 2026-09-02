@@ -25,7 +25,7 @@ type ExportImportButtonsProps = {
   className?: string
 }
 
-/** Header Export / Import — same chrome as language switch. */
+/** Header Export / Import - same chrome as language switch. */
 export function ExportImportButtons({
   filename,
   family,

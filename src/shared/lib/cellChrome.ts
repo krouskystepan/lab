@@ -1,4 +1,4 @@
-/** Shared board-cell typography — sized from the cell (`cqmin`), not board width. */
+/** Shared board-cell typography - sized from the cell (`cqmin`), not board width. */
 
 export const CELL_GLYPH =
   'absolute inset-0 flex items-center justify-center leading-[0] pointer-events-none text-[clamp(0.45rem,42cqmin,1.1rem)] max-[980px]:text-[clamp(0.4rem,36cqmin,0.95rem)]'

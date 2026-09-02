@@ -29,7 +29,12 @@ import {
   type BoardFile,
   type BoardImportResult
 } from '../../shared/boardTransfer'
-import { MobileHelpCard, boardStage, gameShell, gameStickyControls } from '../../shared/gameUi'
+import {
+  MobileHelpCard,
+  boardStage,
+  gameShell,
+  gameStickyControls
+} from '../../shared/gameUi'
 
 export default function SudokuApp() {
   const { t, locale } = useI18n()
@@ -437,7 +442,7 @@ export default function SudokuApp() {
         </div>
       </div>
 
-      {/* Diff | Tools — same titled GamePanel grid as Mine Helper Size|Tools */}
+      {/* Diff | Tools - same titled GamePanel grid as Mine Helper Size|Tools */}
       <div className="game-secondary relative z-5 order-1 flex w-full shrink-0 flex-col gap-[0.55rem] max-[980px]:order-3 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] min-[981px]:items-stretch">
         <div className="min-[981px]:h-full">
           <DiffBar diffId={board.diffId} onDiffChange={onDiff} />
@@ -464,7 +469,9 @@ export default function SudokuApp() {
         </div>
       </div>
 
-      <div className={`${gameStickyControls} relative z-5 order-2 w-full shrink-0 max-[980px]:order-2`}>
+      <div
+        className={`${gameStickyControls} relative z-5 order-2 w-full shrink-0 max-[980px]:order-2`}
+      >
         <NumberPad
           digit={digit}
           eraseMode={eraseMode}

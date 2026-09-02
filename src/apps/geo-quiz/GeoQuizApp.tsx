@@ -541,8 +541,8 @@ export default function GeoQuizApp() {
           autoNext={autoNext}
           onToggleAutoNext={() => setAutoNext((v) => !v)}
         />
-        <div className="grid w-full grid-cols-1 items-stretch gap-[0.55rem] min-[720px]:grid-cols-3">
-          <ModeBar modeId={view.modeId} onModeChange={onMode} />
+        <ModeBar modeId={view.modeId} onModeChange={onMode} />
+        <div className="grid w-full grid-cols-1 items-stretch gap-[0.55rem] min-[720px]:grid-cols-2">
           <AnswerBar answerId={view.answerId} onAnswerChange={onAnswer} />
           <PaceBar
             paceId={view.paceId}

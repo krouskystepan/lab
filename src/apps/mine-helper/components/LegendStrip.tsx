@@ -12,7 +12,7 @@ type LegendStripProps = {
   className?: string
 }
 
-/** Mark meanings — inline tips (desktop) or inside the legend dialog. */
+/** Mark meanings - inline tips (desktop) or inside the legend dialog. */
 export function LegendStrip({ goalMode, className }: LegendStripProps) {
   const { t } = useI18n()
   const huntGoal = goalMode === 'hunt'
@@ -97,7 +97,9 @@ export function LegendStrip({ goalMode, className }: LegendStripProps) {
           legendMarks
         )}
       </p>
-      <p className="m-0">{legendRichText(t('legend.pickWhenPrio3'), legendMarks)}</p>
+      <p className="m-0">
+        {legendRichText(t('legend.pickWhenPrio3'), legendMarks)}
+      </p>
       <p className="m-0">
         {legendRichText(
           t(huntGoal ? 'legend.pickWhenPrio4Hunt' : 'legend.pickWhenPrio4Safe'),
@@ -118,7 +120,9 @@ export function LegendStrip({ goalMode, className }: LegendStripProps) {
         label={t(huntGoal ? 'legend.numberHunt' : 'legend.numberSafe')}
         swatchClass="mine"
         swatchContent="3"
-        title={t(huntGoal ? 'legend.numberTitleHunt' : 'legend.numberTitleSafe')}
+        title={t(
+          huntGoal ? 'legend.numberTitleHunt' : 'legend.numberTitleSafe'
+        )}
       >
         {t(huntGoal ? 'legend.numberBodyHunt' : 'legend.numberBodySafe')}
       </LegendTip>
@@ -200,7 +204,9 @@ export function LegendStrip({ goalMode, className }: LegendStripProps) {
       <LegendTip
         label={t('legend.chance')}
         swatchClass="chance"
-        title={t(huntGoal ? 'legend.chanceTitleHunt' : 'legend.chanceTitleSafe')}
+        title={t(
+          huntGoal ? 'legend.chanceTitleHunt' : 'legend.chanceTitleSafe'
+        )}
       >
         {legendRichText(
           t(huntGoal ? 'legend.chanceBodyHunt' : 'legend.chanceBodySafe'),
@@ -266,7 +272,9 @@ export function LegendStrip({ goalMode, className }: LegendStripProps) {
       <LegendTip
         label={tipLabel}
         swatchClass="safest"
-        title={t(huntGoal ? 'legend.safestTitleHunt' : 'legend.safestTitleSafe')}
+        title={t(
+          huntGoal ? 'legend.safestTitleHunt' : 'legend.safestTitleSafe'
+        )}
       >
         {legendRichText(
           t(huntGoal ? 'legend.safestBodyHunt' : 'legend.safestBodySafe'),

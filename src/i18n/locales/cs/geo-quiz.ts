@@ -5,7 +5,8 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.stageAria': 'Otázka kvízu',
   'geoQuiz.flagAlt': 'Vlajka: {country}',
   'geoQuiz.loading': 'Načítám státy…',
-  'geoQuiz.loadFailed': 'Data o státech se nenačetla. Zkontroluj síť a zkus znovu.',
+  'geoQuiz.loadFailed':
+    'Data o státech se nenačetla. Zkontroluj síť a zkus znovu.',
   'geoQuiz.retry': 'Znovu',
   'geoQuiz.mode.title': 'Témata',
   'geoQuiz.mode.mix': 'Mix',
@@ -26,7 +27,7 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.group.applyTitle': 'Vyber skupinu a pak Start Quiz',
   'geoQuiz.group.helpTitle': 'Skupina',
   'geoQuiz.group.helpBody':
-    'Vyber skupinu a pak Start Quiz. Test je každý nezávislý stát ve skupině — Evropa je celá Evropa, ne deset náhodných. Špatné odpovědi zůstanou ve skupině. Klikni na vlajku v seznamu dole a skoč zpět.',
+    'Vyber skupinu a pak Start Quiz. Test je každý nezávislý stát ve skupině - Evropa je celá Evropa, ne deset náhodných. Špatné odpovědi zůstanou ve skupině. Klikni na vlajku v seznamu dole a skoč zpět.',
   'geoQuiz.start': 'Start Quiz',
   'geoQuiz.startHint': 'Spustí nový test téhle skupiny.',
   'geoQuiz.answer.title': 'Odpověď',
@@ -35,14 +36,14 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.answer.applyTitle': 'Přepnout způsob odpovědi',
   'geoQuiz.answer.helpTitle': 'Odpověď',
   'geoQuiz.answer.helpBody':
-    'Výběr jsou čtyři možnosti. Psát je přesné: název v jazyce rozhraní. Dvouslovné názvy berou i iniciály (UK = United Kingdom, US = United States) — ne ISO kódy (CZ není Česko), kromě tématu Kódy, kde je kód odpověď. Anglicky bereme i alt. názvy (Great Britain). Česky české názvy (Česko). Bez fuzzy.',
+    'Výběr jsou čtyři možnosti. Psát je přesné: název v jazyce rozhraní. Dvouslovné názvy berou i iniciály (UK = United Kingdom, US = United States) - ne ISO kódy (CZ není Česko), kromě tématu Kódy, kde je kód odpověď. Anglicky bereme i alt. názvy (Great Britain). Česky české názvy (Česko). Bez fuzzy.',
   'geoQuiz.type.aria': 'Napiš odpověď',
   'geoQuiz.type.submit': 'Zkontrolovat',
   'geoQuiz.type.placeholderCountry': 'Odpověď',
   'geoQuiz.type.placeholderCapital': 'Odpověď',
   'geoQuiz.type.placeholderCode': 'Kód',
   'geoQuiz.type.blank': 'Nejdřív něco napiš.',
-  'geoQuiz.type.tryAgain': 'Špatně — zkus jinak.',
+  'geoQuiz.type.tryAgain': 'Špatně - zkus jinak.',
   'geoQuiz.prompt.flagToCountry': 'Který stát má tuhle vlajku?',
   'geoQuiz.prompt.countryToCapital': 'Jaké je hlavní město státu {country}?',
   'geoQuiz.prompt.capitalToCountry': 'Který stát má tohle hlavní město?',
@@ -50,7 +51,7 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.prompt.countryToCode': 'Jaký je kód tohoto státu?',
   'geoQuiz.progress.aria': 'Průběh testu',
   'geoQuiz.progress.summary': '{done}/{n} hotovo · zbývá {open}',
-  'geoQuiz.progress.itemTitle': '{country} — {state}',
+  'geoQuiz.progress.itemTitle': '{country} - {state}',
   'geoQuiz.progress.done': 'uhodnuto',
   'geoQuiz.progress.tried': 'zkoušeno, ještě otevřené',
   'geoQuiz.progress.open': 'ještě ne',
@@ -58,7 +59,7 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.timer': 'Uplynulý čas',
   'geoQuiz.timerLeft': 'Zbývá',
   'geoQuiz.timer.train': 'Trénink',
-  'geoQuiz.timer.trainTitle': 'Bez limitu — hodiny jen naskakují',
+  'geoQuiz.timer.trainTitle': 'Bez limitu - hodiny jen naskakují',
   'geoQuiz.timer.timed': 'Na čas',
   'geoQuiz.timer.timedTitle': 'Odpočet pro tuhle skupinu ({time})',
   'geoQuiz.timer.title': 'Časovač',
@@ -87,16 +88,16 @@ export const geoQuizCs: Record<keyof typeof geoQuizEn, string> = {
   'geoQuiz.status.done': 'Hotovo',
   'geoQuiz.status.timesUp': 'Čas vypršel',
   'geoQuiz.toast.done': '{score}/{n} · {pct} %.',
-  'geoQuiz.toast.timesUp': 'Čas vypršel — {score}/{n} · {pct} %.',
+  'geoQuiz.toast.timesUp': 'Čas vypršel - {score}/{n} · {pct} %.',
   'geoQuiz.tools.title': 'Nástroje',
 
   'geoQuiz.help.title': 'Jak hrát',
   'geoQuiz.help.body':
-    'Test celé skupiny. Klikni na vlajku v seznamu dole a skočíš tam. Zelená = uhodnuto, červený pruh = zkoušeno, vybledlé = ještě ne. Skóre je, kolik jsi dokončil. Úspěch je správné odpovědi ku všem pokusům — druhý pokus už není 100 %. Auto skočí na další otevřené po trefě. Trénink nechává hodiny běžet; časovaný test skončí, když odpočet dojde na nulu.',
+    'Test celé skupiny. Klikni na vlajku v seznamu dole a skočíš tam. Zelená = uhodnuto, červený pruh = zkoušeno, vybledlé = ještě ne. Skóre je, kolik jsi dokončil. Úspěch je správné odpovědi ku všem pokusům - druhý pokus už není 100 %. Auto skočí na další otevřené po trefě. Trénink nechává hodiny běžet; časovaný test skončí, když odpočet dojde na nulu.',
   'geoQuiz.help.data':
     'Názvy států jdou s jazykem rozhraní. Hlavní města necháváme v podobě z datasetu. Vlajky a názvy z veřejného seznamu a Flagpedia (první načtení potřebuje síť).',
   'geoQuiz.help.controls':
-    'Výběr: klik nebo 1–4. Psát: název (nebo iniciály dvouslovného názvu, nebo kód v Kódech) — přijme to hned, jak je to správně. Klik na vlajku v seznamu skočí. Nové (N).',
+    'Výběr: klik nebo 1–4. Psát: název (nebo iniciály dvouslovného názvu, nebo kód v Kódech) - přijme to hned, jak je to správně. Klik na vlajku v seznamu skočí. Nové (N).',
 
   'geoQuiz.hotkeys.title': 'Ovládání',
   'geoQuiz.hotkeys.answer': 'odpověď',

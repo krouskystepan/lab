@@ -1039,7 +1039,7 @@ export default function MineHelperApp() {
         </div>
       </div>
 
-      {/* Size | Tools — under the board so the grid stays visible */}
+      {/* Size | Tools - under the board so the grid stays visible */}
       <div className="game-secondary relative z-5 order-3 flex w-full shrink-0 flex-col gap-[0.55rem] min-[981px]:order-2 min-[981px]:grid min-[981px]:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] min-[981px]:items-stretch">
         <div className="min-[981px]:order-2 min-[981px]:h-full">
           <Toolbar
