@@ -90,18 +90,18 @@ export const mineHelperCs: Record<keyof typeof mineHelperEn, string> = {
     'Na buňce je jen jedna barva. Když sedí víc tipů, vyhraje ten výš na seznamu:',
   'legend.pickWhenIntroHunt':
     'Na buňce je jen jedna barva. Když sedí víc tipů, vyhraje ten výš na seznamu:',
-  'legend.pickWhenPrio1Safe': '1. {sure} — jistě bezpečné. Ty klikni nejdřív.',
-  'legend.pickWhenPrio1Hunt': '1. {sure} — jistý cíl. Ty ber nejdřív.',
+  'legend.pickWhenPrio1Safe': '1. {sure} - jistě bezpečné. Ty klikni nejdřív.',
+  'legend.pickWhenPrio1Hunt': '1. {sure} - jistý cíl. Ty ber nejdřív.',
   'legend.pickWhenPrio2Safe':
-    '2. {safest} (oranžová) — nejvyšší zbývající bezpečné %.',
+    '2. {safest} (oranžová) - nejvyšší zbývající bezpečné %.',
   'legend.pickWhenPrio2Hunt':
-    '2. {surestTarget} (oranžová) — nejvyšší zbývající % cíle.',
+    '2. {surestTarget} (oranžová) - nejvyšší zbývající % cíle.',
   'legend.pickWhenPrio3':
-    '3. {best} (žlutá) — odhalení, ze kterého se o desce dozvíš nejvíc.',
+    '3. {best} (žlutá) - odhalení, ze kterého se o desce dozvíš nejvíc.',
   'legend.pickWhenPrio4Safe':
-    '4. {unclued} (fialová) — zbývající prázdná bez blízkého čísla.',
+    '4. {unclued} (fialová) - zbývající prázdná bez blízkého čísla.',
   'legend.pickWhenPrio4Hunt':
-    '4. {unclued} (fialová) — zbývající prázdná bez Moje/Info čísla.',
+    '4. {unclued} (fialová) - zbývající prázdná bez Moje/Info čísla.',
   'legend.pickWhenSureTitle': 'Nejdřív 100 %',
   'legend.pickWhenSureBodySafe':
     'Zelené buňky {sure} jsou jistě bezpečné. Ty klikni dřív než jakýkoli rámeček.',

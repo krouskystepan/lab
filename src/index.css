@@ -49,7 +49,7 @@
   }
 
   /*
-   * Height budget for phone boards — presentational chrome lives on
+   * Height budget for phone boards - presentational chrome lives on
    * gameShell / gameStickyControls Tailwind constants.
    */
   @media (max-width: 980px) {
@@ -117,7 +117,7 @@
   }
 }
 
-/* ——— Board geometry kernel (container-query sizing) ——— */
+/* --- Board geometry kernel (container-query sizing) --- */
 
 .board-frame {
   --board-radius: 12px;

@@ -17,8 +17,8 @@ type HelpTipProps = {
   /** Align popover to the end (e.g. last control near the edge). */
   alignEnd?: boolean
   /**
-   * `desktop` — hidden below 981px (default; mobile uses MobileHelpCard).
-   * `always` — show on all breakpoints (e.g. inside MobileHelpCard).
+   * `desktop` - hidden below 981px (default; mobile uses MobileHelpCard).
+   * `always` - show on all breakpoints (e.g. inside MobileHelpCard).
    */
   show?: 'desktop' | 'always'
 }

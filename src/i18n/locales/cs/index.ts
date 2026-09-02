@@ -9,6 +9,7 @@ import { wordleCs } from './wordle'
 import { chessMateCs } from './chess-mate'
 import { rushHourCs } from './rush-hour'
 import { lightsOutCs } from './lights-out'
+import { geoQuizCs } from './geo-quiz'
 
 /** Czech - must cover every English key. */
 export const cs: Record<keyof typeof en, string> = {
@@ -21,5 +22,6 @@ export const cs: Record<keyof typeof en, string> = {
   ...wordleCs,
   ...chessMateCs,
   ...rushHourCs,
-  ...lightsOutCs
+  ...lightsOutCs,
+  ...geoQuizCs
 }

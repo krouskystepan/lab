@@ -27,7 +27,8 @@ import {
   wordleTheme,
   chessMateTheme,
   rushHourTheme,
-  lightsOutTheme
+  lightsOutTheme,
+  geoQuizTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -159,12 +160,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.geoQuiz.title',
     blurbKey: 'catalog.geoQuiz.blurb',
     icon: Globe2,
-    theme: {
-      accent: '#2e6b8a',
-      accentHover: '#3f7c9b',
-      onAccent: '#e3f1f8'
-    },
-    status: 'soon'
+    theme: geoQuizTheme,
+    status: 'live'
   },
   {
     id: 'mental-math',

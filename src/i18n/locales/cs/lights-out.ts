@@ -31,14 +31,15 @@ export const lightsOutCs: Record<keyof typeof lightsOutEn, string> = {
   'lightsOut.tools.undoTitle': 'Zpět poslední stisk (⌘Z)',
   'lightsOut.tools.redoTitle': 'Znovu (⌘⇧Z)',
   'lightsOut.tools.hint': 'Tip',
-  'lightsOut.tools.hintTitle': 'Stisknout jedno světlo po nejkratším řešení (H)',
+  'lightsOut.tools.hintTitle':
+    'Stisknout jedno světlo po nejkratším řešení (H)',
   'lightsOut.tools.hintTipTitle': 'Nápověda',
   'lightsOut.tools.hintTipBody':
     'Stiskne jedno pole, které patří do nejkratšího zbývajícího řešení. Pořád to můžeš vrátit.',
 
   'lightsOut.help.title': 'Jak hrát',
   'lightsOut.help.body':
-    'Klikni na světlo a přepne se ono i čtyři sousedé. Pořadí nehraje roli — stejné pole dvakrát se vynuluje. Zhasni všechna.',
+    'Klikni na světlo a přepne se ono i čtyři sousedé. Pořadí nehraje roli - stejné pole dvakrát se vynuluje. Zhasni všechna.',
   'lightsOut.help.controls':
     'Klikni, nebo vyber šipkami a stiskni mezerník. Tip (H) udělá jeden dobrý stisk. Reset (R) vrátí tuto úlohu. Nová (N) vezme jinou.',
 

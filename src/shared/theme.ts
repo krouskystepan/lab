@@ -72,6 +72,14 @@ export const lightsOutTheme: AppTheme = {
   glow: '#e8c84a'
 }
 
+/** Geo Quiz - atlas teal. */
+export const geoQuizTheme: AppTheme = {
+  accent: '#2e6b8a',
+  accentHover: '#3f7c9b',
+  onAccent: '#e3f1f8',
+  glow: '#2e6b8a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }

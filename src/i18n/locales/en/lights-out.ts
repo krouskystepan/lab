@@ -36,7 +36,7 @@ export const lightsOutEn = {
 
   'lightsOut.help.title': 'How to play',
   'lightsOut.help.body':
-    'Click a light to toggle it and its four neighbors. Order does not matter — the same cell twice is a no-op. Turn every light off.',
+    'Click a light to toggle it and its four neighbors. Order does not matter - the same cell twice is a no-op. Turn every light off.',
   'lightsOut.help.controls':
     'Click, or select with arrows and press Space. Hint (H) makes one good press. Reset (R) restores this puzzle. New (N) picks another.',
 

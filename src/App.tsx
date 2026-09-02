@@ -8,8 +8,10 @@ import WordleApp from './apps/wordle/WordleApp'
 import ChessMateApp from './apps/chess-mate/ChessMateApp'
 import RushHourApp from './apps/rush-hour/RushHourApp'
 import LightsOutApp from './apps/lights-out/LightsOutApp'
+import GeoQuizApp from './apps/geo-quiz/GeoQuizApp'
 import {
   chessMateTheme,
+  geoQuizTheme,
   lightsOutTheme,
   mineHelperTheme,
   minesweeperTheme,
@@ -87,6 +89,14 @@ function LightsOutRoute() {
   )
 }
 
+function GeoQuizRoute() {
+  return (
+    <ThemeScope theme={geoQuizTheme} className={gamePage}>
+      <GeoQuizApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -111,6 +121,7 @@ export default function App() {
           <Route path="/games/wordle" element={<WordleRoute />} />
           <Route path="/games/rush-hour" element={<RushHourRoute />} />
           <Route path="/games/lights-out" element={<LightsOutRoute />} />
+          <Route path="/games/geo-quiz" element={<GeoQuizRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/solvers/chess-mate" element={<ChessMateRoute />} />

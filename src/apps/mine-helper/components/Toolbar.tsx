@@ -118,7 +118,7 @@ export function Toolbar({
       headerRight={foundLabel}
       className="min-h-0"
     >
-      {/* Row 1: mark modes + Total/Auto — wraps on narrow panels */}
+      {/* Row 1: mark modes + Total/Auto - wraps on narrow panels */}
       <div className="flex flex-col gap-2 min-[640px]:flex-row min-[640px]:flex-wrap min-[640px]:items-center min-[640px]:justify-between">
         <div className="grid w-full grid-cols-3 gap-[0.35rem] min-[640px]:flex min-[640px]:w-auto min-[640px]:flex-wrap">
           <button
@@ -272,7 +272,7 @@ export function Toolbar({
         </div>
       </div>
 
-      {/* History left · actions right — one row with space between */}
+      {/* History left · actions right - one row with space between */}
       <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="flex min-w-0 items-center gap-[0.35rem]">
           <button

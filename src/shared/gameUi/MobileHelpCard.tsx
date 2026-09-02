@@ -13,8 +13,8 @@ type MobileHelpCardProps = {
   /** Sections merged under one ? on phone/tablet. */
   sections: MobileHelpSection[]
   /**
-   * `card` — full-width panel (default).
-   * `inline` — just the ? control (e.g. header next to Legend).
+   * `card` - full-width panel (default).
+   * `inline` - just the ? control (e.g. header next to Legend).
    */
   variant?: 'card' | 'inline'
   className?: string

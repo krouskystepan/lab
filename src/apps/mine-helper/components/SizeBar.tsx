@@ -1,4 +1,10 @@
-import { CELL_ASPECTS, MAX_GRID, MIN_GRID, PRESETS, type CellAspect } from '../solver/types'
+import {
+  CELL_ASPECTS,
+  MAX_GRID,
+  MIN_GRID,
+  PRESETS,
+  type CellAspect
+} from '../solver/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
 import { gameBtn, GamePanel } from '../../../shared/gameUi'
@@ -51,7 +57,7 @@ export function SizeBar({
           </button>
         ))}
       </div>
-      {/* Row 2: custom size + field aspect — wraps when tight */}
+      {/* Row 2: custom size + field aspect - wraps when tight */}
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="flex flex-wrap items-center gap-[0.45rem]">
           <label className="flex items-center gap-[0.3rem] text-[0.8rem] font-semibold text-muted">

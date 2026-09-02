@@ -13,7 +13,7 @@ type DigitPadProps = {
   digitTitle?: (n: number) => string
   digitContent?: (n: number) => ReactNode
   digitClassName?: (n: number) => string | undefined
-  /** Extra key after digits (erase, ?, …) — should be a <button> */
+  /** Extra key after digits (erase, ?, …) - should be a <button> */
   trailing?: ReactNode
   className?: string
   /** Phone column count before wrapping. Default 5 (2-row pad for 10 keys). */
@@ -43,7 +43,9 @@ export function DigitPad({
     <div
       className={cn(
         'grid w-full min-w-0 gap-1.5',
-        mobileCols === 3 ? 'max-[980px]:grid-cols-3' : 'max-[980px]:grid-cols-5',
+        mobileCols === 3
+          ? 'max-[980px]:grid-cols-3'
+          : 'max-[980px]:grid-cols-5',
         total <= 9 ? 'min-[981px]:grid-cols-9' : 'min-[981px]:grid-cols-10',
         className
       )}

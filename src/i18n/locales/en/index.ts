@@ -8,6 +8,7 @@ import { wordleEn } from './wordle'
 import { chessMateEn } from './chess-mate'
 import { rushHourEn } from './rush-hour'
 import { lightsOutEn } from './lights-out'
+import { geoQuizEn } from './geo-quiz'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -20,5 +21,6 @@ export const en = {
   ...wordleEn,
   ...chessMateEn,
   ...rushHourEn,
-  ...lightsOutEn
+  ...lightsOutEn,
+  ...geoQuizEn
 }

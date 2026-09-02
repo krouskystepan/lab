@@ -294,7 +294,7 @@ function toLocal(
     .filter((c) => c.cellIdxs.length > 0)
 }
 
-/** Empties on clues that actually touch this cell — not the whole overlapping chain. */
+/** Empties on clues that actually touch this cell - not the whole overlapping chain. */
 function directCluePocket(
   cellIndex: number,
   constraints: Constraint[]
@@ -314,8 +314,7 @@ function constraintsInside(
 ): Constraint[] {
   const inComp = new Set(component)
   return constraints.filter(
-    (c) =>
-      c.cellIdxs.length > 0 && c.cellIdxs.every((i) => inComp.has(i))
+    (c) => c.cellIdxs.length > 0 && c.cellIdxs.every((i) => inComp.has(i))
   )
 }
 
@@ -362,7 +361,9 @@ function tryExplainForcedByClue(
         },
         {
           text: t(
-            goalMode === 'hunt' ? 'ex.forced.allTargetHunt' : 'ex.forced.allMine',
+            goalMode === 'hunt'
+              ? 'ex.forced.allTargetHunt'
+              : 'ex.forced.allMine',
             { cell: label }
           ),
           cells: [cellIndex]
@@ -463,10 +464,10 @@ function explainFromTotalRemainder(
 
   const steps: WhyStep[] = [
     {
-      text: t(
-        goalMode === 'hunt' ? 'ex.totalKnownHunt' : 'ex.totalKnownSafe',
-        { known: totalRemaining.known, total: totalTargets }
-      )
+      text: t(goalMode === 'hunt' ? 'ex.totalKnownHunt' : 'ex.totalKnownSafe', {
+        known: totalRemaining.known,
+        total: totalTargets
+      })
     },
     {
       text: t(goalMode === 'hunt' ? 'ex.totalShareHunt' : 'ex.totalShareSafe', {
@@ -481,18 +482,16 @@ function explainFromTotalRemainder(
 
   if (certainMine) {
     steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.totalAllHunt' : 'ex.totalAllSafe',
-        { cell: label }
-      ),
+      text: t(goalMode === 'hunt' ? 'ex.totalAllHunt' : 'ex.totalAllSafe', {
+        cell: label
+      }),
       cells: [cellIndex]
     })
   } else if (certainSafe) {
     steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.totalNoneHunt' : 'ex.totalNoneSafe',
-        { cell: label }
-      ),
+      text: t(goalMode === 'hunt' ? 'ex.totalNoneHunt' : 'ex.totalNoneSafe', {
+        cell: label
+      }),
       cells: [cellIndex]
     })
   }
@@ -646,9 +645,7 @@ export function explainChanceCell(
       const direct = constraints.filter(
         (c) => c.clueIndex != null && c.cellIdxs.includes(cellIndex)
       )
-      const nearClues = [
-        ...new Set(direct.map((c) => c.clueIndex!))
-      ]
+      const nearClues = [...new Set(direct.map((c) => c.clueIndex!))]
       const mark = board?.[cellIndex]?.solver
       const chancePercent =
         mark?.kind === 'chance'
@@ -664,9 +661,9 @@ export function explainChanceCell(
             : mark?.kind === 'target'
               ? certainTargetLabel(goalMode)
               : t('ex.unknown')
-      const peerCells = [
-        ...new Set(direct.flatMap((c) => c.cellIdxs))
-      ].filter((i) => i !== cellIndex)
+      const peerCells = [...new Set(direct.flatMap((c) => c.cellIdxs))].filter(
+        (i) => i !== cellIndex
+      )
       const steps: WhyStep[] = []
       if (nearClues.length > 0) {
         steps.push({
@@ -744,10 +741,9 @@ export function explainChanceCell(
       peerCells: component.filter((i) => i !== cellIndex),
       steps: [
         {
-          text: t(
-            goalMode === 'hunt' ? 'ex.unsatEmptyHunt' : 'ex.unsatEmpty',
-            { cell: label }
-          ),
+          text: t(goalMode === 'hunt' ? 'ex.unsatEmptyHunt' : 'ex.unsatEmpty', {
+            cell: label
+          }),
           cells: [cellIndex, ...clueCellsForUnsat]
         },
         ...(clueCellsForUnsat.length > 0
@@ -788,7 +784,9 @@ export function explainChanceCell(
   if (clueCells.length > 0) {
     steps.push({
       text: t('ex.cluesMatter', {
-        clues: clueCells.map((ci) => clueName(cells[ci], ci, width, goalMode)).join('; ')
+        clues: clueCells
+          .map((ci) => clueName(cells[ci], ci, width, goalMode))
+          .join('; ')
       }),
       cells: clueCells
     })
@@ -849,32 +847,29 @@ export function explainChanceCell(
   if (showLayoutTally) {
     if (certain) {
       steps.push({
-        text: t(
-          goalMode === 'hunt' ? 'ex.everyLayoutHunt' : 'ex.everyLayout',
-          { cell: label, total }
-        ),
+        text: t(goalMode === 'hunt' ? 'ex.everyLayoutHunt' : 'ex.everyLayout', {
+          cell: label,
+          total
+        }),
         cells: [cellIndex]
       })
     } else if (hits === 0) {
       steps.push({
-        text: t(
-          goalMode === 'hunt' ? 'ex.neverLayoutHunt' : 'ex.neverLayout',
-          { cell: label, total }
-        ),
+        text: t(goalMode === 'hunt' ? 'ex.neverLayoutHunt' : 'ex.neverLayout', {
+          cell: label,
+          total
+        }),
         cells: [cellIndex]
       })
     } else {
       const goalHits = goalMode === 'hunt' ? hits : total - hits
       steps.push({
-        text: t(
-          goalMode === 'hunt' ? 'ex.someLayoutHunt' : 'ex.someLayout',
-          {
-            cell: label,
-            hits: goalHits,
-            total,
-            percent: localPercent
-          }
-        ),
+        text: t(goalMode === 'hunt' ? 'ex.someLayoutHunt' : 'ex.someLayout', {
+          cell: label,
+          hits: goalHits,
+          total,
+          percent: localPercent
+        }),
         cells: [cellIndex]
       })
     }
@@ -899,12 +894,9 @@ export function explainChanceCell(
       if (exactlyOne) {
         const other = component[i === localIdx ? j : i]
         steps.push({
-          text: t(
-            goalMode === 'hunt' ? 'ex.pairedHunt' : 'ex.paired',
-            {
-              other: cellLabel(other, width)
-            }
-          ),
+          text: t(goalMode === 'hunt' ? 'ex.pairedHunt' : 'ex.paired', {
+            other: cellLabel(other, width)
+          }),
           cells: [cellIndex, other]
         })
         break pairLoop
@@ -921,20 +913,21 @@ export function explainChanceCell(
 
   return {
     cellIndex,
-    resultLabel:
-      useSolverHeader
-        ? `${displayPercent}%`
-        : certainMine
-          ? certainTargetLabel(goalMode)
-          : certainSafe
-            ? certainAvoidLabel(goalMode)
-            : `${displayPercent}%`,
+    resultLabel: useSolverHeader
+      ? `${displayPercent}%`
+      : certainMine
+        ? certainTargetLabel(goalMode)
+        : certainSafe
+          ? certainAvoidLabel(goalMode)
+          : `${displayPercent}%`,
     meta:
       showLayoutTally && (certainMine || certainSafe) && !useSolverHeader
         ? t(total === 1 ? 'ex.meta.certain1' : 'ex.meta.certainN', { n: total })
         : showLayoutTally
           ? t(
-              goalMode === 'hunt' ? 'ex.meta.layoutsHunt' : 'ex.meta.layoutsSafe',
+              goalMode === 'hunt'
+                ? 'ex.meta.layoutsHunt'
+                : 'ex.meta.layoutsSafe',
               {
                 hits: goalHits,
                 total,
@@ -1054,14 +1047,11 @@ function explainPlacedNumber(
 
   if (knownMines > 0) {
     steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.knownTargetsHunt' : 'ex.knownMines',
-        {
-          known: knownMines,
-          need,
-          verb: need === 1 ? t('ex.word.is') : t('ex.word.are')
-        }
-      ),
+      text: t(goalMode === 'hunt' ? 'ex.knownTargetsHunt' : 'ex.knownMines', {
+        known: knownMines,
+        need,
+        verb: need === 1 ? t('ex.word.is') : t('ex.word.are')
+      }),
       cells: [cellIndex]
     })
   }
@@ -1144,25 +1134,20 @@ function explainMarkedFlag(
   return {
     cellIndex,
     resultLabel: goalMode === 'hunt' ? t('ex.flagHunt') : t('ex.flag'),
-    meta: t(
-      goalMode === 'hunt' ? 'ex.meta.flagHunt' : 'ex.meta.flagMine'
-    ),
+    meta: t(goalMode === 'hunt' ? 'ex.meta.flagHunt' : 'ex.meta.flagMine'),
     percent: goalMode === 'hunt' ? 0 : 100,
     hits: goalMode === 'hunt' ? 0 : 1,
     total: 1,
     isChance: false,
     steps: [
       {
-        text: t(
-          goalMode === 'hunt' ? 'ex.flaggedHunt' : 'ex.flagged',
-          { cell: label }
-        ),
+        text: t(goalMode === 'hunt' ? 'ex.flaggedHunt' : 'ex.flagged', {
+          cell: label
+        }),
         cells: [cellIndex]
       },
       {
-        text: t(
-          goalMode === 'hunt' ? 'ex.flagCountsHunt' : 'ex.flagCounts'
-        ),
+        text: t(goalMode === 'hunt' ? 'ex.flagCountsHunt' : 'ex.flagCounts'),
         cells: [cellIndex]
       }
     ],
@@ -1189,10 +1174,9 @@ function explainMarkedSafe(
     isChance: false,
     steps: [
       {
-        text: t(
-          goalMode === 'hunt' ? 'ex.markedSafeHunt' : 'ex.markedSafe',
-          { cell: label }
-        ),
+        text: t(goalMode === 'hunt' ? 'ex.markedSafeHunt' : 'ex.markedSafe', {
+          cell: label
+        }),
         cells: [cellIndex]
       },
       {
@@ -1252,9 +1236,7 @@ export function explainCell(
       .map((c, i) => ({ c, i }))
       .filter(
         ({ c, i }) =>
-          i !== cellIndex &&
-          c.solver?.kind === 'chance' &&
-          c.solver.safest
+          i !== cellIndex && c.solver?.kind === 'chance' && c.solver.safest
       )
       .map(({ i }) => i)
     steps.push({
@@ -1275,9 +1257,7 @@ export function explainCell(
     }
   } else if (isUnclued) {
     steps.push({
-      text: t(
-        goalMode === 'hunt' ? 'ex.uncluedWhyHunt' : 'ex.uncluedWhySafe'
-      ),
+      text: t(goalMode === 'hunt' ? 'ex.uncluedWhyHunt' : 'ex.uncluedWhySafe'),
       cells: [cellIndex]
     })
   }
@@ -1353,23 +1333,17 @@ export function shortWhyHint(
           { total: explanation.total }
         )
       : certainSafe
-        ? t(
-            goalMode === 'hunt' ? 'ex.hint.certainHunt' : 'ex.hint.certain',
-            { total: explanation.total }
-          )
-        : t(
-            goalMode === 'hunt' ? 'ex.hint.chanceHunt' : 'ex.hint.chance',
-            {
-              hits: goalHits,
-              total: explanation.total,
-              percent: explanation.percent
-            }
-          )
+        ? t(goalMode === 'hunt' ? 'ex.hint.certainHunt' : 'ex.hint.certain', {
+            total: explanation.total
+          })
+        : t(goalMode === 'hunt' ? 'ex.hint.chanceHunt' : 'ex.hint.chance', {
+            hits: goalHits,
+            total: explanation.total,
+            percent: explanation.percent
+          })
   ]
   if (explanation.safest) {
-    parts.push(
-      goalMode === 'hunt' ? t('why.surestTarget') : t('why.safest')
-    )
+    parts.push(goalMode === 'hunt' ? t('why.surestTarget') : t('why.safest'))
   } else if (explanation.best) parts.push(t('why.best'))
   else if (explanation.unclued) parts.push(t('why.unclued'))
   if (explanation.clueCells.length > 0) {
