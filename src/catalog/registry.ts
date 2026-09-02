@@ -28,7 +28,8 @@ import {
   chessMateTheme,
   rushHourTheme,
   lightsOutTheme,
-  geoQuizTheme
+  geoQuizTheme,
+  mentalMathTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -170,12 +171,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.mentalMath.title',
     blurbKey: 'catalog.mentalMath.blurb',
     icon: Brain,
-    theme: {
-      accent: '#3d7a9a',
-      accentHover: '#4e8bab',
-      onAccent: '#e5f2f8'
-    },
-    status: 'soon'
+    theme: mentalMathTheme,
+    status: 'live'
   },
   {
     id: 'periodic-quiz',

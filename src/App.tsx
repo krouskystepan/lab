@@ -9,10 +9,12 @@ import ChessMateApp from './apps/chess-mate/ChessMateApp'
 import RushHourApp from './apps/rush-hour/RushHourApp'
 import LightsOutApp from './apps/lights-out/LightsOutApp'
 import GeoQuizApp from './apps/geo-quiz/GeoQuizApp'
+import MentalMathApp from './apps/mental-math/MentalMathApp'
 import {
   chessMateTheme,
   geoQuizTheme,
   lightsOutTheme,
+  mentalMathTheme,
   mineHelperTheme,
   minesweeperTheme,
   rushHourTheme,
@@ -97,6 +99,14 @@ function GeoQuizRoute() {
   )
 }
 
+function MentalMathRoute() {
+  return (
+    <ThemeScope theme={mentalMathTheme} className={gamePage}>
+      <MentalMathApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -122,6 +132,7 @@ export default function App() {
           <Route path="/games/rush-hour" element={<RushHourRoute />} />
           <Route path="/games/lights-out" element={<LightsOutRoute />} />
           <Route path="/games/geo-quiz" element={<GeoQuizRoute />} />
+          <Route path="/games/mental-math" element={<MentalMathRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/solvers/chess-mate" element={<ChessMateRoute />} />
