@@ -11,6 +11,7 @@ export type BoardFamily =
   | 'rushhour'
   | 'lightsout'
   | 'geoquiz'
+  | 'mentalmath'
 
 /** Visible minesweeper knowledge (no hidden mine map). */
 export type MineTransferCell =
@@ -156,6 +157,39 @@ export type GeoQuizBoardFile = {
   }
 }
 
+export type MentalMathBoardFile = {
+  format: typeof BOARD_FORMAT
+  version: typeof BOARD_VERSION
+  family: 'mentalmath'
+  opId: 'mix' | 'add' | 'sub' | 'mul' | 'div'
+  diffId?: 'easy' | 'medium' | 'hard'
+  termsId?: '2' | '3' | '4'
+  powers?: boolean
+  roots?: boolean
+  facts?: boolean
+  squares?: boolean
+  parens?: boolean
+  lengthId?: 'n20' | 'endless'
+  paceId?: 'train' | 'timed'
+  timeLimit?: number
+  questions: {
+    expr?: unknown
+    a?: number
+    b?: number
+    op?: 'add' | 'sub' | 'mul' | 'div'
+    answer: number
+  }[]
+  game?: {
+    roundId?: string
+    index?: number
+    score?: number
+    picked?: (string | null)[]
+    misses?: string[][]
+    status?: 'ready' | 'playing' | 'revealed' | 'won' | 'lost'
+    seconds?: number
+  }
+}
+
 export type BoardFile =
   | MinesweeperBoardFile
   | SudokuBoardFile
@@ -164,6 +198,7 @@ export type BoardFile =
   | RushHourBoardFile
   | LightsOutBoardFile
   | GeoQuizBoardFile
+  | MentalMathBoardFile
 
 export function isBoardFile(data: unknown): data is BoardFile {
   if (!data || typeof data !== 'object') return false
