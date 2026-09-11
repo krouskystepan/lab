@@ -10,6 +10,7 @@ import { rushHourEn } from './rush-hour'
 import { lightsOutEn } from './lights-out'
 import { geoQuizEn } from './geo-quiz'
 import { mentalMathEn } from './mental-math'
+import { mirrorHelperEn } from './mirror-helper'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -24,5 +25,6 @@ export const en = {
   ...rushHourEn,
   ...lightsOutEn,
   ...geoQuizEn,
-  ...mentalMathEn
+  ...mentalMathEn,
+  ...mirrorHelperEn
 }
