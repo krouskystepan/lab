@@ -10,6 +10,7 @@ import RushHourApp from './apps/rush-hour/RushHourApp'
 import LightsOutApp from './apps/lights-out/LightsOutApp'
 import GeoQuizApp from './apps/geo-quiz/GeoQuizApp'
 import MentalMathApp from './apps/mental-math/MentalMathApp'
+import MirrorHelperApp from './apps/mirror-helper/MirrorHelperApp'
 import {
   chessMateTheme,
   geoQuizTheme,
@@ -17,6 +18,7 @@ import {
   mentalMathTheme,
   mineHelperTheme,
   minesweeperTheme,
+  mirrorHelperTheme,
   rushHourTheme,
   sudokuTheme,
   wordleTheme
@@ -107,6 +109,14 @@ function MentalMathRoute() {
   )
 }
 
+function MirrorHelperRoute() {
+  return (
+    <ThemeScope theme={mirrorHelperTheme} className={gamePage}>
+      <MirrorHelperApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -134,6 +144,7 @@ export default function App() {
           <Route path="/games/geo-quiz" element={<GeoQuizRoute />} />
           <Route path="/games/mental-math" element={<MentalMathRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
+          <Route path="/solvers/mirror-helper" element={<MirrorHelperRoute />} />
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
           <Route path="/solvers/chess-mate" element={<ChessMateRoute />} />
           <Route path="/games/:slug" element={<ComingSoonPage />} />

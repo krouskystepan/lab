@@ -88,6 +88,14 @@ export const mentalMathTheme: AppTheme = {
   glow: '#3d7a9a'
 }
 
+/** Mirror Helper - cool cyan-steel (distinct from mine green / geo teal). */
+export const mirrorHelperTheme: AppTheme = {
+  accent: '#3a8a9a',
+  accentHover: '#4b9bab',
+  onAccent: '#e2f4f7',
+  glow: '#3a8a9a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }

@@ -9,6 +9,7 @@ import {
   Crown,
   Flag,
   FlaskConical,
+  FlipHorizontal2,
   Globe2,
   Grid3x3,
   Keyboard,
@@ -23,6 +24,7 @@ import {
   hubTheme,
   mineHelperTheme,
   minesweeperTheme,
+  mirrorHelperTheme,
   sudokuTheme,
   wordleTheme,
   chessMateTheme,
@@ -211,6 +213,16 @@ export const catalog: CatalogEntry[] = [
     blurbKey: 'catalog.mineHelper.blurb',
     icon: Bomb,
     theme: mineHelperTheme,
+    status: 'live'
+  },
+  {
+    id: 'mirror-helper',
+    kind: 'solver',
+    path: '/solvers/mirror-helper',
+    titleKey: 'catalog.mirrorHelper.title',
+    blurbKey: 'catalog.mirrorHelper.blurb',
+    icon: FlipHorizontal2,
+    theme: mirrorHelperTheme,
     status: 'live'
   },
   {
