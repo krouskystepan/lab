@@ -1,0 +1,59 @@
+import type { ReactNode } from 'react'
+import { cn } from '../../../shared/lib/cn'
+
+export type LegendMarkKind =
+  | 'sure'
+  | 'best'
+  | 'safest'
+  | 'surestTarget'
+  | 'unclued'
+  | 'chance'
+  | 'mine'
+  | 'opp'
+  | 'info'
+  | 'flag'
+  | 'safe'
+  | 'hint'
+
+const MARK_CLASS: Record<LegendMarkKind, string> = {
+  sure: 'inline font-bold text-[color-mix(in_srgb,var(--color-accent)_85%,white)]',
+  best: 'inline font-bold text-[color-mix(in_srgb,var(--color-best)_88%,white)]',
+  safest: 'inline font-bold text-[color-mix(in_srgb,var(--color-safest)_88%,white)]',
+  surestTarget:
+    'inline font-bold text-[color-mix(in_srgb,var(--color-safest)_88%,white)]',
+  unclued:
+    'inline font-bold text-[color-mix(in_srgb,var(--color-unclued)_88%,white)]',
+  chance: 'inline font-bold text-[color-mix(in_srgb,var(--color-accent)_70%,white)]',
+  mine: 'inline font-bold text-[color-mix(in_srgb,var(--color-mine)_80%,white)]',
+  opp: 'inline font-bold text-[color-mix(in_srgb,var(--color-opp)_88%,white)]',
+  info: 'inline font-bold text-[color-mix(in_srgb,var(--color-info)_80%,white)]',
+  flag: 'inline font-bold text-[color-mix(in_srgb,var(--color-flag)_80%,white)]',
+  safe: 'inline font-bold text-[#b8c4d4]',
+  hint: 'inline font-bold text-[color-mix(in_srgb,var(--color-mine)_70%,white)]'
+}
+
+/** Colored inline label matching a legend swatch. */
+export function LegendMark({
+  kind,
+  children
+}: {
+  kind: LegendMarkKind
+  children: ReactNode
+}) {
+  return <span className={cn(MARK_CLASS[kind])}>{children}</span>
+}
+
+export const LEGEND_TITLE_CLASS: Partial<Record<string, string>> = {
+  mine: MARK_CLASS.mine,
+  opp: MARK_CLASS.opp,
+  info: MARK_CLASS.info,
+  flag: MARK_CLASS.flag,
+  blank: MARK_CLASS.safe,
+  sure: MARK_CLASS.sure,
+  chance: MARK_CLASS.chance,
+  best: MARK_CLASS.best,
+  safest: MARK_CLASS.safest,
+  surestTarget: MARK_CLASS.surestTarget,
+  unclued: MARK_CLASS.unclued,
+  hint: MARK_CLASS.hint
+}
