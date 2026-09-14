@@ -9,6 +9,7 @@ import { chessMateEn } from './chess-mate'
 import { rushHourEn } from './rush-hour'
 import { lightsOutEn } from './lights-out'
 import { geoQuizEn } from './geo-quiz'
+import { mentalMathEn } from './mental-math'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -22,5 +23,6 @@ export const en = {
   ...chessMateEn,
   ...rushHourEn,
   ...lightsOutEn,
-  ...geoQuizEn
+  ...geoQuizEn,
+  ...mentalMathEn
 }

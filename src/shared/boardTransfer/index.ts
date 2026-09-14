@@ -14,6 +14,7 @@ export {
   type RushHourBoardFile,
   type LightsOutBoardFile,
   type GeoQuizBoardFile,
+  type MentalMathBoardFile,
   type MineTransferCell
 } from './types'
 
@@ -40,6 +41,8 @@ export { exportRushHourGame, importRushHourToGame } from './rushhour'
 export { exportLightsOutGame, importLightsOutToGame } from './lightsout'
 
 export { exportGeoQuizGame, importGeoQuizToGame } from './geoquiz'
+
+export { exportMentalMathGame, importMentalMathToGame } from './mentalmath'
 
 export {
   ExportImportButtons,

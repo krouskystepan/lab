@@ -80,6 +80,14 @@ export const geoQuizTheme: AppTheme = {
   glow: '#2e6b8a'
 }
 
+/** Mental Math - cool slate teal. */
+export const mentalMathTheme: AppTheme = {
+  accent: '#3d7a9a',
+  accentHover: '#4e8bab',
+  onAccent: '#e5f2f8',
+  glow: '#3d7a9a'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }
