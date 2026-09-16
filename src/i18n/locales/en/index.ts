@@ -11,6 +11,7 @@ import { lightsOutEn } from './lights-out'
 import { geoQuizEn } from './geo-quiz'
 import { mentalMathEn } from './mental-math'
 import { mirrorHelperEn } from './mirror-helper'
+import { equationStepsEn } from './equation-steps'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -26,5 +27,6 @@ export const en = {
   ...lightsOutEn,
   ...geoQuizEn,
   ...mentalMathEn,
-  ...mirrorHelperEn
+  ...mirrorHelperEn,
+  ...equationStepsEn
 }
