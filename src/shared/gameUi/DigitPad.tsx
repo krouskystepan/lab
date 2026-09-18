@@ -18,6 +18,8 @@ type DigitPadProps = {
   className?: string
   /** Phone column count before wrapping. Default 5 (2-row pad for 10 keys). */
   mobileCols?: 5 | 3
+  /** Keep focus on an input (equation pad). */
+  keepFocus?: boolean
 }
 
 /**
@@ -35,7 +37,8 @@ export function DigitPad({
   digitClassName,
   trailing,
   className,
-  mobileCols = 5
+  mobileCols = 5,
+  keepFocus = false
 }: DigitPadProps) {
   const total = digits.length + (trailing ? 1 : 0)
 
@@ -63,6 +66,7 @@ export function DigitPad({
             )}
             title={digitTitle?.(n)}
             aria-pressed={active}
+            onMouseDown={keepFocus ? (e) => e.preventDefault() : undefined}
             onClick={() => onSelect(n)}
           >
             {digitContent ? digitContent(n) : n}

@@ -31,7 +31,8 @@ import {
   rushHourTheme,
   lightsOutTheme,
   geoQuizTheme,
-  mentalMathTheme
+  mentalMathTheme,
+  equationStepsTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -252,12 +253,8 @@ export const catalog: CatalogEntry[] = [
     titleKey: 'catalog.equationSteps.title',
     blurbKey: 'catalog.equationSteps.blurb',
     icon: Calculator,
-    theme: {
-      accent: '#3d7a9a',
-      accentHover: '#4e8bab',
-      onAccent: '#e5f2f8'
-    },
-    status: 'soon'
+    theme: equationStepsTheme,
+    status: 'live'
   },
   {
     id: 'conjugation',

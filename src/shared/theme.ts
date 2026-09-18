@@ -96,6 +96,14 @@ export const mirrorHelperTheme: AppTheme = {
   glow: '#3a8a9a'
 }
 
+/** Equation Steps - ink blue, distinct from Mental Math teal. */
+export const equationStepsTheme: AppTheme = {
+  accent: '#4a6fa8',
+  accentHover: '#5b80b9',
+  onAccent: '#eaf0f8',
+  glow: '#4a6fa8'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }
