@@ -317,7 +317,7 @@ export default function EquationStepsApp() {
         />
       </div>
 
-      <div className="board-frame order-3 min-h-0 flex-1 [--board-pad:0.25rem] rounded-md bg-elevated/40 max-[980px]:order-2">
+      <div className="board-frame order-3 min-h-0 flex-1 [--board-pad:0.25rem] rounded-md border border-line bg-elevated max-[980px]:order-2">
         <div
           className={`${boardStage} min-h-0 flex-1 items-start justify-center overflow-auto`}
         >

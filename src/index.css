@@ -5,9 +5,9 @@
   --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  --color-bg: #101418;
-  --color-elevated: #171c22;
-  --color-panel: #1d242c;
+  --color-bg: #0c1014;
+  --color-elevated: #1a2129;
+  --color-panel: #222a33;
   --color-cell: #262e38;
   --color-cell-hover: #323c48;
   --color-ink: #e8eef4;
@@ -43,11 +43,11 @@
     @apply bg-bg font-sans text-ink antialiased;
     color-scheme: dark;
     background-image:
-      linear-gradient(180deg, #141a20 0%, var(--color-bg) 18rem),
+      linear-gradient(180deg, #12181e 0%, var(--color-bg) 14rem),
       radial-gradient(
-        ellipse 90% 50% at 50% -20%,
-        color-mix(in srgb, var(--theme-glow, #ffffff) 7%, transparent),
-        transparent 60%
+        ellipse 70% 40% at 50% -25%,
+        color-mix(in srgb, var(--theme-glow, #ffffff) 4%, transparent),
+        transparent 55%
       );
     background-attachment: fixed;
   }

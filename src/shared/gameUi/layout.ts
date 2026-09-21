@@ -1,5 +1,9 @@
 import { cn } from '../lib/cn'
 
+/** Board tray behind the grid — solid so page glow doesn't bleed through. */
+export const boardFrameChrome =
+  'rounded-md border border-line bg-elevated shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]'
+
 /** Outer game layout chrome - height budget vars stay in index.css on `.game-shell`. */
 export const gameShell = cn(
   'game-shell',

@@ -35,9 +35,9 @@ export function ThemeScope({ theme, children, className }: ThemeScopeProps) {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28"
         style={{
-          background: `linear-gradient(180deg, color-mix(in srgb, ${glow} 9%, transparent) 0%, transparent 100%)`
+          background: `linear-gradient(180deg, color-mix(in srgb, ${glow} 5%, transparent) 0%, transparent 100%)`
         }}
       />
       {children}

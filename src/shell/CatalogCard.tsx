@@ -43,7 +43,7 @@ export function CatalogCard({ entry }: CatalogCardProps) {
               {title}
             </span>
             {soon ? (
-              <span className="shrink-0 font-mono text-[0.65rem] font-medium uppercase tracking-[0.1em] text-muted">
+              <span className="shrink-0 font-mono text-[0.65rem] font-medium uppercase tracking-widest text-muted">
                 {t('hub.soon')}
               </span>
             ) : null}

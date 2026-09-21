@@ -6,6 +6,7 @@ export {
   gameShell,
   gamePage,
   gamePageFit,
+  boardFrameChrome,
   boardStage,
   boardStageWhy,
   gameStickyControls
