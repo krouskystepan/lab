@@ -1,22 +1,16 @@
 import type { LucideIcon } from 'lucide-react'
 import {
   Bomb,
-  BookOpen,
-  Box,
   Brain,
   Calculator,
   Car,
   Crown,
   Flag,
-  FlaskConical,
   FlipHorizontal2,
   Globe2,
   Grid3x3,
   Keyboard,
-  Languages,
-  Layers,
-  Lightbulb,
-  Puzzle
+  Lightbulb
 } from 'lucide-react'
 import type { MessageKey } from '../i18n'
 import {
@@ -82,34 +76,6 @@ export const catalog: CatalogEntry[] = [
     status: 'live'
   },
   {
-    id: 'queens',
-    kind: 'game',
-    path: '/games/queens',
-    titleKey: 'catalog.queens.title',
-    blurbKey: 'catalog.queens.blurb',
-    icon: Crown,
-    theme: {
-      accent: '#b8860b',
-      accentHover: '#cfa012',
-      onAccent: '#fff8e0'
-    },
-    status: 'soon'
-  },
-  {
-    id: 'set',
-    kind: 'game',
-    path: '/games/set',
-    titleKey: 'catalog.set.title',
-    blurbKey: 'catalog.set.blurb',
-    icon: Layers,
-    theme: {
-      accent: '#9b59b6',
-      accentHover: '#ad6fc7',
-      onAccent: '#f5e8fb'
-    },
-    status: 'soon'
-  },
-  {
     id: 'rush-hour',
     kind: 'game',
     path: '/games/rush-hour',
@@ -118,34 +84,6 @@ export const catalog: CatalogEntry[] = [
     icon: Car,
     theme: rushHourTheme,
     status: 'live'
-  },
-  {
-    id: 'sokoban',
-    kind: 'game',
-    path: '/games/sokoban',
-    titleKey: 'catalog.sokoban.title',
-    blurbKey: 'catalog.sokoban.blurb',
-    icon: Box,
-    theme: {
-      accent: '#8b6914',
-      accentHover: '#a07a1c',
-      onAccent: '#fff6dc'
-    },
-    status: 'soon'
-  },
-  {
-    id: 'logic-grid',
-    kind: 'game',
-    path: '/games/logic-grid',
-    titleKey: 'catalog.logicGrid.title',
-    blurbKey: 'catalog.logicGrid.blurb',
-    icon: Puzzle,
-    theme: {
-      accent: '#2ec8c0',
-      accentHover: '#45d4cd',
-      onAccent: '#e0faf8'
-    },
-    status: 'soon'
   },
   {
     id: 'lights-out',
@@ -176,34 +114,6 @@ export const catalog: CatalogEntry[] = [
     icon: Brain,
     theme: mentalMathTheme,
     status: 'live'
-  },
-  {
-    id: 'periodic-quiz',
-    kind: 'game',
-    path: '/games/periodic-quiz',
-    titleKey: 'catalog.periodicQuiz.title',
-    blurbKey: 'catalog.periodicQuiz.blurb',
-    icon: FlaskConical,
-    theme: {
-      accent: '#6b4fa0',
-      accentHover: '#7d61b2',
-      onAccent: '#f0e8fa'
-    },
-    status: 'soon'
-  },
-  {
-    id: 'flashcards',
-    kind: 'game',
-    path: '/games/flashcards',
-    titleKey: 'catalog.flashcards.title',
-    blurbKey: 'catalog.flashcards.blurb',
-    icon: BookOpen,
-    theme: {
-      accent: '#8a5a3a',
-      accentHover: '#9b6b4b',
-      onAccent: '#f8eee5'
-    },
-    status: 'soon'
   },
 
   {
@@ -255,20 +165,6 @@ export const catalog: CatalogEntry[] = [
     icon: Calculator,
     theme: equationStepsTheme,
     status: 'live'
-  },
-  {
-    id: 'conjugation',
-    kind: 'solver',
-    path: '/solvers/conjugation',
-    titleKey: 'catalog.conjugation.title',
-    blurbKey: 'catalog.conjugation.blurb',
-    icon: Languages,
-    theme: {
-      accent: '#8a4a5a',
-      accentHover: '#9b5b6b',
-      onAccent: '#f8e8ec'
-    },
-    status: 'soon'
   }
 ]
 
