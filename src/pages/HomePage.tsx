@@ -57,21 +57,27 @@ export function HomePage() {
 
   return (
     <ThemeScope theme={hubTheme} className="flex min-h-0 w-full flex-1 flex-col">
-      <div className="hub-page mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-5 pb-6 sm:px-8 sm:pt-6">
-        <header className="flex items-center justify-between gap-4 border-b border-line pb-3">
-          <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5">
-            <h1 className="m-0 text-[1.15rem] font-bold tracking-[-0.03em] text-ink">
-              {t('hub.brand')}
-            </h1>
-            <p className="m-0 text-[0.85rem] text-muted">{t('hub.tagline')}</p>
+      <div className="hub-page mx-auto flex w-full max-w-5xl flex-1 flex-col gap-7 px-5 pt-7 pb-8 sm:px-8 sm:pt-9">
+        <header className="flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex flex-col gap-2">
+              <p className="hub-kicker">{t('hub.eyebrow')}</p>
+              <h1 className="m-0 text-[1.65rem] font-semibold leading-none tracking-[-0.04em] text-ink sm:text-[1.85rem]">
+                {t('hub.brand')}
+              </h1>
+              <p className="m-0 max-w-md text-[0.95rem] leading-snug text-muted">
+                {t('hub.tagline')}
+              </p>
+            </div>
+            <LangSwitch />
           </div>
-          <LangSwitch />
+          <div className="hub-rule" aria-hidden />
         </header>
 
-        <label className="flex items-center gap-2 border border-line bg-elevated px-3 py-2 focus-within:border-muted/60">
+        <label className="flex items-center gap-2.5 border border-line bg-elevated px-3 py-2.5 focus-within:border-ink/35">
           <Search
-            className="h-4 w-4 shrink-0 text-muted"
-            strokeWidth={2.25}
+            className="h-3.5 w-3.5 shrink-0 text-muted"
+            strokeWidth={2}
             aria-hidden
           />
           <input
@@ -80,16 +86,18 @@ export function HomePage() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('hub.search')}
             aria-label={t('hub.search')}
-            className="min-w-0 flex-1 appearance-none bg-transparent text-[0.9rem] text-ink outline-none placeholder:text-muted"
+            className="min-w-0 flex-1 appearance-none bg-transparent font-mono text-[0.82rem] tracking-wide text-ink outline-none placeholder:text-muted/80"
             autoComplete="off"
             spellCheck={false}
           />
         </label>
 
         {empty ? (
-          <p className="m-0 text-[0.9rem] text-muted">{t('hub.searchEmpty')}</p>
+          <p className="m-0 font-mono text-[0.82rem] text-muted">
+            {t('hub.searchEmpty')}
+          </p>
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-8">
             <CatalogSection
               id="games"
               title={t('hub.games')}

@@ -20,34 +20,42 @@ export function CatalogCard({ entry }: CatalogCardProps) {
     : `${title}. ${blurb}`
 
   const className = cn(
-    'flex h-full w-full items-center gap-3 border border-line bg-elevated px-3.5 py-3 text-left no-underline',
-    soon ? 'cursor-default opacity-50' : 'hover:bg-panel hover:border-muted/50'
+    'group flex h-full w-full items-stretch gap-0 border border-line bg-elevated text-left no-underline transition-[border-color,background-color] duration-100',
+    soon
+      ? 'cursor-default opacity-50'
+      : 'hover:border-ink/30 hover:bg-panel'
   )
 
   const body = (
     <>
-      <Icon
-        className="h-5 w-5 shrink-0"
-        strokeWidth={2.25}
-        style={{ color: accent }}
+      <span
         aria-hidden
+        className="w-[3px] shrink-0 self-stretch opacity-80 transition-opacity duration-100 group-hover:opacity-100"
+        style={{ background: accent }}
       />
-      <span className="min-w-0 flex flex-1 flex-col gap-0.5">
-        <span className="flex min-w-0 items-baseline gap-1.5 text-[1rem] font-semibold leading-tight text-ink">
-          <span className="truncate" title={title}>
-            {title}
-          </span>
-          {soon ? (
-            <span className="shrink-0 text-[0.75rem] font-normal text-muted">
-              {t('hub.soon')}
+      <span className="flex min-w-0 flex-1 items-start gap-3 px-3.5 py-3">
+        <Icon
+          className="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0 text-muted transition-colors duration-100 group-hover:text-ink"
+          strokeWidth={2}
+          aria-hidden
+        />
+        <span className="min-w-0 flex flex-1 flex-col gap-1">
+          <span className="flex min-w-0 items-baseline gap-2 text-[0.95rem] font-semibold leading-tight tracking-[-0.01em] text-ink">
+            <span className="truncate" title={title}>
+              {title}
             </span>
-          ) : null}
-        </span>
-        <span
-          className="truncate text-[0.8rem] leading-snug text-muted"
-          title={blurb}
-        >
-          {blurb}
+            {soon ? (
+              <span className="shrink-0 font-mono text-[0.65rem] font-medium uppercase tracking-[0.1em] text-muted">
+                {t('hub.soon')}
+              </span>
+            ) : null}
+          </span>
+          <span
+            className="truncate text-[0.78rem] leading-snug text-muted"
+            title={blurb}
+          >
+            {blurb}
+          </span>
         </span>
       </span>
     </>

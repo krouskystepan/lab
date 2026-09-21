@@ -1,17 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,500&family=JetBrains+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap');
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
-  --color-bg: #14191f;
-  --color-elevated: #1c232b;
-  --color-panel: #222a33;
-  --color-cell: #2a333e;
-  --color-cell-hover: #364150;
-  --color-ink: #eef3f8;
-  --color-muted: #8b9aab;
+  --color-bg: #101418;
+  --color-elevated: #171c22;
+  --color-panel: #1d242c;
+  --color-cell: #262e38;
+  --color-cell-hover: #323c48;
+  --color-ink: #e8eef4;
+  --color-muted: #8492a3;
   --color-accent: #7a8fa8;
   --color-accent-hover: #8fa3ba;
   --color-on-accent: #e8eef5;
@@ -25,11 +25,11 @@
   --color-unclued: #c084fc;
   --color-why-clue: #ff00b4;
   --color-why-peer: #00ffbc;
-  --color-line: #374554;
+  --color-line: #2f3a46;
   --color-danger: #e07070;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
 }
 
 @layer base {
@@ -42,11 +42,45 @@
   body {
     @apply bg-bg font-sans text-ink antialiased;
     color-scheme: dark;
+    background-image:
+      linear-gradient(180deg, #141a20 0%, var(--color-bg) 18rem),
+      radial-gradient(
+        ellipse 90% 50% at 50% -20%,
+        color-mix(in srgb, var(--theme-glow, #ffffff) 7%, transparent),
+        transparent 60%
+      );
+    background-attachment: fixed;
+  }
+
+  /* Fine grain — breaks the flat “AI gradient page” look without shouting. */
+  body::before {
+    content: '';
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* Hub scrolls; use clip so overflow-y stays visible */
   .hub-page {
     overflow-x: clip;
+  }
+
+  .hub-kicker {
+    @apply m-0 font-mono text-[0.68rem] font-medium uppercase tracking-[0.14em] text-muted;
+  }
+
+  .hub-rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      var(--color-line) 0%,
+      var(--color-line) 40%,
+      transparent 100%
+    );
   }
 
   /*
@@ -121,7 +155,7 @@
 /* --- Board geometry kernel (container-query sizing) --- */
 
 .board-frame {
-  --board-radius: 12px;
+  --board-radius: 6px;
   --board-pad: 4px;
   --board-inner-r: max(0px, calc(var(--board-radius) - var(--board-pad)));
   --fit-h: min(70dvh, 36rem);

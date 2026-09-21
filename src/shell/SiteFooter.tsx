@@ -24,16 +24,16 @@ export function SiteFooter() {
   }
 
   return (
-    <footer className="relative z-40 w-full shrink-0 border-t border-line bg-elevated/95 [@media(max-width:980px)_and_(max-height:480px)]:hidden">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-1.5 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-8 sm:py-2.5">
+    <footer className="relative z-40 w-full shrink-0 border-t border-line bg-bg/90 [@media(max-width:980px)_and_(max-height:480px)]:hidden">
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-1.5 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-8 sm:py-2.5">
         <nav aria-label={t('hub.breadcrumb')} className="min-w-0 w-full sm:flex-1">
-          <ol className="m-0 flex list-none flex-wrap items-center gap-x-1.5 gap-y-0.5 p-0 text-[0.75rem] leading-snug">
+          <ol className="m-0 flex list-none flex-wrap items-center gap-x-1.5 gap-y-0.5 p-0 font-mono text-[0.7rem] leading-snug tracking-wide">
             {crumbs.map((crumb, i) => {
               const last = i === crumbs.length - 1
               return (
                 <Fragment key={`${crumb.label}-${i}`}>
                   {i > 0 ? (
-                    <li aria-hidden className="shrink-0 text-muted/50">
+                    <li aria-hidden className="shrink-0 text-muted/45">
                       /
                     </li>
                   ) : null}
@@ -41,7 +41,7 @@ export function SiteFooter() {
                     {crumb.to && !last ? (
                       <Link
                         to={crumb.to}
-                        className="font-medium text-ink/75 no-underline hover:text-ink"
+                        className="text-muted no-underline hover:text-ink"
                       >
                         {crumb.label}
                       </Link>
@@ -49,8 +49,8 @@ export function SiteFooter() {
                       <span
                         className={
                           last
-                            ? 'block truncate font-medium text-ink'
-                            : 'font-medium text-ink/75'
+                            ? 'block truncate text-ink'
+                            : 'text-muted'
                         }
                         aria-current={last ? 'page' : undefined}
                         title={last ? crumb.label : undefined}
@@ -68,7 +68,7 @@ export function SiteFooter() {
           href="https://krouskystepan.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 self-start text-[0.75rem] font-medium text-ink/75 no-underline hover:text-ink sm:self-auto"
+          className="shrink-0 self-start font-mono text-[0.7rem] tracking-wide text-muted no-underline hover:text-ink sm:self-auto"
           title={t('author.title')}
         >
           {t('author.by')}
