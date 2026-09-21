@@ -36,6 +36,7 @@ export function SizeBar({
 
   return (
     <GamePanel
+      className="h-full"
       title={t('minesweeper.size.title')}
       headerRight={
         <HelpTip title={t('minesweeper.size.helpTitle')}>

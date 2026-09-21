@@ -347,7 +347,7 @@ export default function MinesweeperApp() {
         </div>
       </div>
 
-      <div className="game-secondary relative z-5 order-1 grid shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-[0.55rem] max-[980px]:order-2 max-[980px]:grid-cols-1">
+      <div className="game-secondary relative z-5 order-1 grid shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] items-stretch gap-[0.55rem] max-[980px]:order-2 max-[980px]:grid-cols-1">
         <SizeBar
           width={board.width}
           height={board.height}

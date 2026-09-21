@@ -105,7 +105,7 @@ export function HelpTip({
   return (
     <span
       className={cn(
-        'relative z-1 inline-flex h-[1.85rem] shrink-0 items-center self-center leading-none',
+        'relative z-1 inline-flex shrink-0 items-center leading-none',
         show === 'desktop' && 'max-[980px]:hidden',
         open && 'z-60'
       )}
@@ -114,7 +114,7 @@ export function HelpTip({
       <button
         type="button"
         className={cn(
-          'm-0 inline-flex size-[1.1rem] shrink-0 cursor-pointer appearance-none items-center justify-center border-none bg-transparent p-0 leading-none text-muted hover:text-accent',
+          'm-0 inline-flex size-[0.95rem] shrink-0 cursor-pointer appearance-none items-center justify-center border-none bg-transparent p-0 leading-none text-muted hover:text-accent',
           open && 'text-accent'
         )}
         aria-expanded={open}

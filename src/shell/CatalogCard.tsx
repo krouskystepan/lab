@@ -21,16 +21,14 @@ export function CatalogCard({ entry }: CatalogCardProps) {
 
   const className = cn(
     'group flex h-full w-full items-stretch gap-0 border border-line bg-elevated text-left no-underline transition-[border-color,background-color] duration-100',
-    soon
-      ? 'cursor-default opacity-50'
-      : 'hover:border-ink/30 hover:bg-panel'
+    soon ? 'cursor-default opacity-50' : 'hover:border-ink/30 hover:bg-panel'
   )
 
   const body = (
     <>
       <span
         aria-hidden
-        className="w-[3px] shrink-0 self-stretch opacity-80 transition-opacity duration-100 group-hover:opacity-100"
+        className="w-0.75 shrink-0 self-stretch opacity-80 transition-opacity duration-100 group-hover:opacity-100"
         style={{ background: accent }}
       />
       <span className="flex min-w-0 flex-1 items-start gap-3 px-3.5 py-3">

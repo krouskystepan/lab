@@ -56,7 +56,7 @@ export function GamePanel({
   return (
     <section className={cn(gamePanel, className)}>
       {showHeader ? (
-        <div className="flex w-full min-w-0 items-center justify-between gap-2">
+        <div className="flex w-full min-w-0 items-center justify-between gap-2 leading-none">
           {title ? <h2 className={gamePanelTitle}>{title}</h2> : <span />}
           {headerRight}
         </div>
