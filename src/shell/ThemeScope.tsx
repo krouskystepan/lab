@@ -8,13 +8,11 @@ type ThemeScopeProps = {
   className?: string
 }
 
-/** Scopes accent vars + page glow (scrolls with content - not fixed to the viewport). */
+/** Scopes accent vars. Atmosphere sits on body — no soft dual-blob wash here. */
 export function ThemeScope({ theme, children, className }: ThemeScopeProps) {
   const glow = themeGlow(theme)
 
-  // Clear legacy body glow from older ThemeScope (was fixed to the viewport).
   useEffect(() => {
-    document.body.style.backgroundImage = ''
     document.documentElement.style.setProperty('--color-accent', theme.accent)
     document.documentElement.style.setProperty(
       '--color-accent-hover',
@@ -37,12 +35,9 @@ export function ThemeScope({ theme, children, className }: ThemeScopeProps) {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-28"
         style={{
-          backgroundImage: [
-            `radial-gradient(ellipse 75% 45% at 50% -8%, color-mix(in srgb, ${glow} 14%, transparent) 0%, transparent 55%)`,
-            `radial-gradient(ellipse 60% 40% at 100% 100%, color-mix(in srgb, ${glow} 10%, transparent) 0%, transparent 45%)`
-          ].join(', ')
+          background: `linear-gradient(180deg, color-mix(in srgb, ${glow} 5%, transparent) 0%, transparent 100%)`
         }}
       />
       {children}

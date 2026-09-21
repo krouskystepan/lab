@@ -10,15 +10,15 @@ import {
 import type { GameStatus, PointerMode } from '../game/types'
 import { useI18n } from '../../../i18n'
 import { cn } from '../../../shared/lib/cn'
-import {
-  GamePanel,
-  ToolRow,
-  gameBtnActive,
-  gameToolBtn
-} from '../../../shared/gameUi'
+import { GamePanel, gameBtnActive, gameToolBtn } from '../../../shared/gameUi'
 import { HelpTip } from './HelpTip'
 
 const iconCls = 'h-[0.95em] w-[0.95em] shrink-0'
+
+/** Content-sized — never stretch to fill the panel. */
+const btn = cn(gameToolBtn, 'w-auto shrink-0 px-2.5')
+
+const group = 'flex flex-wrap items-center gap-1.5'
 
 type ToolsBarProps = {
   mode: PointerMode
@@ -64,9 +64,22 @@ export function ToolsBar({
 
   return (
     <GamePanel
+      className="h-full"
       title={t('minesweeper.tools.title')}
       headerRight={
         <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 font-mono text-[0.85rem] font-bold tabular-nums text-ink">
+          <HelpTip title={t('minesweeper.help.title')}>
+            <p className="m-0 mb-1.5">{t('minesweeper.help.body')}</p>
+            <p className="m-0 mb-1.5">{t('minesweeper.help.controls')}</p>
+            <p className="m-0 mb-1.5">{t('minesweeper.help.chord')}</p>
+            <p className="m-0 mb-1.5">{t('minesweeper.help.firstClick')}</p>
+            <p className="m-0">
+              <strong className="text-ink">
+                {t('minesweeper.tools.hintTipTitle')}:
+              </strong>{' '}
+              {t('minesweeper.tools.hintTipBody')}
+            </p>
+          </HelpTip>
           <span
             title={t('minesweeper.minesLeft')}
             aria-label={t('minesweeper.minesLeft')}
@@ -91,102 +104,102 @@ export function ToolsBar({
         </div>
       }
     >
-      <ToolRow mobileCols={4} desktopCols={8}>
-        <button
-          type="button"
-          className={cn(gameToolBtn, mode === 'dig' && gameBtnActive)}
-          aria-pressed={mode === 'dig'}
-          title={t('minesweeper.tools.digTitle')}
-          onClick={() => onModeChange('dig')}
-        >
-          <Pickaxe className={iconCls} strokeWidth={2.25} aria-hidden />
-          <span className="truncate">{t('minesweeper.tools.dig')}</span>
-        </button>
-        <button
-          type="button"
-          className={cn(gameToolBtn, mode === 'flag' && gameBtnActive)}
-          aria-pressed={mode === 'flag'}
-          title={t('minesweeper.tools.flagTitle')}
-          onClick={() => onModeChange('flag')}
-        >
-          <Flag className={iconCls} strokeWidth={2.25} aria-hidden />
-          <span className="truncate">{t('minesweeper.tools.flag')}</span>
-        </button>
-        <button
-          type="button"
-          className={gameToolBtn}
-          onClick={onUndo}
-          disabled={!canUndo}
-          title={t('minesweeper.tools.undoTitle')}
-        >
-          <Undo2 className={iconCls} aria-hidden />
-          <span className="truncate max-[980px]:hidden">
-            {t('minesweeper.tools.undo')}
-          </span>
-        </button>
-        <button
-          type="button"
-          className={gameToolBtn}
-          onClick={onRedo}
-          disabled={!canRedo}
-          title={t('minesweeper.tools.redoTitle')}
-        >
-          <Redo2 className={iconCls} aria-hidden />
-          <span className="truncate max-[980px]:hidden">
-            {t('minesweeper.tools.redo')}
-          </span>
-        </button>
-        <button
-          type="button"
-          className={cn(
-            gameToolBtn,
-            'border-accent bg-accent font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
-          )}
-          onClick={onHint}
-          disabled={!canHint}
-          title={t('minesweeper.tools.hintTitle')}
-        >
-          <Sparkles className={iconCls} aria-hidden />
-          <span className="truncate">{t('minesweeper.tools.hint')}</span>
-        </button>
-        <button
-          type="button"
-          className={gameToolBtn}
-          onClick={onClearFlags}
-          disabled={!hasFlags || status === 'won' || status === 'lost'}
-          title={t('minesweeper.tools.clearFlagsTitle')}
-        >
-          <FlagOff className={iconCls} aria-hidden />
-          <span className="truncate max-[980px]:hidden">
-            {t('minesweeper.tools.clearFlags')}
-          </span>
-        </button>
-        <button
-          type="button"
-          className={cn(
-            gameToolBtn,
-            'border-danger/45 bg-danger/10 text-[#ffb0b0] hover:border-danger/75 hover:bg-danger/30'
-          )}
-          onClick={onNew}
-          title={t('minesweeper.newTitle')}
-        >
-          <RotateCcw className={iconCls} aria-hidden />
-          <span className="truncate max-[980px]:hidden">
-            {t('minesweeper.new')}
-          </span>
-        </button>
-        <div className="flex min-w-0 items-center justify-center gap-1">
-          <HelpTip title={t('minesweeper.help.title')}>
-            <p className="m-0 mb-1.5">{t('minesweeper.help.body')}</p>
-            <p className="m-0 mb-1.5">{t('minesweeper.help.controls')}</p>
-            <p className="m-0 mb-1.5">{t('minesweeper.help.chord')}</p>
-            <p className="m-0">{t('minesweeper.help.firstClick')}</p>
-          </HelpTip>
-          <HelpTip title={t('minesweeper.tools.hintTipTitle')} alignEnd>
-            {t('minesweeper.tools.hintTipBody')}
-          </HelpTip>
+      <div className="flex w-full min-w-0 flex-col gap-1.5">
+        <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
+          <div className={group} role="group" aria-label={t('minesweeper.tools.dig')}>
+            <button
+              type="button"
+              className={cn(btn, mode === 'dig' && gameBtnActive)}
+              aria-pressed={mode === 'dig'}
+              title={t('minesweeper.tools.digTitle')}
+              onClick={() => onModeChange('dig')}
+            >
+              <Pickaxe className={iconCls} strokeWidth={2.25} aria-hidden />
+              <span>{t('minesweeper.tools.dig')}</span>
+            </button>
+            <button
+              type="button"
+              className={cn(btn, mode === 'flag' && gameBtnActive)}
+              aria-pressed={mode === 'flag'}
+              title={t('minesweeper.tools.flagTitle')}
+              onClick={() => onModeChange('flag')}
+            >
+              <Flag className={iconCls} strokeWidth={2.25} aria-hidden />
+              <span>{t('minesweeper.tools.flag')}</span>
+            </button>
+          </div>
+          <div className={group} role="group" aria-label={t('minesweeper.tools.undo')}>
+            <button
+              type="button"
+              className={btn}
+              onClick={onUndo}
+              disabled={!canUndo}
+              title={t('minesweeper.tools.undoTitle')}
+            >
+              <Undo2 className={iconCls} aria-hidden />
+              <span className="max-[980px]:hidden">
+                {t('minesweeper.tools.undo')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className={btn}
+              onClick={onRedo}
+              disabled={!canRedo}
+              title={t('minesweeper.tools.redoTitle')}
+            >
+              <Redo2 className={iconCls} aria-hidden />
+              <span className="max-[980px]:hidden">
+                {t('minesweeper.tools.redo')}
+              </span>
+            </button>
+          </div>
         </div>
-      </ToolRow>
+
+        <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
+          <div className={group}>
+            <button
+              type="button"
+              className={cn(
+                btn,
+                'border-accent bg-accent font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
+              )}
+              onClick={onHint}
+              disabled={!canHint}
+              title={t('minesweeper.tools.hintTitle')}
+            >
+              <Sparkles className={iconCls} aria-hidden />
+              <span>{t('minesweeper.tools.hint')}</span>
+            </button>
+          </div>
+          <div className={group}>
+            <button
+              type="button"
+              className={btn}
+              onClick={onClearFlags}
+              disabled={!hasFlags || status === 'won' || status === 'lost'}
+              title={t('minesweeper.tools.clearFlagsTitle')}
+            >
+              <FlagOff className={iconCls} aria-hidden />
+              <span className="max-[980px]:hidden">
+                {t('minesweeper.tools.clearFlags')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className={cn(
+                btn,
+                'border-danger/45 bg-danger/10 text-[#ffb0b0] hover:border-danger/75 hover:bg-danger/30'
+              )}
+              onClick={onNew}
+              title={t('minesweeper.newTitle')}
+            >
+              <RotateCcw className={iconCls} aria-hidden />
+              <span className="max-[980px]:hidden">{t('minesweeper.new')}</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </GamePanel>
   )
 }

@@ -71,25 +71,11 @@ export function ControlsBar({
       title={t('equationSteps.input.label')}
       className="w-full"
       headerRight={
-        <div className="flex min-w-0 flex-wrap items-center justify-end gap-1.5">
-          <HelpTip title={t('equationSteps.help.title')}>
-            <p className="m-0 mb-1.5">{t('equationSteps.help.body')}</p>
-            <p className="m-0 mb-2">{t('equationSteps.help.steps')}</p>
-            <CharsTable />
-          </HelpTip>
-          <button
-            type="button"
-            className={cn(
-              toolBtn,
-              'inline-flex h-9 min-w-0 items-center justify-center gap-1.5 border-accent bg-accent px-3 font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
-            )}
-            onClick={onSolve}
-            title={t('equationSteps.tools.solveTitle')}
-          >
-            <Sparkles className={iconCls} aria-hidden />
-            {t('equationSteps.tools.solve')}
-          </button>
-        </div>
+        <HelpTip title={t('equationSteps.help.title')}>
+          <p className="m-0 mb-1.5">{t('equationSteps.help.body')}</p>
+          <p className="m-0 mb-2">{t('equationSteps.help.steps')}</p>
+          <CharsTable />
+        </HelpTip>
       }
     >
       <form
@@ -116,8 +102,19 @@ export function ControlsBar({
           autoComplete="off"
           placeholder={t('equationSteps.input.placeholder')}
           aria-label={t('equationSteps.input.label')}
-          className="min-w-0 flex-1 rounded-(--panel-btn-r) border border-line bg-cell px-2.5 py-[0.45rem] font-mono text-[0.92rem] text-ink outline-none focus:border-accent"
+          className="h-9 min-w-0 flex-1 rounded-(--panel-btn-r) border border-line bg-cell px-2.5 font-mono text-[0.92rem] leading-none text-ink outline-none focus:border-accent"
         />
+        <button
+          type="submit"
+          className={cn(
+            toolBtn,
+            'inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border-accent bg-accent px-3 font-bold text-white hover:border-accent-hover hover:bg-accent-hover'
+          )}
+          title={t('equationSteps.tools.solveTitle')}
+        >
+          <Sparkles className={iconCls} aria-hidden />
+          {t('equationSteps.tools.solve')}
+        </button>
       </form>
       <div className="flex min-w-0 flex-col gap-1.5">
         <div className="flex min-w-0 flex-wrap items-center gap-1">

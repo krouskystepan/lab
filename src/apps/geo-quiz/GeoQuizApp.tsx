@@ -554,7 +554,7 @@ export default function GeoQuizApp() {
         <GroupBar groupId={view.groupId} onGroupChange={onGroup} />
       </div>
 
-      <div className="board-frame order-2 flex! min-h-0 w-full flex-1 flex-col! items-stretch! justify-start! gap-2 overflow-hidden [--board-pad:0.25rem] rounded-md bg-elevated/40">
+      <div className="board-frame order-2 flex! min-h-0 w-full flex-1 flex-col! items-stretch! justify-start! gap-2 overflow-hidden [--board-pad:0.25rem] rounded-md border border-line bg-elevated">
         <div
           className={`${boardStage} min-h-0 flex-1 flex-col justify-center gap-3 overflow-auto`}
         >

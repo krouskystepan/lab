@@ -39,9 +39,14 @@ export function CatalogSection({
   if (entries.length === 0) return null
 
   return (
-    <section id={id} className="flex scroll-mt-4 flex-col gap-1.5">
-      <h2 className="m-0 text-[0.85rem] font-medium text-muted">{title}</h2>
-      <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <section id={id} className="flex scroll-mt-4 flex-col gap-3">
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className="hub-kicker">{title}</h2>
+        <span className="font-mono text-[0.65rem] tabular-nums text-muted/70">
+          {String(entries.length).padStart(2, '0')}
+        </span>
+      </div>
+      <ul className="m-0 grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {visible.map((entry) => (
           <li key={entry.id} className="min-w-0">
             <CatalogCard entry={entry} />
@@ -51,7 +56,7 @@ export function CatalogSection({
       {!expandAll && (hiddenSoonCount > 0 || showMore) ? (
         <button
           type="button"
-          className="mt-0.5 cursor-pointer appearance-none self-start border-0 bg-transparent px-0 py-1 text-[0.8rem] font-medium text-muted hover:text-ink"
+          className="mt-0.5 cursor-pointer appearance-none self-start border-0 bg-transparent px-0 py-1 font-mono text-[0.75rem] font-medium text-muted hover:text-ink"
           onClick={() => setShowMore((v) => !v)}
         >
           {showMore

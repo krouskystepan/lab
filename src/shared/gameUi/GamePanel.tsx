@@ -6,8 +6,8 @@ import { cn } from '../lib/cn'
  * Padding + radius stay in sync via --panel-* so nested buttons don’t pinch corners.
  */
 export const gamePanel = cn(
-  'flex min-w-0 w-full max-w-none flex-col gap-2 overflow-visible border border-line bg-panel shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]',
-  '[--panel-radius:var(--radius-md)] [--panel-pad:0.5rem] [--panel-btn-r:max(4px,calc(var(--panel-radius)-var(--panel-pad)+2px))]',
+  'flex min-w-0 w-full max-w-none flex-col gap-2 overflow-visible border border-line bg-panel shadow-[inset_0_1px_0_rgba(255,255,255,0.035)]',
+  '[--panel-radius:var(--radius-md)] [--panel-pad:0.5rem] [--panel-btn-r:max(2px,calc(var(--panel-radius)-var(--panel-pad)+2px))]',
   'rounded-[var(--panel-radius)] p-[var(--panel-pad)]',
   'max-[980px]:[--panel-pad:0.375rem]',
   'max-[980px]:landscape:[--panel-pad:0.2rem] max-[980px]:landscape:gap-[0.2rem]',
@@ -16,7 +16,7 @@ export const gamePanel = cn(
 )
 
 export const gamePanelTitle =
-  'm-0 shrink-0 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase max-[980px]:hidden [@media(max-height:700px)]:hidden'
+  'm-0 shrink-0 font-mono text-[0.65rem] font-medium tracking-[0.12em] text-muted uppercase max-[980px]:hidden [@media(max-height:700px)]:hidden'
 
 export const gameBtn = cn(
   'rounded-[var(--panel-btn-r)]',
@@ -56,7 +56,7 @@ export function GamePanel({
   return (
     <section className={cn(gamePanel, className)}>
       {showHeader ? (
-        <div className="flex w-full min-w-0 items-center justify-between gap-2">
+        <div className="flex w-full min-w-0 items-center justify-between gap-2 leading-none">
           {title ? <h2 className={gamePanelTitle}>{title}</h2> : <span />}
           {headerRight}
         </div>

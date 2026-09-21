@@ -308,7 +308,7 @@ export default function LightsOutApp() {
         ]}
       />
 
-      <div className="board-frame order-1 min-h-0 flex-1 [--board-pad:0.25rem] rounded-md bg-elevated/40 max-[980px]:order-1">
+      <div className="board-frame order-1 min-h-0 flex-1 [--board-pad:0.25rem] rounded-md border border-line bg-elevated max-[980px]:order-1">
         <div className={boardStage}>
           <Grid
             size={board.size}

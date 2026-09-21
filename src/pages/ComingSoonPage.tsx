@@ -49,45 +49,48 @@ export function ComingSoonPage() {
       theme={theme}
       className="flex min-h-0 w-full flex-1 flex-col"
     >
-      <div className="hub-page mx-auto flex w-full max-w-6xl flex-1 flex-col gap-5 px-5 pt-5 pb-6 sm:px-8 sm:pt-6">
-        <header className="flex items-center justify-between gap-4 border-b border-line pb-3">
-          <Link
-            to="/"
-            className="min-w-0 text-[1.15rem] font-bold tracking-[-0.03em] text-ink no-underline hover:text-accent"
-          >
-            {t('hub.brand')}
-          </Link>
-          <LangSwitch />
+      <div className="hub-page mx-auto flex w-full max-w-5xl flex-1 flex-col gap-7 px-5 pt-7 pb-8 sm:px-8 sm:pt-9">
+        <header className="flex flex-col gap-4">
+          <div className="flex items-start justify-between gap-4">
+            <Link
+              to="/"
+              className="min-w-0 text-[1.35rem] font-semibold tracking-[-0.04em] text-ink no-underline hover:text-accent"
+            >
+              {t('hub.brand')}
+            </Link>
+            <LangSwitch />
+          </div>
+          <div className="hub-rule" aria-hidden />
         </header>
 
         <div className="flex flex-1 flex-col items-center justify-center py-8">
           <div className="relative w-full max-w-md">
             <AccentGrid />
-            <section className="relative rounded-md border border-line bg-panel px-5 py-5 shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_8px_24px_rgba(0,0,0,0.22)]">
+            <section className="relative border border-line bg-panel px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)]">
               <div className="flex items-center justify-between gap-3">
-                <p className="m-0 text-[0.68rem] font-semibold tracking-[0.12em] text-muted uppercase">
+                <p className="hub-kicker">
                   {entry ? t('hub.comingSoonKicker') : t('hub.notFoundCode')}
                 </p>
                 <Link
                   to="/"
-                  className="inline-flex shrink-0 items-center gap-1 rounded-sm border border-accent bg-accent px-2.5 py-1 text-[0.75rem] font-semibold text-white no-underline hover:border-accent-hover hover:bg-accent-hover"
+                  className="inline-flex shrink-0 items-center gap-1 border border-accent bg-accent px-2.5 py-1 text-[0.75rem] font-semibold text-white no-underline hover:border-accent-hover hover:bg-accent-hover"
                 >
                   <ArrowLeft
                     className="size-3.5"
-                    strokeWidth={2.25}
+                    strokeWidth={2}
                     aria-hidden
                   />
                   {t('hub.backHomeCta')}
                 </Link>
               </div>
-              <div className="mt-2 flex items-center gap-3">
+              <div className="mt-3 flex items-center gap-3">
                 <span
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-md border border-accent/35 bg-accent/15 text-accent"
+                  className="inline-flex size-9 shrink-0 items-center justify-center border border-line bg-elevated text-accent"
                   aria-hidden
                 >
-                  <Icon className="size-5" strokeWidth={2.25} />
+                  <Icon className="size-4" strokeWidth={2} />
                 </span>
-                <h1 className="m-0 min-w-0 text-[1.35rem] font-bold tracking-[-0.04em] text-ink">
+                <h1 className="m-0 min-w-0 text-[1.35rem] font-semibold tracking-[-0.04em] text-ink">
                   {title}
                 </h1>
               </div>
@@ -100,7 +103,7 @@ export function ComingSoonPage() {
 
               {alts.length > 0 ? (
                 <div className="mt-5 border-t border-line pt-4">
-                  <p className="m-0 mb-2 text-[0.68rem] font-semibold tracking-[0.08em] text-muted uppercase">
+                  <p className="hub-kicker mb-2">
                     {t('hub.playInstead')}
                   </p>
                   <ul className="m-0 grid list-none grid-cols-2 gap-1.5 p-0">
