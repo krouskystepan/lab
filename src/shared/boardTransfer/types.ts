@@ -12,6 +12,7 @@ export type BoardFamily =
   | 'lightsout'
   | 'geoquiz'
   | 'mentalmath'
+  | 'untangle'
 
 /** Visible minesweeper knowledge (no hidden mine map). */
 export type MineTransferCell =
@@ -190,6 +191,22 @@ export type MentalMathBoardFile = {
   }
 }
 
+export type UntangleBoardFile = {
+  format: typeof BOARD_FORMAT
+  version: typeof BOARD_VERSION
+  family: 'untangle'
+  n: number
+  edges: [number, number][]
+  start: { x: number; y: number }[]
+  pos: { x: number; y: number }[]
+  game?: {
+    puzzleId?: string
+    diffId?: 'easy' | 'medium' | 'hard' | 'expert' | 'insane'
+    moves?: number
+    status?: 'ready' | 'playing' | 'won'
+  }
+}
+
 export type BoardFile =
   | MinesweeperBoardFile
   | SudokuBoardFile
@@ -199,6 +216,7 @@ export type BoardFile =
   | LightsOutBoardFile
   | GeoQuizBoardFile
   | MentalMathBoardFile
+  | UntangleBoardFile
 
 export function isBoardFile(data: unknown): data is BoardFile {
   if (!data || typeof data !== 'object') return false
