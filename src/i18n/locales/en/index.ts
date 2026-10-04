@@ -8,6 +8,7 @@ import { wordleEn } from './wordle'
 import { chessMateEn } from './chess-mate'
 import { rushHourEn } from './rush-hour'
 import { lightsOutEn } from './lights-out'
+import { untangleEn } from './untangle'
 import { geoQuizEn } from './geo-quiz'
 import { mentalMathEn } from './mental-math'
 import { mirrorHelperEn } from './mirror-helper'
@@ -25,6 +26,7 @@ export const en = {
   ...chessMateEn,
   ...rushHourEn,
   ...lightsOutEn,
+  ...untangleEn,
   ...geoQuizEn,
   ...mentalMathEn,
   ...mirrorHelperEn,
