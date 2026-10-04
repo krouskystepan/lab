@@ -31,18 +31,12 @@ export default function UntangleApp() {
   const [canUndo, setCanUndo] = useState(false)
   const [canRedo, setCanRedo] = useState(false)
   const [hint, setHint] = useState<Hint | null>(null)
-  const [selected, setSelected] = useState<number | null>(null)
   const [hydrated, setHydrated] = useState(false)
   const historyRef = useRef(new PlayHistory())
   const boardRef = useRef(board)
   boardRef.current = board
-  const hintRef = useRef(hint)
-  hintRef.current = hint
-  const selectedRef = useRef(selected)
-  selectedRef.current = selected
-  const select = useCallback((index: number | null) => {
-    selectedRef.current = index
-    setSelected(index)
+  const onGrab = useCallback(() => {
+    setHint(null)
   }, [])
   const prevStatus = useRef(board.status)
 
@@ -120,8 +114,7 @@ export default function UntangleApp() {
       return
     }
     setHint(next)
-    select(next.index)
-  }, [select, t])
+  }, [t])
 
   const onReset = useCallback(() => {
     clearHistory()
@@ -133,28 +126,25 @@ export default function UntangleApp() {
     const state = boardRef.current
     clearHistory()
     setHint(null)
-    select(null)
     dispatch({ type: 'newGame', puzzle: generateCount(state.n, state.puzzleId) })
-  }, [clearHistory, select])
+  }, [clearHistory])
 
   const onDiff = useCallback(
     (id: DiffId) => {
       clearHistory()
       setHint(null)
-      select(null)
       dispatch({ type: 'newGame', puzzle: generate(id, boardRef.current.puzzleId) })
     },
-    [clearHistory, select]
+    [clearHistory]
   )
 
   const onCount = useCallback(
     (n: number) => {
       clearHistory()
       setHint(null)
-      select(null)
       dispatch({ type: 'newGame', puzzle: generateCount(n, boardRef.current.puzzleId) })
     },
-    [clearHistory, select]
+    [clearHistory]
   )
 
   const onExportBoard = useCallback(() => exportUntangleGame(boardRef.current), [])
@@ -289,9 +279,8 @@ export default function UntangleApp() {
             edges={board.edges}
             pos={board.pos}
             hint={hint}
-            selected={selected}
             ended={ended}
-            onSelect={select}
+            onGrab={onGrab}
             onMove={onMove}
           />
         </div>

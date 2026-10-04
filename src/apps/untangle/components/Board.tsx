@@ -8,9 +8,8 @@ type BoardProps = {
   edges: Edge[]
   pos: Vec[]
   hint: Hint | null
-  selected: number | null
   ended: boolean
-  onSelect: (index: number) => void
+  onGrab: () => void
   onMove: (index: number, pos: Vec) => void
 }
 
@@ -27,7 +26,7 @@ function clientToBoard(svg: SVGSVGElement, clientX: number, clientY: number): Ve
   return { x: local.x / 100, y: local.y / 100 }
 }
 
-export function Board({ edges, pos, hint, selected, ended, onSelect, onMove }: BoardProps) {
+export function Board({ edges, pos, hint, ended, onGrab, onMove }: BoardProps) {
   const { t } = useI18n()
   const svgRef = useRef<SVGSVGElement>(null)
   const [drag, setDrag] = useState<Drag | null>(null)
@@ -41,8 +40,8 @@ export function Board({ edges, pos, hint, selected, ended, onSelect, onMove }: B
   posRef.current = pos
   const onMoveRef = useRef(onMove)
   onMoveRef.current = onMove
-  const onSelectRef = useRef(onSelect)
-  onSelectRef.current = onSelect
+  const onGrabRef = useRef(onGrab)
+  onGrabRef.current = onGrab
   const endedRef = useRef(ended)
   endedRef.current = ended
 
@@ -77,6 +76,7 @@ export function Board({ edges, pos, hint, selected, ended, onSelect, onMove }: B
       liveRef.current = null
       setDrag(null)
       setLive(null)
+      onGrabRef.current()
       if (!cur || cur.index !== d.index) return
       if (dist(cur.pos, d.origin) <= 0.01) return
       onMoveRef.current(d.index, cur.pos)
@@ -100,7 +100,7 @@ export function Board({ edges, pos, hint, selected, ended, onSelect, onMove }: B
     e.stopPropagation()
     const active = document.activeElement
     if (active instanceof HTMLElement) active.blur()
-    onSelectRef.current(index)
+    onGrabRef.current()
     const origin = posRef.current[index]
     const next = { index, pointerId: e.pointerId, origin }
     const point = { index, pos: origin }
@@ -175,7 +175,6 @@ export function Board({ edges, pos, hint, selected, ended, onSelect, onMove }: B
       {hint ? <HintMark hint={hint} from={shown[hint.index]} dotR={dotR} /> : null}
       {shown.map((p, i) => {
         const held = dragging === i
-        const picked = held || selected === i
         return (
           <g
             key={i}
@@ -189,11 +188,11 @@ export function Board({ edges, pos, hint, selected, ended, onSelect, onMove }: B
             <circle
               cx={p.x * 100}
               cy={p.y * 100}
-              r={picked ? dotR + 0.35 : dotR}
+              r={dotR}
               fill={held ? '#243246' : '#1b2633'}
-              stroke={picked ? 'var(--color-accent)' : '#f4f7fb'}
-              strokeOpacity={picked ? 1 : 0.9}
-              strokeWidth={picked ? 0.9 : 0.55}
+              stroke="#f4f7fb"
+              strokeOpacity={0.9}
+              strokeWidth={0.55}
             />
             <text
               x={p.x * 100}
