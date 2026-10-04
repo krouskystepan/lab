@@ -72,6 +72,14 @@ export const lightsOutTheme: AppTheme = {
   glow: '#e8c84a'
 }
 
+/** Untangle - violet ink. */
+export const untangleTheme: AppTheme = {
+  accent: '#7a5ea7',
+  accentHover: '#8c70b8',
+  onAccent: '#f3eef8',
+  glow: '#7a5ea7'
+}
+
 /** Geo Quiz - atlas teal. */
 export const geoQuizTheme: AppTheme = {
   accent: '#2e6b8a',
