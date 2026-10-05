@@ -34,6 +34,8 @@ export const hubEn = {
   'catalog.geoQuiz.blurb': 'Capitals, flags, and countries.',
   'catalog.mentalMath.title': 'Mental Math',
   'catalog.mentalMath.blurb': 'Speed drills for arithmetic in your head.',
+  'catalog.untangle.title': 'Untangle',
+  'catalog.untangle.blurb': 'Drag vertices until no lines cross.',
   'catalog.sudokuHelper.title': 'Sudoku Helper',
   'catalog.sudokuHelper.blurb': 'Candidates, singles, and next moves.',
   'catalog.chessMate.title': 'Chess Mate',

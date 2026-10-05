@@ -9,6 +9,7 @@ import { wordleCs } from './wordle'
 import { chessMateCs } from './chess-mate'
 import { rushHourCs } from './rush-hour'
 import { lightsOutCs } from './lights-out'
+import { untangleCs } from './untangle'
 import { geoQuizCs } from './geo-quiz'
 import { mentalMathCs } from './mental-math'
 import { mirrorHelperCs } from './mirror-helper'
@@ -26,6 +27,7 @@ export const cs: Record<keyof typeof en, string> = {
   ...chessMateCs,
   ...rushHourCs,
   ...lightsOutCs,
+  ...untangleCs,
   ...geoQuizCs,
   ...mentalMathCs,
   ...mirrorHelperCs,

@@ -15,6 +15,7 @@ export {
   type LightsOutBoardFile,
   type GeoQuizBoardFile,
   type MentalMathBoardFile,
+  type UntangleBoardFile,
   type MineTransferCell
 } from './types'
 
@@ -43,6 +44,8 @@ export { exportLightsOutGame, importLightsOutToGame } from './lightsout'
 export { exportGeoQuizGame, importGeoQuizToGame } from './geoquiz'
 
 export { exportMentalMathGame, importMentalMathToGame } from './mentalmath'
+
+export { exportUntangleGame, importUntangleToGame } from './untangle'
 
 export {
   ExportImportButtons,

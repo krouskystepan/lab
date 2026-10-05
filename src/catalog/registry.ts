@@ -10,7 +10,8 @@ import {
   Globe2,
   Grid3x3,
   Keyboard,
-  Lightbulb
+  Lightbulb,
+  Waypoints
 } from 'lucide-react'
 import type { MessageKey } from '../i18n'
 import {
@@ -24,6 +25,7 @@ import {
   chessMateTheme,
   rushHourTheme,
   lightsOutTheme,
+  untangleTheme,
   geoQuizTheme,
   mentalMathTheme,
   equationStepsTheme
@@ -113,6 +115,16 @@ export const catalog: CatalogEntry[] = [
     blurbKey: 'catalog.mentalMath.blurb',
     icon: Brain,
     theme: mentalMathTheme,
+    status: 'live'
+  },
+  {
+    id: 'untangle',
+    kind: 'game',
+    path: '/games/untangle',
+    titleKey: 'catalog.untangle.title',
+    blurbKey: 'catalog.untangle.blurb',
+    icon: Waypoints,
+    theme: untangleTheme,
     status: 'live'
   },
 

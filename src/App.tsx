@@ -8,6 +8,7 @@ import WordleApp from './apps/wordle/WordleApp'
 import ChessMateApp from './apps/chess-mate/ChessMateApp'
 import RushHourApp from './apps/rush-hour/RushHourApp'
 import LightsOutApp from './apps/lights-out/LightsOutApp'
+import UntangleApp from './apps/untangle/UntangleApp'
 import GeoQuizApp from './apps/geo-quiz/GeoQuizApp'
 import MentalMathApp from './apps/mental-math/MentalMathApp'
 import MirrorHelperApp from './apps/mirror-helper/MirrorHelperApp'
@@ -17,6 +18,7 @@ import {
   equationStepsTheme,
   geoQuizTheme,
   lightsOutTheme,
+  untangleTheme,
   mentalMathTheme,
   mineHelperTheme,
   minesweeperTheme,
@@ -95,6 +97,14 @@ function LightsOutRoute() {
   )
 }
 
+function UntangleRoute() {
+  return (
+    <ThemeScope theme={untangleTheme} className={gamePage}>
+      <UntangleApp />
+    </ThemeScope>
+  )
+}
+
 function GeoQuizRoute() {
   return (
     <ThemeScope theme={geoQuizTheme} className={gamePage}>
@@ -151,6 +161,7 @@ export default function App() {
           <Route path="/games/wordle" element={<WordleRoute />} />
           <Route path="/games/rush-hour" element={<RushHourRoute />} />
           <Route path="/games/lights-out" element={<LightsOutRoute />} />
+          <Route path="/games/untangle" element={<UntangleRoute />} />
           <Route path="/games/geo-quiz" element={<GeoQuizRoute />} />
           <Route path="/games/mental-math" element={<MentalMathRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
