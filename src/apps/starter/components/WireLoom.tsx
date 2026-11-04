@@ -72,14 +72,15 @@ export function WireLoom({
   const press = (wire: Wire) => {
     if (board.status !== 'playing') return
     if (board.tool === 'probe') {
-      onProbe(wire.id)
+      // Click to measure (toggle off if same wire)
+      onProbe(board.probingId === wire.id ? null : wire.id)
       return
     }
     if (board.dashOn) onHoldStart(wire.id)
   }
 
   const release = () => {
-    if (board.tool === 'probe') onProbe(null)
+    // Probe reading stays until another click — don't clear on pointer up
     onHoldEnd()
   }
 
@@ -178,12 +179,6 @@ export function WireLoom({
               strokeWidth={36}
               strokeLinecap="round"
               className={board.status === 'playing' ? 'cursor-pointer' : 'cursor-default'}
-              onPointerEnter={() => {
-                if (board.tool === 'probe' && board.status === 'playing') onProbe(p.wire.id)
-              }}
-              onPointerLeave={() => {
-                if (board.tool === 'probe') onProbe(null)
-              }}
               onPointerDown={(e) => {
                 e.currentTarget.setPointerCapture(e.pointerId)
                 press(p.wire)

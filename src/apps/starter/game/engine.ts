@@ -133,12 +133,14 @@ export function reduce(state: BoardState, action: Action): BoardState {
     case 'probe': {
       if (state.tool !== 'probe') return { ...state, probingId: null }
       const id = action.wireId
-      // Already on this wire — no extra shock
-      if (id === state.probingId) return state
+      // Clear reading
+      if (!id) return { ...state, probingId: null }
+      // Same wire again — already handled by UI toggle; ignore re-shock
+      if (id === state.probingId) return { ...state, probingId: null }
 
       let next: BoardState = { ...state, probingId: id }
-      // Measuring ohms on a live (voltage) wire burns the kit
-      if (id && state.meterMode === 'OHM') {
+      // Click-measure ohms on a live (voltage) wire burns the kit
+      if (state.meterMode === 'OHM') {
         const w = wireById(state, id)
         if (w && w.volts != null) {
           next = damage(next, DAMAGE_MISTAKE, 'ohmLive')

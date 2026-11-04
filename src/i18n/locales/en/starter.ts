@@ -42,7 +42,7 @@ export const starterEn = {
   'starter.help.body':
     'GTA-style ignition hotwire. Four wires carry voltage, three carry resistance. Find battery / ignition / starter, jump them, then time the starter release on the tach.',
   'starter.help.controls':
-    '1 = probe, 2 = jumper. V / O switch the dial. Hover to measure. Bridge two wires with jumpers. After the dash lights, hold starter until the needle hits 2, then release.',
+    '1 = probe, 2 = jumper. V / O switch the dial. Click a wire to measure. Bridge two wires with jumpers. After the dash lights, hold starter until the needle hits 2, then release.',
 
   'starter.help.findTitle': 'Find the wires',
   'starter.help.findBody':

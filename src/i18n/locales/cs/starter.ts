@@ -46,7 +46,7 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
   'starter.help.body':
     'Startér ve stylu GTA RP. Čtyři kabely mají napětí, tři odpor. Najdi baterii / zapalování / startér, propoj je a pusť startér na dvojce na budíku.',
   'starter.help.controls':
-    '1 = sonda, 2 = svorky. V / O přepíná rozsah. Najetí měří. Spoj dva kabely svorkami. Po rozsvícení palubky drž startér, dokud ručka nedojede na 2, pak pusť.',
+    '1 = sonda, 2 = svorky. V / O přepíná rozsah. Klikni na kabel pro změření. Spoj dva kabely svorkami. Po rozsvícení palubky drž startér, dokud ručka nedojede na 2, pak pusť.',
 
   'starter.help.findTitle': 'Najdi kabely',
   'starter.help.findBody':
