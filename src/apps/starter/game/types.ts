@@ -66,9 +66,13 @@ export const WIRE_HEX: Record<WireColor, string> = {
   brown: '#8a5a2a'
 }
 
+/** Minimum crank time before the engine can catch (release to start). */
 export const HOLD_MS_NEEDED = 1400
+/** Holding past this overcranks — kit takes a hit and clips drop. */
+export const HOLD_MS_MAX = 2800
 export const DAMAGE_LIVE = 12
 export const DAMAGE_WRONG_JUMP = 8
+export const DAMAGE_OVERHOLD = 15
 export const START_DURABILITY = 100
 
 export function isWireColor(v: unknown): v is WireColor {

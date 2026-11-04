@@ -18,7 +18,7 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
   'starter.note.battery': 'baterie kolem 12 V',
   'starter.note.ignition': 'zapalování kolem 3 ohm',
   'starter.note.starter': 'startér pod 1 ohm',
-  'starter.note.connect': 'spoj baterii a zapalování pak podrž na startéru',
+  'starter.note.connect': 'spoj baterii a zapalování, podrž startér, pak pusť',
   'starter.note.live': 'drát pod napětím poškodí sadu',
 
   'starter.tool.probe': 'sonda',
@@ -30,6 +30,8 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
   'starter.hint.dash':
     'Palubka se rozsvítila. Teď se druhým koncem dotkni startéru a drž.',
   'starter.hint.holding': 'Startuje… drž.',
+  'starter.hint.release': 'Naskočilo — teď pusť!',
+  'starter.hint.overhold': 'Držel jsi moc dlouho. Svorky odpadly a sada dostala zásah.',
   'starter.hint.live': 'Drát pod napětím — sada dostala zásah.',
   'starter.hint.wrong': 'Špatná dvojice. Svorky odpadly.',
   'starter.hint.needStarter': 'Drž kabel startéru.',
@@ -51,7 +53,7 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
 
   'starter.help.connectTitle': 'Zapoj je',
   'starter.help.connectBody':
-    'Přepni na svorky (2). Spoj baterii se zapalováním — rozsvítí se palubka. Pak podrž startér, dokud nenasadí. Špatný most přes živý drát ubírá trvanlivost.',
+    'Přepni na svorky (2). Spoj baterii se zapalováním — rozsvítí se palubka. Drž startér, dokud nenasadí, pak pusť. Držíš-li moc dlouho, svorky odpadnou a sada dostane zásah. Živý drát taky ubírá trvanlivost.',
 
   'starter.hotkeys.title': 'Ovládání',
   'starter.hotkeys.probe': 'sonda',

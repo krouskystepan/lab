@@ -1,7 +1,9 @@
 import { generate, roleOf, wireById } from './generate'
 import {
   DAMAGE_LIVE,
+  DAMAGE_OVERHOLD,
   DAMAGE_WRONG_JUMP,
+  HOLD_MS_MAX,
   HOLD_MS_NEEDED,
   type BoardState,
   type MeterMode,
@@ -207,28 +209,63 @@ export function reduce(state: BoardState, action: Action): BoardState {
     case 'holdTick': {
       if (!state.holdingStarter || state.status !== 'playing') return state
       const holdMs = state.holdMs + action.dt
-      const progress = Math.min(1, holdMs / HOLD_MS_NEEDED)
-      const rpm = 1 + progress * 28
-      if (holdMs >= HOLD_MS_NEEDED) {
+
+      // Held too long — overcrank fries the kit and clips drop
+      if (holdMs >= HOLD_MS_MAX) {
+        let next = damage(
+          {
+            ...state,
+            holdMs,
+            holdingStarter: false,
+            rpm: 0
+          },
+          DAMAGE_OVERHOLD
+        )
+        if (next.status === 'lost') return next
         return {
-          ...state,
-          holdMs,
-          rpm: 35,
-          status: 'won',
-          holdingStarter: false,
-          hint: 'won'
+          ...next,
+          jumperA: null,
+          jumperB: null,
+          dashOn: false,
+          holdMs: 0,
+          hint: 'overhold'
         }
       }
-      return { ...state, holdMs, rpm }
+
+      const caught = holdMs >= HOLD_MS_NEEDED
+      const progress = Math.min(1, holdMs / HOLD_MS_NEEDED)
+      // After catch, needle climbs into the red while you still hold
+      const over = caught
+        ? (holdMs - HOLD_MS_NEEDED) / (HOLD_MS_MAX - HOLD_MS_NEEDED)
+        : 0
+      const rpm = caught ? 32 + over * 18 : 1 + progress * 28
+      return {
+        ...state,
+        holdMs,
+        rpm,
+        hint: caught ? 'release' : 'holding'
+      }
     }
 
     case 'holdEnd': {
       if (!state.holdingStarter) return state
+      // Sweet spot: held long enough, released before overcrank
+      if (state.holdMs >= HOLD_MS_NEEDED && state.holdMs < HOLD_MS_MAX) {
+        return {
+          ...state,
+          holdingStarter: false,
+          holdMs: state.holdMs,
+          rpm: 35,
+          status: 'won',
+          hint: 'won'
+        }
+      }
+      // Released too early — try again with dash still on
       return {
         ...state,
         holdingStarter: false,
         holdMs: 0,
-        rpm: state.dashOn ? 0 : 0,
+        rpm: 0,
         hint: state.dashOn ? 'dash' : state.hint
       }
     }

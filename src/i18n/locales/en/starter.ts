@@ -15,7 +15,7 @@ export const starterEn = {
   'starter.note.battery': 'battery around 12 V',
   'starter.note.ignition': 'ignition around 3 ohm',
   'starter.note.starter': 'starter under 1 ohm',
-  'starter.note.connect': 'join battery + ignition, then hold starter',
+  'starter.note.connect': 'join battery + ignition, hold starter, then release',
   'starter.note.live': 'a live wire damages the kit',
 
   'starter.tool.probe': 'probe',
@@ -26,6 +26,8 @@ export const starterEn = {
   'starter.hint.clipA': 'First clip on. Pick the second wire.',
   'starter.hint.dash': 'Dash lit up. Hold the other end on the starter.',
   'starter.hint.holding': 'Cranking… keep holding.',
+  'starter.hint.release': 'It caught — release now!',
+  'starter.hint.overhold': 'Held too long. Clips dropped and the kit took a hit.',
   'starter.hint.live': 'Live wire — kit took a hit.',
   'starter.hint.wrong': 'Wrong pair. Clips popped off.',
   'starter.hint.needStarter': 'Hold the starter wire to crank.',
@@ -47,7 +49,7 @@ export const starterEn = {
 
   'starter.help.connectTitle': 'Connect them',
   'starter.help.connectBody':
-    'Switch to the jumper (2). Bridge battery to ignition — the dash lights up. Then press and hold the starter until it cranks. Touching a live wire with a bad jump damages durability.',
+    'Switch to the jumper (2). Bridge battery to ignition — the dash lights up. Hold the starter until it catches, then release. Hold too long and the clips drop and the kit takes a hit. Live wires also damage durability.',
 
   'starter.hotkeys.title': 'Controls',
   'starter.hotkeys.probe': 'probe',

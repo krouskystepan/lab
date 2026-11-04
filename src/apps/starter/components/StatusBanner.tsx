@@ -6,6 +6,8 @@ const HINT_KEY: Record<string, MessageKey> = {
   clipA: 'starter.hint.clipA',
   dash: 'starter.hint.dash',
   holding: 'starter.hint.holding',
+  release: 'starter.hint.release',
+  overhold: 'starter.hint.overhold',
   live: 'starter.hint.live',
   wrong: 'starter.hint.wrong',
   needStarter: 'starter.hint.needStarter',
