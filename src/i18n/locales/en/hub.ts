@@ -36,6 +36,8 @@ export const hubEn = {
   'catalog.mentalMath.blurb': 'Speed drills for arithmetic in your head.',
   'catalog.untangle.title': 'Untangle',
   'catalog.untangle.blurb': 'Drag vertices until no lines cross.',
+  'catalog.starter.title': 'Starter',
+  'catalog.starter.blurb': 'Hotwire the ignition — probe, jump, crank.',
   'catalog.sudokuHelper.title': 'Sudoku Helper',
   'catalog.sudokuHelper.blurb': 'Candidates, singles, and next moves.',
   'catalog.chessMate.title': 'Chess Mate',

@@ -112,6 +112,14 @@ export const equationStepsTheme: AppTheme = {
   glow: '#4a6fa8'
 }
 
+/** Starter / hotwire - warm garage amber. */
+export const starterTheme: AppTheme = {
+  accent: '#d4a017',
+  accentHover: '#e0b02a',
+  onAccent: '#1a1408',
+  glow: '#d4a017'
+}
+
 export function themeGlow(theme: AppTheme): string {
   return theme.glow ?? theme.accent
 }

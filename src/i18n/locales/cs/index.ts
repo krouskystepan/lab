@@ -14,6 +14,7 @@ import { geoQuizCs } from './geo-quiz'
 import { mentalMathCs } from './mental-math'
 import { mirrorHelperCs } from './mirror-helper'
 import { equationStepsCs } from './equation-steps'
+import { starterCs } from './starter'
 
 /** Czech - must cover every English key. */
 export const cs: Record<keyof typeof en, string> = {
@@ -31,5 +32,6 @@ export const cs: Record<keyof typeof en, string> = {
   ...geoQuizCs,
   ...mentalMathCs,
   ...mirrorHelperCs,
-  ...equationStepsCs
+  ...equationStepsCs,
+  ...starterCs
 }

@@ -13,6 +13,7 @@ import { geoQuizEn } from './geo-quiz'
 import { mentalMathEn } from './mental-math'
 import { mirrorHelperEn } from './mirror-helper'
 import { equationStepsEn } from './equation-steps'
+import { starterEn } from './starter'
 
 /** Merged English catalog (source of truth for message keys). */
 export const en = {
@@ -30,5 +31,6 @@ export const en = {
   ...geoQuizEn,
   ...mentalMathEn,
   ...mirrorHelperEn,
-  ...equationStepsEn
+  ...equationStepsEn,
+  ...starterEn
 }

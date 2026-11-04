@@ -39,6 +39,8 @@ export const hubCs: Record<keyof typeof hubEn, string> = {
   'catalog.mentalMath.blurb': 'Rychlé drily na aritmetiku v hlavě.',
   'catalog.untangle.title': 'Untangle',
   'catalog.untangle.blurb': 'Táhni body, dokud se čáry nekříží.',
+  'catalog.starter.title': 'Startér',
+  'catalog.starter.blurb': 'Nastartuj auto — změř, propoj, podrž.',
   'catalog.sudokuHelper.title': 'Sudoku Helper',
   'catalog.sudokuHelper.blurb': 'Kandidáti, single a další tahy.',
   'catalog.chessMate.title': 'Chess Mate',

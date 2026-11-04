@@ -11,7 +11,8 @@ import {
   Grid3x3,
   Keyboard,
   Lightbulb,
-  Waypoints
+  Waypoints,
+  Zap
 } from 'lucide-react'
 import type { MessageKey } from '../i18n'
 import {
@@ -28,7 +29,8 @@ import {
   untangleTheme,
   geoQuizTheme,
   mentalMathTheme,
-  equationStepsTheme
+  equationStepsTheme,
+  starterTheme
 } from '../shared/theme'
 
 export type CatalogKind = 'game' | 'solver'
@@ -125,6 +127,16 @@ export const catalog: CatalogEntry[] = [
     blurbKey: 'catalog.untangle.blurb',
     icon: Waypoints,
     theme: untangleTheme,
+    status: 'live'
+  },
+  {
+    id: 'starter',
+    kind: 'game',
+    path: '/games/starter',
+    titleKey: 'catalog.starter.title',
+    blurbKey: 'catalog.starter.blurb',
+    icon: Zap,
+    theme: starterTheme,
     status: 'live'
   },
 

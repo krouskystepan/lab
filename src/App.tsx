@@ -13,6 +13,7 @@ import GeoQuizApp from './apps/geo-quiz/GeoQuizApp'
 import MentalMathApp from './apps/mental-math/MentalMathApp'
 import MirrorHelperApp from './apps/mirror-helper/MirrorHelperApp'
 import EquationStepsApp from './apps/equation-steps/EquationStepsApp'
+import StarterApp from './apps/starter/StarterApp'
 import {
   chessMateTheme,
   equationStepsTheme,
@@ -25,7 +26,8 @@ import {
   mirrorHelperTheme,
   rushHourTheme,
   sudokuTheme,
-  wordleTheme
+  wordleTheme,
+  starterTheme
 } from './shared/theme'
 import { gamePage, gamePageFit } from './shared/gameUi'
 import { ComingSoonPage } from './pages/ComingSoonPage'
@@ -137,6 +139,14 @@ function EquationStepsRoute() {
   )
 }
 
+function StarterRoute() {
+  return (
+    <ThemeScope theme={starterTheme} className={`${gamePage} ${gamePageFit}`}>
+      <StarterApp />
+    </ThemeScope>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -164,6 +174,7 @@ export default function App() {
           <Route path="/games/untangle" element={<UntangleRoute />} />
           <Route path="/games/geo-quiz" element={<GeoQuizRoute />} />
           <Route path="/games/mental-math" element={<MentalMathRoute />} />
+          <Route path="/games/starter" element={<StarterRoute />} />
           <Route path="/solvers/mine-helper" element={<MineHelperRoute />} />
           <Route path="/solvers/mirror-helper" element={<MirrorHelperRoute />} />
           <Route path="/solvers/sudoku-helper" element={<SudokuHelperRoute />} />
