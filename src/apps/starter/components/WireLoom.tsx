@@ -20,7 +20,10 @@ const CX = VW / 2
 const TOP_PAD = 28
 const BOT_PAD = 72
 
-function wirePath(i: number, n: number): { d: string; mid: Pt; top: Pt; bot: Pt } {
+function wirePath(
+  i: number,
+  n: number
+): { d: string; mid: Pt; top: Pt; bot: Pt } {
   const topSpan = VW - TOP_PAD * 2
   const botSpan = VW - BOT_PAD * 2
   const t = n <= 1 ? 0.5 : i / (n - 1)
@@ -48,7 +51,11 @@ export function WireLoom({
   onHoldEnd
 }: Props) {
   const paths = useMemo(
-    () => board.wires.map((w, i) => ({ wire: w, ...wirePath(i, board.wires.length) })),
+    () =>
+      board.wires.map((w, i) => ({
+        wire: w,
+        ...wirePath(i, board.wires.length)
+      })),
     [board.wires]
   )
 
@@ -62,26 +69,23 @@ export function WireLoom({
   const b = board.jumperB ? byId.get(board.jumperB) : undefined
   const probe = board.probingId ? byId.get(board.probingId) : undefined
 
-  const interact = (wire: Wire) => {
+  const onWireClick = (wire: Wire) => {
     if (board.status !== 'playing') return
-    if (board.tool === 'probe') return
-    if (board.dashOn && wire.role === 'starter') return
-    onJumperClick(wire.id)
-  }
 
-  const press = (wire: Wire) => {
-    if (board.status !== 'playing') return
     if (board.tool === 'probe') {
-      // Click to measure (toggle off if same wire)
+      // Click once to measure; click same wire again to clear
       onProbe(board.probingId === wire.id ? null : wire.id)
       return
     }
-    if (board.dashOn) onHoldStart(wire.id)
-  }
 
-  const release = () => {
-    // Probe reading stays until another click — don't clear on pointer up
-    onHoldEnd()
+    // Jumper: click-to-toggle crank on starter (no mouse hold)
+    if (board.dashOn && wire.role === 'starter') {
+      if (board.holdingStarter) onHoldEnd()
+      else onHoldStart(wire.id)
+      return
+    }
+
+    onJumperClick(wire.id)
   }
 
   const botLeft = BOT_PAD - 24
@@ -117,7 +121,15 @@ export function WireLoom({
         stroke="#555"
         strokeWidth={1.5}
       />
-      <rect x={CX - 44} y={14} width={88} height={18} rx={3} fill="#1c1c20" stroke="#555" />
+      <rect
+        x={CX - 44}
+        y={14}
+        width={88}
+        height={18}
+        rx={3}
+        fill="#1c1c20"
+        stroke="#555"
+      />
       <circle cx={CX} cy={23} r={5} fill="#333" stroke="#777" />
 
       {/* Bottom connector — full width of cable ends */}
@@ -178,23 +190,10 @@ export function WireLoom({
               stroke="transparent"
               strokeWidth={36}
               strokeLinecap="round"
-              className={board.status === 'playing' ? 'cursor-pointer' : 'cursor-default'}
-              onPointerDown={(e) => {
-                e.currentTarget.setPointerCapture(e.pointerId)
-                press(p.wire)
-              }}
-              onPointerUp={() => {
-                release()
-                if (board.tool === 'jumper' && !board.dashOn) interact(p.wire)
-                else if (
-                  board.tool === 'jumper' &&
-                  board.dashOn &&
-                  p.wire.role !== 'starter'
-                ) {
-                  interact(p.wire)
-                }
-              }}
-              onPointerCancel={release}
+              className={
+                board.status === 'playing' ? 'cursor-pointer' : 'cursor-default'
+              }
+              onClick={() => onWireClick(p.wire)}
             />
             <circle
               cx={p.top.x}
@@ -255,7 +254,6 @@ export function WireLoom({
           />
         </g>
       ) : null}
-
     </svg>
   )
 }
@@ -263,7 +261,15 @@ export function WireLoom({
 function Alligator({ pt, dangling }: { pt: Pt; dangling: boolean }) {
   return (
     <g transform={`translate(${pt.x} ${pt.y})`}>
-      <ellipse cx={0} cy={0} rx={12} ry={8} fill="#a01818" stroke="#5a0c0c" strokeWidth={1.5} />
+      <ellipse
+        cx={0}
+        cy={0}
+        rx={12}
+        ry={8}
+        fill="#a01818"
+        stroke="#5a0c0c"
+        strokeWidth={1.5}
+      />
       <path
         d="M -7 -2 L -13 -9 M 7 -2 L 13 -9"
         stroke="#5a0c0c"
@@ -271,7 +277,15 @@ function Alligator({ pt, dangling }: { pt: Pt; dangling: boolean }) {
         strokeLinecap="round"
       />
       {dangling ? (
-        <circle cx={0} cy={0} r={16} fill="none" stroke="#3a7ae2" strokeWidth={2} opacity={0.75} />
+        <circle
+          cx={0}
+          cy={0}
+          r={16}
+          fill="none"
+          stroke="#3a7ae2"
+          strokeWidth={2}
+          opacity={0.75}
+        />
       ) : null}
     </g>
   )

@@ -28,9 +28,9 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
 
   'starter.hint.clipA': 'První svorka drží. Vyber druhý kabel.',
   'starter.hint.dash':
-    'Palubka se rozsvítila. Teď se druhým koncem dotkni startéru a drž.',
+    'Palubka se rozsvítila. Klikni na startér a sleduj otáčkoměr.',
   'starter.hint.holding': 'Startuje… sleduj otáčkoměr.',
-  'starter.hint.release': 'Ručka na 2 — teď pusť!',
+  'starter.hint.release': 'Ručka na 2 — klikni znovu!',
   'starter.hint.overhold': 'Zkrat! Přes 2 — svorky odpadly.',
   'starter.hint.ohmLive': 'Měřil jsi ohmy na drátu pod napětím — sada dostala zásah.',
   'starter.hint.live': 'Drát pod napětím — sada dostala zásah.',
@@ -46,7 +46,7 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
   'starter.help.body':
     'Startér ve stylu GTA RP. Čtyři kabely mají napětí, tři odpor. Najdi baterii / zapalování / startér, propoj je a pusť startér na dvojce na budíku.',
   'starter.help.controls':
-    '1 = sonda, 2 = svorky. V / O přepíná rozsah. Klikni na kabel pro změření. Spoj dva kabely svorkami. Po rozsvícení palubky drž startér, dokud ručka nedojede na 2, pak pusť.',
+    '1 = sonda, 2 = svorky. V / O přepíná rozsah. Klikni na kabel pro změření. Spoj dva kabely svorkami. Po rozsvícení palubky klikni na startér; až ručka dojde na 2, klikni znovu.',
 
   'starter.help.findTitle': 'Najdi kabely',
   'starter.help.findBody':
@@ -54,7 +54,7 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
 
   'starter.help.connectTitle': 'Zapoj je',
   'starter.help.connectBody':
-    'Spoj baterii se zapalováním (rozsvítí se palubka). Pak drž startér a čekej, až ručka na otáčkoměru vyleze na 2 — tam pusť. Přes 2 dostaneš zkrat.',
+    'Spoj baterii se zapalováním (rozsvítí se palubka). Pak klikni na startér a čekej, až ručka na otáčkoměru vyleze na 2 — tam klikni znovu. Přes 2 dostaneš zkrat.',
 
   'starter.hotkeys.title': 'Ovládání',
   'starter.hotkeys.probe': 'sonda',

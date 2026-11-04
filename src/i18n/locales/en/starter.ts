@@ -24,9 +24,9 @@ export const starterEn = {
   'starter.tool.jumperTitle': 'Alligator clips (2)',
 
   'starter.hint.clipA': 'First clip on. Pick the second wire.',
-  'starter.hint.dash': 'Dash lit up. Hold the other end on the starter.',
+  'starter.hint.dash': 'Dash lit up. Click the starter and watch the tach.',
   'starter.hint.holding': 'Cranking… watch the tach.',
-  'starter.hint.release': 'Needle at 2 — release now!',
+  'starter.hint.release': 'Needle at 2 — click again!',
   'starter.hint.overhold': 'Short! Held past 2 — clips dropped.',
   'starter.hint.ohmLive': 'Measured ohms on a live wire — kit took a hit.',
   'starter.hint.live': 'Live wire — kit took a hit.',
@@ -42,7 +42,7 @@ export const starterEn = {
   'starter.help.body':
     'GTA-style ignition hotwire. Four wires carry voltage, three carry resistance. Find battery / ignition / starter, jump them, then time the starter release on the tach.',
   'starter.help.controls':
-    '1 = probe, 2 = jumper. V / O switch the dial. Click a wire to measure. Bridge two wires with jumpers. After the dash lights, hold starter until the needle hits 2, then release.',
+    '1 = probe, 2 = jumper. V / O switch the dial. Click a wire to measure. Bridge two wires with jumpers. After the dash lights, click the starter; when the needle hits 2, click again.',
 
   'starter.help.findTitle': 'Find the wires',
   'starter.help.findBody':
@@ -50,7 +50,7 @@ export const starterEn = {
 
   'starter.help.connectTitle': 'Connect them',
   'starter.help.connectBody':
-    'Jumper battery to ignition (dash lights). Then hold the starter clamp and wait until the tach needle reaches the 2 mark — release there. Hold past 2 and you short the kit.',
+    'Jumper battery to ignition (dash lights). Then click the starter and wait until the tach needle reaches the 2 mark — click again there. Past 2 and you short the kit.',
 
   'starter.hotkeys.title': 'Controls',
   'starter.hotkeys.probe': 'probe',
