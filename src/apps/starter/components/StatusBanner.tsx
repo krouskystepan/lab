@@ -8,6 +8,7 @@ const HINT_KEY: Record<string, MessageKey> = {
   holding: 'starter.hint.holding',
   release: 'starter.hint.release',
   overhold: 'starter.hint.overhold',
+  ohmLive: 'starter.hint.ohmLive',
   live: 'starter.hint.live',
   wrong: 'starter.hint.wrong',
   needStarter: 'starter.hint.needStarter',

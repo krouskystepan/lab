@@ -1,10 +1,10 @@
 import { generate, roleOf, wireById } from './generate'
 import {
-  DAMAGE_LIVE,
-  DAMAGE_OVERHOLD,
-  DAMAGE_WRONG_JUMP,
-  HOLD_MS_MAX,
-  HOLD_MS_NEEDED,
+  DAMAGE_MISTAKE,
+  MS_PER_MARK,
+  RELEASE_MARK_MAX,
+  RELEASE_MARK_MIN,
+  SHORT_MARK,
   type BoardState,
   type MeterMode,
   type ToolId
@@ -22,7 +22,7 @@ export type Action =
   | { type: 'holdEnd' }
   | { type: 'setHint'; hint: string | null }
 
-function damage(state: BoardState, amount: number): BoardState {
+function damage(state: BoardState, amount: number, hint: string): BoardState {
   const durability = Math.max(0, state.durability - amount)
   if (durability <= 0) {
     return {
@@ -33,13 +33,19 @@ function damage(state: BoardState, amount: number): BoardState {
       holdingStarter: false,
       holdMs: 0,
       rpm: 0,
+      jumperA: null,
+      jumperB: null,
+      dashOn: false,
       hint: 'lost'
     }
   }
-  return { ...state, durability }
+  return { ...state, durability, hint }
 }
 
-function bridgeRoles(state: BoardState): { a: string | null; b: string | null } {
+function bridgeRoles(state: BoardState): {
+  a: ReturnType<typeof roleOf>
+  b: ReturnType<typeof roleOf>
+} {
   return {
     a: roleOf(state, state.jumperA),
     b: roleOf(state, state.jumperB)
@@ -54,9 +60,27 @@ function isBatIgnBridge(state: BoardState): boolean {
   )
 }
 
+function dropClips(state: BoardState, hint: string): BoardState {
+  return {
+    ...state,
+    jumperA: null,
+    jumperB: null,
+    dashOn: false,
+    holdingStarter: false,
+    holdMs: 0,
+    rpm: 0,
+    hint
+  }
+}
+
 function applyBridge(state: BoardState): BoardState {
   if (!state.jumperA || !state.jumperB) {
-    return { ...state, dashOn: false, rpm: 0, hint: state.hint === 'dash' ? null : state.hint }
+    return {
+      ...state,
+      dashOn: false,
+      rpm: 0,
+      hint: state.hint === 'dash' ? null : state.hint
+    }
   }
 
   if (isBatIgnBridge(state)) {
@@ -70,27 +94,10 @@ function applyBridge(state: BoardState): BoardState {
 
   const roles = bridgeRoles(state)
   const touchesLive = roles.a === 'battery' || roles.b === 'battery'
-  let next = { ...state, dashOn: false, rpm: 0 }
-  if (touchesLive) {
-    next = damage(next, DAMAGE_LIVE)
-    if (next.status === 'lost') return next
-    next = {
-      ...next,
-      jumperA: null,
-      jumperB: null,
-      hint: 'live'
-    }
-  } else {
-    next = damage(next, DAMAGE_WRONG_JUMP)
-    if (next.status === 'lost') return next
-    next = {
-      ...next,
-      jumperA: null,
-      jumperB: null,
-      hint: 'wrong'
-    }
-  }
-  return next
+  const hint = touchesLive ? 'live' : 'wrong'
+  let next = damage(state, DAMAGE_MISTAKE, hint)
+  if (next.status === 'lost') return next
+  return dropClips(next, hint)
 }
 
 export function reduce(state: BoardState, action: Action): BoardState {
@@ -119,34 +126,41 @@ export function reduce(state: BoardState, action: Action): BoardState {
         probingId: null,
         holdingStarter: false,
         holdMs: 0,
-        // Keep jumper clips when switching to probe so you can measure mid-job
-        jumperA: action.tool === 'probe' ? state.jumperA : state.jumperA,
-        jumperB: action.tool === 'probe' ? state.jumperB : state.jumperB
+        rpm: state.dashOn ? 0 : state.rpm
       }
     }
 
     case 'probe': {
       if (state.tool !== 'probe') return { ...state, probingId: null }
-      return { ...state, probingId: action.wireId }
+      const id = action.wireId
+      // Already on this wire — no extra shock
+      if (id === state.probingId) return state
+
+      let next: BoardState = { ...state, probingId: id }
+      // Measuring ohms on a live (voltage) wire burns the kit
+      if (id && state.meterMode === 'OHM') {
+        const w = wireById(state, id)
+        if (w && w.volts != null) {
+          next = damage(next, DAMAGE_MISTAKE, 'ohmLive')
+        }
+      }
+      return next
     }
 
     case 'jumperClick': {
       if (state.tool !== 'jumper') return state
       const id = action.wireId
 
-      // After dash is on, clicking starter starts a hold via holdStart — ignore here
       if (state.dashOn && roleOf(state, id) === 'starter') {
         return state
       }
 
-      // Toggle off if clicking the same first clip with no second yet
       if (state.jumperA === id && !state.jumperB) {
         return { ...state, jumperA: null, hint: null }
       }
 
-      // Reset bridge if already complete
       if (state.jumperA && state.jumperB) {
-        const cleared: BoardState = {
+        return {
           ...state,
           jumperA: id,
           jumperB: null,
@@ -156,7 +170,6 @@ export function reduce(state: BoardState, action: Action): BoardState {
           holdMs: 0,
           hint: null
         }
-        return cleared
       }
 
       if (!state.jumperA) {
@@ -174,26 +187,25 @@ export function reduce(state: BoardState, action: Action): BoardState {
         jumperA: null,
         jumperB: null,
         dashOn: false,
-        rpm: 0,
         holdingStarter: false,
         holdMs: 0,
+        rpm: 0,
         hint: null
       }
 
     case 'holdStart': {
       if (state.tool !== 'jumper') return state
       if (!state.dashOn) {
-        // Holding starter before dash: if free clip somehow — treat as wrong live risk
         if (roleOf(state, action.wireId) === 'starter' && state.jumperA) {
-          // second clip onto starter without ignition bridge
           return applyBridge({ ...state, jumperB: action.wireId })
         }
         return state
       }
       if (roleOf(state, action.wireId) !== 'starter') {
-        // Holding wrong wire after dash — damage if live involved via existing bridge
         if (roleOf(state, action.wireId) === 'battery') {
-          return damage({ ...state, hint: 'live' }, DAMAGE_LIVE)
+          let next = damage(state, DAMAGE_MISTAKE, 'live')
+          if (next.status === 'lost') return next
+          return dropClips(next, 'live')
         }
         return { ...state, hint: 'needStarter' }
       }
@@ -201,7 +213,7 @@ export function reduce(state: BoardState, action: Action): BoardState {
         ...state,
         holdingStarter: true,
         holdMs: 0,
-        rpm: 1,
+        rpm: 0,
         hint: 'holding'
       }
     }
@@ -209,64 +221,59 @@ export function reduce(state: BoardState, action: Action): BoardState {
     case 'holdTick': {
       if (!state.holdingStarter || state.status !== 'playing') return state
       const holdMs = state.holdMs + action.dt
+      const rpm = holdMs / MS_PER_MARK
 
-      // Held too long — overcrank fries the kit and clips drop
-      if (holdMs >= HOLD_MS_MAX) {
+      // Needle past the window → short
+      if (rpm >= SHORT_MARK) {
         let next = damage(
-          {
-            ...state,
-            holdMs,
-            holdingStarter: false,
-            rpm: 0
-          },
-          DAMAGE_OVERHOLD
+          { ...state, holdMs, rpm, holdingStarter: false },
+          DAMAGE_MISTAKE,
+          'overhold'
         )
         if (next.status === 'lost') return next
-        return {
-          ...next,
-          jumperA: null,
-          jumperB: null,
-          dashOn: false,
-          holdMs: 0,
-          hint: 'overhold'
-        }
+        return dropClips(next, 'overhold')
       }
 
-      const caught = holdMs >= HOLD_MS_NEEDED
-      const progress = Math.min(1, holdMs / HOLD_MS_NEEDED)
-      // After catch, needle climbs into the red while you still hold
-      const over = caught
-        ? (holdMs - HOLD_MS_NEEDED) / (HOLD_MS_MAX - HOLD_MS_NEEDED)
-        : 0
-      const rpm = caught ? 32 + over * 18 : 1 + progress * 28
+      const inWindow = rpm >= RELEASE_MARK_MIN && rpm <= RELEASE_MARK_MAX
       return {
         ...state,
         holdMs,
         rpm,
-        hint: caught ? 'release' : 'holding'
+        hint: inWindow ? 'release' : 'holding'
       }
     }
 
     case 'holdEnd': {
       if (!state.holdingStarter) return state
-      // Sweet spot: held long enough, released before overcrank
-      if (state.holdMs >= HOLD_MS_NEEDED && state.holdMs < HOLD_MS_MAX) {
+      const { rpm } = state
+
+      if (rpm >= RELEASE_MARK_MIN && rpm <= RELEASE_MARK_MAX) {
         return {
           ...state,
           holdingStarter: false,
-          holdMs: state.holdMs,
-          rpm: 35,
+          rpm: 2.1,
           status: 'won',
           hint: 'won'
         }
       }
-      // Released too early — try again with dash still on
+
+      // Released too early (or somehow past window without tick catch)
+      if (rpm > RELEASE_MARK_MAX) {
+        let next = damage(
+          { ...state, holdingStarter: false },
+          DAMAGE_MISTAKE,
+          'overhold'
+        )
+        if (next.status === 'lost') return next
+        return dropClips(next, 'overhold')
+      }
+
       return {
         ...state,
         holdingStarter: false,
         holdMs: 0,
         rpm: 0,
-        hint: state.dashOn ? 'dash' : state.hint
+        hint: 'dash'
       }
     }
 
@@ -278,7 +285,6 @@ export function reduce(state: BoardState, action: Action): BoardState {
   }
 }
 
-/** LCD reading for the multimeter. */
 export function meterReading(state: BoardState): string {
   const wire = wireById(state, state.probingId)
   if (!wire || state.tool !== 'probe') {
@@ -288,6 +294,8 @@ export function meterReading(state: BoardState): string {
     if (wire.volts == null) return '0.00 V DC'
     return `${wire.volts.toFixed(2)} V DC`
   }
+  // OHM on a live wire still shows OL-ish after the shock
+  if (wire.volts != null) return 'OL OHM'
   if (wire.ohms == null) return 'OL OHM'
   return `${wire.ohms.toFixed(2)} OHM`
 }

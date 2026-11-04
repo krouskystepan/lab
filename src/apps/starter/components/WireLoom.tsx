@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { HOLD_MS_MAX, WIRE_HEX, type BoardState, type Wire } from '../game/types'
+import { WIRE_HEX, type BoardState, type Wire } from '../game/types'
 
 type Props = {
   board: BoardState
@@ -61,7 +61,6 @@ export function WireLoom({
   const a = board.jumperA ? byId.get(board.jumperA) : undefined
   const b = board.jumperB ? byId.get(board.jumperB) : undefined
   const probe = board.probingId ? byId.get(board.probingId) : undefined
-  const starter = paths.find((p) => p.wire.role === 'starter')
 
   const interact = (wire: Wire) => {
     if (board.status !== 'playing') return
@@ -262,9 +261,6 @@ export function WireLoom({
         </g>
       ) : null}
 
-      {board.holdingStarter && starter ? (
-        <HoldRing pt={starter.mid} progress={board.holdMs / HOLD_MS_MAX} />
-      ) : null}
     </svg>
   )
 }
@@ -282,28 +278,6 @@ function Alligator({ pt, dangling }: { pt: Pt; dangling: boolean }) {
       {dangling ? (
         <circle cx={0} cy={0} r={16} fill="none" stroke="#3a7ae2" strokeWidth={2} opacity={0.75} />
       ) : null}
-    </g>
-  )
-}
-
-function HoldRing({ pt, progress }: { pt: Pt; progress: number }) {
-  const r = 22
-  const c = 2 * Math.PI * r
-  const p = Math.min(1, progress)
-  // Past ~half ring = catch window; deeper red as you overcrank
-  const stroke = p < 0.5 ? '#e8c84a' : p < 0.85 ? '#5dff7a' : '#e24a4a'
-  return (
-    <g transform={`translate(${pt.x} ${pt.y})`}>
-      <circle r={r} fill="none" stroke="#222" strokeWidth={5} />
-      <circle
-        r={r}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={5}
-        strokeDasharray={`${c * p} ${c}`}
-        strokeLinecap="round"
-        transform="rotate(-90)"
-      />
     </g>
   )
 }

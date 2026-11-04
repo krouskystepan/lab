@@ -18,9 +18,9 @@ export type Wire = {
   id: string
   color: WireColor
   role: WireRole
-  /** Voltage reading when dial is on V (null = open / 0). */
+  /** Voltage when dial is on V (null = 0.00 / no voltage). */
   volts: number | null
-  /** Resistance reading when dial is on OHM (null = OL). */
+  /** Resistance when dial is on OHM (null = OL). */
   ohms: number | null
 }
 
@@ -30,18 +30,14 @@ export type BoardState = {
   meterMode: MeterMode
   tool: ToolId
   durability: number
-  /** Wire currently under the probe tip (hover / press). */
   probingId: string | null
-  /** First jumper clip attached. */
   jumperA: string | null
-  /** Second jumper clip attached (bridge complete). */
   jumperB: string | null
-  /** Holding the free end on starter after battery↔ignition bridge. */
   holdingStarter: boolean
   holdMs: number
-  /** Dashboard ignition powered (battery bridged to ignition). */
-  dashOn: boolean
+  /** Tach needle in “x1000” marks (release around 2). */
   rpm: number
+  dashOn: boolean
   hint: string | null
   seed: number
 }
@@ -66,14 +62,18 @@ export const WIRE_HEX: Record<WireColor, string> = {
   brown: '#8a5a2a'
 }
 
-/** Minimum crank time before the engine can catch (release to start). */
-export const HOLD_MS_NEEDED = 1400
-/** Holding past this overcranks — kit takes a hit and clips drop. */
-export const HOLD_MS_MAX = 2800
-export const DAMAGE_LIVE = 12
-export const DAMAGE_WRONG_JUMP = 8
-export const DAMAGE_OVERHOLD = 15
+/** ~7 mistakes until the kit dies. */
+export const MAX_MISTAKES = 7
 export const START_DURABILITY = 100
+export const DAMAGE_MISTAKE = Math.ceil(START_DURABILITY / MAX_MISTAKES)
+
+/** ms per tach mark while cranking (mark 2 ≈ 1.6s). */
+export const MS_PER_MARK = 800
+/** Release when needle is around the 2 mark. */
+export const RELEASE_MARK_MIN = 1.75
+export const RELEASE_MARK_MAX = 2.35
+/** Past this = short circuit. */
+export const SHORT_MARK = 2.55
 
 export function isWireColor(v: unknown): v is WireColor {
   return typeof v === 'string' && (WIRE_COLORS as string[]).includes(v)

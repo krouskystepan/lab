@@ -18,7 +18,7 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
   'starter.note.battery': 'baterie kolem 12 V',
   'starter.note.ignition': 'zapalování kolem 3 ohm',
   'starter.note.starter': 'startér pod 1 ohm',
-  'starter.note.connect': 'spoj baterii a zapalování, podrž startér, pak pusť',
+  'starter.note.connect': 'spoj baterii a zapalování pak podrž na startéru',
   'starter.note.live': 'drát pod napětím poškodí sadu',
 
   'starter.tool.probe': 'sonda',
@@ -29,31 +29,32 @@ export const starterCs: Record<keyof typeof starterEn, string> = {
   'starter.hint.clipA': 'První svorka drží. Vyber druhý kabel.',
   'starter.hint.dash':
     'Palubka se rozsvítila. Teď se druhým koncem dotkni startéru a drž.',
-  'starter.hint.holding': 'Startuje… drž.',
-  'starter.hint.release': 'Naskočilo — teď pusť!',
-  'starter.hint.overhold': 'Držel jsi moc dlouho. Svorky odpadly a sada dostala zásah.',
+  'starter.hint.holding': 'Startuje… sleduj otáčkoměr.',
+  'starter.hint.release': 'Ručka na 2 — teď pusť!',
+  'starter.hint.overhold': 'Zkrat! Přes 2 — svorky odpadly.',
+  'starter.hint.ohmLive': 'Měřil jsi ohmy na drátu pod napětím — sada dostala zásah.',
   'starter.hint.live': 'Drát pod napětím — sada dostala zásah.',
   'starter.hint.wrong': 'Špatná dvojice. Svorky odpadly.',
   'starter.hint.needStarter': 'Drž kabel startéru.',
   'starter.hint.won': 'Motor naskočil.',
-  'starter.hint.lost': 'Sada odešla. Vezmi novou.',
+  'starter.hint.lost': 'Sada odešla po moc chybách.',
 
   'starter.toast.won': 'Naskočilo. Motor běží.',
   'starter.toast.lost': 'Sada shořela.',
 
   'starter.help.title': 'Jak hrát',
   'starter.help.body':
-    'Startér ve stylu GTA RP. Proměř svazek multimetrem, zapamatuj si barvy kabelů a propoj správné — bez spálení sady.',
+    'Startér ve stylu GTA RP. Čtyři kabely mají napětí, tři odpor. Najdi baterii / zapalování / startér, propoj je a pusť startér na dvojce na budíku.',
   'starter.help.controls':
-    '1 = sonda, 2 = krokosvorky. V / O přepíná rozsah. Najetí na kabel měří. Klikni dva kabely pro most. Po rozsvícení palubky drž startér.',
+    '1 = sonda, 2 = svorky. V / O přepíná rozsah. Najetí měří. Spoj dva kabely svorkami. Po rozsvícení palubky drž startér, dokud ručka nedojede na 2, pak pusť.',
 
   'starter.help.findTitle': 'Najdi kabely',
   'starter.help.findBody':
-    'Nejdřív si na voltech (V) najdi kabely pod napětím a tu s ~12 V — to je baterie. Pak přepni na ohmy a najdi ~3 Ω (zapalování) a pod 1 Ω (startér). Zapamatuj si barvičky.',
+    'Na voltech (V): čtyři kabely mají napětí — jeden ~12 V (baterie), ostatní cokoliv. Na ohmech: tři kabely — 0,5–1 Ω startér, 2,5–3 Ω zapalování, poslední cokoliv. Měření ohmů na drátu pod napětím ubírá kondici (~7 chyb a sada odejde).',
 
   'starter.help.connectTitle': 'Zapoj je',
   'starter.help.connectBody':
-    'Přepni na svorky (2). Spoj baterii se zapalováním — rozsvítí se palubka. Drž startér, dokud nenasadí, pak pusť. Držíš-li moc dlouho, svorky odpadnou a sada dostane zásah. Živý drát taky ubírá trvanlivost.',
+    'Spoj baterii se zapalováním (rozsvítí se palubka). Pak drž startér a čekej, až ručka na otáčkoměru vyleze na 2 — tam pusť. Přes 2 dostaneš zkrat.',
 
   'starter.hotkeys.title': 'Ovládání',
   'starter.hotkeys.probe': 'sonda',

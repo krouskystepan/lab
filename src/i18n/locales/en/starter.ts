@@ -15,7 +15,7 @@ export const starterEn = {
   'starter.note.battery': 'battery around 12 V',
   'starter.note.ignition': 'ignition around 3 ohm',
   'starter.note.starter': 'starter under 1 ohm',
-  'starter.note.connect': 'join battery + ignition, hold starter, then release',
+  'starter.note.connect': 'join battery + ignition then hold on starter',
   'starter.note.live': 'a live wire damages the kit',
 
   'starter.tool.probe': 'probe',
@@ -25,31 +25,32 @@ export const starterEn = {
 
   'starter.hint.clipA': 'First clip on. Pick the second wire.',
   'starter.hint.dash': 'Dash lit up. Hold the other end on the starter.',
-  'starter.hint.holding': 'Cranking… keep holding.',
-  'starter.hint.release': 'It caught — release now!',
-  'starter.hint.overhold': 'Held too long. Clips dropped and the kit took a hit.',
+  'starter.hint.holding': 'Cranking… watch the tach.',
+  'starter.hint.release': 'Needle at 2 — release now!',
+  'starter.hint.overhold': 'Short! Held past 2 — clips dropped.',
+  'starter.hint.ohmLive': 'Measured ohms on a live wire — kit took a hit.',
   'starter.hint.live': 'Live wire — kit took a hit.',
   'starter.hint.wrong': 'Wrong pair. Clips popped off.',
   'starter.hint.needStarter': 'Hold the starter wire to crank.',
   'starter.hint.won': 'Engine started.',
-  'starter.hint.lost': 'Kit fried. Grab a new one.',
+  'starter.hint.lost': 'Kit fried after too many mistakes.',
 
   'starter.toast.won': 'She lives. Engine running.',
   'starter.toast.lost': 'Kit burned out.',
 
   'starter.help.title': 'How to play',
   'starter.help.body':
-    'GTA-style ignition hotwire. Probe the loom with a multimeter, remember the wire colors, then jump the right ones without frying the kit.',
+    'GTA-style ignition hotwire. Four wires carry voltage, three carry resistance. Find battery / ignition / starter, jump them, then time the starter release on the tach.',
   'starter.help.controls':
-    '1 = probe, 2 = jumper clips. V / O switch the dial. Hover wires to measure. Click two wires to bridge. After the dash lights, press and hold the starter.',
+    '1 = probe, 2 = jumper. V / O switch the dial. Hover to measure. Bridge two wires with jumpers. After the dash lights, hold starter until the needle hits 2, then release.',
 
   'starter.help.findTitle': 'Find the wires',
   'starter.help.findBody':
-    'First switch to volts (V) and find the cable with ~12 V — that is the battery (other wires may show a little voltage too). Then switch to ohms and find ~3 Ω (ignition) and under 1 Ω (starter). Remember the colors.',
+    'On volts (V): four wires show voltage — one is ~12 V (battery), the others can be anything. On ohms: three wires show resistance — 0.5–1 Ω is starter, 2.5–3 Ω is ignition, the last can be anything. Measuring ohms on a live wire damages the kit (~7 mistakes and it dies).',
 
   'starter.help.connectTitle': 'Connect them',
   'starter.help.connectBody':
-    'Switch to the jumper (2). Bridge battery to ignition — the dash lights up. Hold the starter until it catches, then release. Hold too long and the clips drop and the kit takes a hit. Live wires also damage durability.',
+    'Jumper battery to ignition (dash lights). Then hold the starter clamp and wait until the tach needle reaches the 2 mark — release there. Hold past 2 and you short the kit.',
 
   'starter.hotkeys.title': 'Controls',
   'starter.hotkeys.probe': 'probe',

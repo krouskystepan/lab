@@ -26,8 +26,8 @@ function shuffle<T>(arr: T[], rand: () => number): T[] {
   return out
 }
 
-function jitter(rand: () => number, base: number, spread: number): number {
-  return Math.round((base + (rand() * 2 - 1) * spread) * 100) / 100
+function range(rand: () => number, lo: number, hi: number): number {
+  return Math.round((lo + rand() * (hi - lo)) * 100) / 100
 }
 
 function makeWire(
@@ -36,46 +36,43 @@ function makeWire(
   volts: number | null,
   ohms: number | null
 ): Wire {
-  return {
-    id: color,
-    color,
-    role,
-    volts,
-    ohms
-  }
+  return { id: color, color, role, volts, ohms }
 }
 
-/** Build a fresh loom: battery ~12 V, ignition ~3 Ω, starter <1 Ω, rest decoys. */
+/**
+ * 7 wires:
+ * - 4 under voltage (one is battery ~12 V, others any V)
+ * - 3 with resistance (starter 0.5–1 Ω, ignition 2.5–3 Ω, one any Ω)
+ */
 export function generate(seed = Date.now()): BoardState {
   const rand = mulberry32(seed >>> 0)
   const colors = shuffle(WIRE_COLORS, rand)
-  const [batC, ignC, strC, ...decoyCs] = colors
+  const voltCs = colors.slice(0, 4)
+  const ohmCs = colors.slice(4)
+
+  const [batC, ...voltDecoys] = voltCs
+  const [strC, ignC, ohmDecoyC] = ohmCs
 
   const wires: Wire[] = [
-    makeWire(batC, 'battery', jitter(rand, 12.2, 0.35), null),
-    makeWire(ignC, 'ignition', null, jitter(rand, 3.05, 0.25)),
-    makeWire(strC, 'starter', null, jitter(rand, 0.55, 0.25))
+    makeWire(batC, 'battery', range(rand, 11.7, 12.6), null),
+    makeWire(strC, 'starter', null, range(rand, 0.5, 1.0)),
+    makeWire(ignC, 'ignition', null, range(rand, 2.5, 3.0)),
+    makeWire(ohmDecoyC, 'decoy', null, range(rand, 4, 120))
   ]
 
-  for (const c of decoyCs) {
-    const kind = Math.floor(rand() * 4)
-    if (kind === 0) {
-      // faint voltage decoy (not ~12)
-      wires.push(makeWire(c, 'decoy', jitter(rand, 1.4, 0.9), null))
-    } else if (kind === 1) {
-      // random mid resistance
-      wires.push(makeWire(c, 'decoy', null, jitter(rand, 12, 6)))
-    } else if (kind === 2) {
-      // high resistance
-      wires.push(makeWire(c, 'decoy', null, jitter(rand, 80, 40)))
-    } else {
-      // dead / open
-      wires.push(makeWire(c, 'decoy', null, null))
-    }
+  for (const c of voltDecoys) {
+    // Any voltage except near the battery reading
+    const pick = rand()
+    const volts =
+      pick < 0.34
+        ? range(rand, 0.4, 4.5)
+        : pick < 0.67
+          ? range(rand, 5, 9.5)
+          : range(rand, 13.5, 18)
+    wires.push(makeWire(c, 'decoy', volts, null))
   }
 
   return {
-    // Shuffle left→right loom order every round (roles already on random colors)
     wires: shuffle(wires, rand),
     status: 'playing',
     meterMode: 'V',

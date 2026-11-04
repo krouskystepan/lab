@@ -44,10 +44,20 @@ export function Multimeter({ reading, mode, onMode, disabled }: Props) {
               />
               <span className="absolute top-1/2 left-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#888]" />
             </button>
-            <span className="absolute top-2 left-2 font-mono text-[0.7rem] font-bold text-[#1a1a1e]">
+            <span
+              className={cn(
+                'pointer-events-none absolute top-1.5 left-1.5 z-10 font-mono text-[0.72rem] font-bold tracking-wide',
+                mode === 'V' ? 'text-[#f0d878]' : 'text-[#9a9aa8]'
+              )}
+            >
               V
             </span>
-            <span className="absolute top-2 right-1.5 font-mono text-[0.65rem] font-bold text-[#1a1a1e]">
+            <span
+              className={cn(
+                'pointer-events-none absolute top-1.5 right-1 z-10 font-mono text-[0.68rem] font-bold tracking-wide',
+                mode === 'OHM' ? 'text-[#f0d878]' : 'text-[#9a9aa8]'
+              )}
+            >
               OHM
             </span>
           </div>

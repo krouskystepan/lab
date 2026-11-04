@@ -8,7 +8,7 @@ import type { BoardFamily, BoardFile } from './types'
 
 /** Match LangSwitch: one segmented shell, flush icon cells. */
 const segBtn =
-  'cursor-pointer appearance-none inline-flex h-[1.7rem] items-center justify-center gap-1 rounded-none border-0 px-[0.45rem] text-[0.68rem] font-bold tracking-[0.04em] text-muted transition-[background,color] duration-100 hover:bg-cell-hover hover:text-ink'
+  'cursor-pointer appearance-none inline-flex h-full items-center justify-center gap-1 border-0 px-[0.45rem] text-[0.68rem] font-bold tracking-[0.04em] text-muted transition-[background,color] duration-100 hover:bg-cell-hover hover:text-ink'
 
 const iconCls = 'h-[0.85em] w-[0.85em] shrink-0'
 
@@ -76,32 +76,34 @@ export function ExportImportButtons({
   return (
     <div
       className={cn(
-        'inline-flex h-[1.7rem] shrink-0 overflow-hidden rounded-sm border border-line bg-cell',
+        'inline-flex h-[1.7rem] shrink-0 rounded-sm bg-line p-px',
         className
       )}
       role="group"
       aria-label={`${t('transfer.export')} / ${t('transfer.import')}`}
     >
-      <button
-        type="button"
-        className={segBtn}
-        onClick={handleExport}
-        title={t('transfer.exportTitle')}
-        aria-label={t('transfer.export')}
-      >
-        <Download className={iconCls} aria-hidden />
-        <span className="max-[980px]:hidden">{t('transfer.export')}</span>
-      </button>
-      <button
-        type="button"
-        className={segBtn}
-        onClick={() => inputRef.current?.click()}
-        title={t('transfer.importTitle')}
-        aria-label={t('transfer.import')}
-      >
-        <Upload className={iconCls} aria-hidden />
-        <span className="max-[980px]:hidden">{t('transfer.import')}</span>
-      </button>
+      <div className="inline-flex h-full overflow-hidden rounded-[3px] bg-cell">
+        <button
+          type="button"
+          className={segBtn}
+          onClick={handleExport}
+          title={t('transfer.exportTitle')}
+          aria-label={t('transfer.export')}
+        >
+          <Download className={iconCls} aria-hidden />
+          <span className="max-[980px]:hidden">{t('transfer.export')}</span>
+        </button>
+        <button
+          type="button"
+          className={segBtn}
+          onClick={() => inputRef.current?.click()}
+          title={t('transfer.importTitle')}
+          aria-label={t('transfer.import')}
+        >
+          <Upload className={iconCls} aria-hidden />
+          <span className="max-[980px]:hidden">{t('transfer.import')}</span>
+        </button>
+      </div>
       <input
         ref={inputRef}
         type="file"
