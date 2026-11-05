@@ -6,17 +6,16 @@ type Props = {
 }
 
 export function Dashboard({ dashOn, rpm, won }: Props) {
-  // Needle angle offset: mark n sits at n * 30° from the 0 tick
   const mark = won ? 2.05 : Math.min(8, Math.max(0, rpm))
   const needle = mark * 30
   const lit = dashOn || won
 
   return (
     <div
-      className="pointer-events-none absolute top-2 left-2 z-20 flex items-end gap-2 rounded-md border border-[#2a2a30] bg-[#121214] px-2.5 py-2 shadow-lg"
+      className="pointer-events-none absolute top-1.5 left-1.5 z-20 flex items-end gap-1.5 rounded-md border border-[#2a2a30] bg-[#121214]/95 px-1.5 py-1.5 shadow-lg backdrop-blur-sm min-[900px]:top-2 min-[900px]:left-2 min-[900px]:gap-2 min-[900px]:px-2.5 min-[900px]:py-2"
       aria-hidden
     >
-      <div className="relative h-[6.25rem] w-[6.25rem] shrink-0">
+      <div className="relative h-[4.25rem] w-[4.25rem] shrink-0 min-[900px]:h-[6.25rem] min-[900px]:w-[6.25rem]">
         <svg viewBox="0 0 100 100" className="h-full w-full">
           <circle cx="50" cy="50" r="46" fill="#0c0c0e" stroke="#333" strokeWidth="2" />
           <circle cx="50" cy="50" r="40" fill="none" stroke="#1e1e22" strokeWidth="6" />
@@ -74,7 +73,7 @@ export function Dashboard({ dashOn, rpm, won }: Props) {
           <circle cx="50" cy="50" r="3" fill="#888" />
         </svg>
       </div>
-      <div className="mb-1 flex flex-col gap-1.5 font-mono text-[0.65rem] font-bold tracking-wider">
+      <div className="mb-0.5 flex flex-col gap-1 font-mono text-[0.55rem] font-bold tracking-wider min-[900px]:mb-1 min-[900px]:gap-1.5 min-[900px]:text-[0.65rem]">
         <DashLamp label="BAT" color="#e24a4a" on={lit} />
         <DashLamp label="OIL" color="#e24a4a" on={lit} />
         <DashLamp label="CHK" color="#e8c84a" on={lit} />
@@ -93,9 +92,9 @@ function DashLamp({
   on: boolean
 }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1 min-[900px]:gap-1.5">
       <span
-        className="inline-block h-2 w-2 rounded-full"
+        className="inline-block h-1.5 w-1.5 rounded-full min-[900px]:h-2 min-[900px]:w-2"
         style={{
           background: on ? color : '#2a2a2e',
           boxShadow: on ? `0 0 8px ${color}` : 'none',

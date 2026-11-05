@@ -144,15 +144,23 @@ export default function StarterApp() {
         ]}
       />
 
-      {/* Own stage — avoid .board-frame (flex-none + centered kids crush the loom) */}
-      <div className="order-1 flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-md border border-line bg-[#0a0a0c] min-[900px]:flex-row">
-        <div className="relative flex min-h-0 min-w-0 flex-1 items-stretch justify-stretch">
+      <div
+        className={[
+          'order-1 flex min-h-0 w-full flex-1 overflow-hidden rounded-md border border-line bg-[#0a0a0c]',
+          // Phone portrait: loom on top, controls under
+          'flex-col',
+          // Phone landscape + desktop: loom | rail
+          'max-[899px]:landscape:flex-row',
+          'min-[900px]:flex-row'
+        ].join(' ')}
+      >
+        <div className="relative min-h-0 min-w-0 flex-1 basis-0">
           <Dashboard
             dashOn={board.dashOn}
             rpm={board.rpm}
             won={board.status === 'won'}
           />
-          <div className="absolute inset-0 flex items-center justify-center p-2 min-[900px]:p-3">
+          <div className="absolute inset-0 p-1.5 min-[900px]:p-3 [&_svg]:h-full [&_svg]:w-full">
             <WireLoom
               board={board}
               onProbe={(id) => dispatch({ type: 'probe', wireId: id })}
@@ -164,7 +172,15 @@ export default function StarterApp() {
           <StatusBanner board={board} />
         </div>
 
-        <aside className="relative z-20 flex w-full shrink-0 flex-col justify-between gap-3 border-t border-line bg-[#141418] px-3 py-3 max-[899px]:max-h-[46%] max-[899px]:overflow-y-auto min-[900px]:w-[19rem] min-[900px]:border-t-0 min-[900px]:border-l min-[900px]:py-4">
+        <aside
+          className={[
+            'relative z-20 flex shrink-0 flex-col gap-2 border-line bg-[#141418]',
+            'w-full border-t px-2.5 py-2',
+            'max-[899px]:max-h-[42%] max-[899px]:overflow-y-auto',
+            'max-[899px]:landscape:max-h-none max-[899px]:landscape:w-[15.5rem] max-[899px]:landscape:border-t-0 max-[899px]:landscape:border-l max-[899px]:landscape:overflow-y-auto max-[899px]:landscape:px-2 max-[899px]:landscape:py-2',
+            'min-[900px]:w-[19rem] min-[900px]:border-t-0 min-[900px]:border-l min-[900px]:gap-3 min-[900px]:px-3 min-[900px]:py-4'
+          ].join(' ')}
+        >
           <KitStatus durability={board.durability} />
           <Multimeter
             reading={reading}
@@ -172,7 +188,7 @@ export default function StarterApp() {
             onMode={(mode) => dispatch({ type: 'setMeter', mode })}
             disabled={ended}
           />
-          <div className="mt-auto flex flex-col gap-3">
+          <div className="mt-auto flex flex-col gap-2 min-[900px]:gap-3">
             <ToolBelt
               tool={board.tool}
               onTool={(tool) => dispatch({ type: 'setTool', tool })}

@@ -95,7 +95,7 @@ export function WireLoom({
     <svg
       viewBox={`0 0 ${VW} ${VH}`}
       preserveAspectRatio="xMidYMid meet"
-      className="h-full w-full select-none touch-none"
+      className="h-full w-full select-none"
       role="img"
       aria-label="Ignition wiring loom"
     >
@@ -188,11 +188,12 @@ export function WireLoom({
               d={p.d}
               fill="none"
               stroke="transparent"
-              strokeWidth={36}
+              strokeWidth={48}
               strokeLinecap="round"
               className={
                 board.status === 'playing' ? 'cursor-pointer' : 'cursor-default'
               }
+              style={{ touchAction: 'manipulation' }}
               onClick={() => onWireClick(p.wire)}
             />
             <circle

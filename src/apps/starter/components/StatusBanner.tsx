@@ -26,8 +26,10 @@ export function StatusBanner({ board }: Props) {
   if (!key) return null
 
   return (
-    <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 max-w-[min(22rem,90%)] -translate-x-1/2 rounded-md border border-[#2a2a30] bg-[#0c0c0e] px-3 py-2 text-center shadow-lg">
-      <p className="m-0 text-[0.8rem] leading-snug text-ink">{t(key)}</p>
+    <div className="pointer-events-none absolute bottom-2 left-1/2 z-20 max-w-[min(22rem,calc(100%-1rem))] -translate-x-1/2 rounded-md border border-[#2a2a30] bg-[#0c0c0e]/95 px-2.5 py-1.5 text-center shadow-lg backdrop-blur-sm min-[900px]:bottom-3 min-[900px]:px-3 min-[900px]:py-2">
+      <p className="m-0 text-[0.72rem] leading-snug text-ink min-[900px]:text-[0.8rem]">
+        {t(key)}
+      </p>
     </div>
   )
 }
